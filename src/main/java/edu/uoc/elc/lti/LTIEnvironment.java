@@ -85,7 +85,7 @@ public class LTIEnvironment {
 
 
 	public Claim getClaim(String name) {
-		return claims.get(name);
+		return claims != null ? claims.get(name) : null;
 	}
 
 
