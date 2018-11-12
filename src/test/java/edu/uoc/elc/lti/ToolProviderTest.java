@@ -7,12 +7,12 @@ import org.junit.Test;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class LTIEnvironmentTest {
-	private LTIEnvironment sut;
+public class ToolProviderTest {
+	private ToolProvider sut;
 
 	@Before
 	public void setUp() {
-		this.sut = new LTIEnvironment(
+		this.sut = new ToolProvider(
 						"Universitat Oberta de Catalunya",
 						"https://lti-ri.imsglobal.org/platforms/68/platform_keys/60.json",
 						"https://lti-ri.imsglobal.org/platforms/68/access_tokens",

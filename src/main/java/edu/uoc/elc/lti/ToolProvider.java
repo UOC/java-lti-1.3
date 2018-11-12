@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class LTIEnvironment {
+public class ToolProvider {
 
 	private final static List<String> ALLOWED_MESSAGE_TYPES = Arrays.asList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
@@ -56,7 +56,7 @@ public class LTIEnvironment {
 	@Getter
 	private String reason;
 
-	public LTIEnvironment(String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
+	public ToolProvider(String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.keySetUrl(keySetUrl)
