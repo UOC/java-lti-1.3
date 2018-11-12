@@ -38,8 +38,10 @@ public class ToolProvider {
 	List<String> audience;
 
 	String kid;
+
 	@Getter
 	Date issuedAt;
+
 	@Getter
 	Date expiresAt;
 
@@ -53,6 +55,7 @@ public class ToolProvider {
 
 	@Getter
 	private boolean valid;
+
 	@Getter
 	private String reason;
 
@@ -153,21 +156,14 @@ public class ToolProvider {
 	}
 
 	private void createUser(String subject) {
-		String name = getClaimAsString(ClaimsEnum.NAME.getName());
-		String givenName = getClaimAsString(ClaimsEnum.GIVEN_NAME.getName());
-		String familyName = getClaimAsString(ClaimsEnum.FAMILY_NAME.getName());
-		String middleName = getClaimAsString(ClaimsEnum.MIDDLE_NAME.getName());
-		String picture = getClaimAsString(ClaimsEnum.PICTURE.getName());
-		String email = getClaimAsString(ClaimsEnum.EMAIL.getName());
-
 		this.user = User.builder()
 						.id(subject)
-						.givenName(givenName)
-						.familyName(familyName)
-						.middleName(middleName)
-						.picture(picture)
-						.email(email)
-						.name(name)
+						.givenName(getClaimAsString(ClaimsEnum.GIVEN_NAME.getName()))
+						.familyName(getClaimAsString(ClaimsEnum.FAMILY_NAME.getName()))
+						.middleName(getClaimAsString(ClaimsEnum.MIDDLE_NAME.getName()))
+						.picture(getClaimAsString(ClaimsEnum.PICTURE.getName()))
+						.email(getClaimAsString(ClaimsEnum.EMAIL.getName()))
+						.name(getClaimAsString(ClaimsEnum.NAME.getName()))
 						.build();
 	}
 
