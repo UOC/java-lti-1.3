@@ -9,6 +9,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ClaimsEnum {
+	// header claims
+	KID("kid"),
 
 	// general claims
 	MESSAGE_TYPE("https://purl.imsglobal.org/spec/lti/claim/message_type"),

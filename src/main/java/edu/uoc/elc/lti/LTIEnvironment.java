@@ -1,11 +1,20 @@
 package edu.uoc.elc.lti;
 
+import com.auth0.jwk.InvalidPublicKeyException;
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Verification;
+import edu.uoc.elc.lti.jwt.AlgorithmFactory;
 import lombok.Getter;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +27,8 @@ public class LTIEnvironment {
 
 	private final static List<String> ALLOWED_MESSAGE_TYPES = Arrays.asList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
+	private final static long _5_MINUTES = 5 * 60;
+	private final static long _1_YEAR = 365 * 24 * 60 * 60;
 
 	Map<String, Claim> claims;
 
@@ -25,6 +36,8 @@ public class LTIEnvironment {
 	String issuer;
 	@Getter
 	List<String> audience;
+
+	String kid;
 	@Getter
 	Date issuedAt;
 	@Getter
@@ -33,7 +46,7 @@ public class LTIEnvironment {
 	@Getter
 	private User user;
 
-	private ConsumerService consumerService;
+	private ToolDefinition toolDefinition;
 
 	@Getter
 	private String locale;
@@ -43,17 +56,37 @@ public class LTIEnvironment {
 	@Getter
 	private String reason;
 
+	public LTIEnvironment(String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
+		this.toolDefinition = ToolDefinition.builder()
+						.clientId(clientId)
+						.keySetUrl(keySetUrl)
+						.accessTokenUrl(accessTokenUrl)
+						.privateKey(privateKey)
+						.publicKey(publicKey)
+						.build();
+	}
+
 	public boolean validate(String token) {
+	 return validate(token, true);
+	}
+
+	public boolean validate(String token, boolean checkDelay) {
 		valid = false;
 		try {
 			decode(token);
 
 			// validate lti headers
+			JwkProvider provider = new UrlJwkProvider(new URL(toolDefinition.getKeySetUrl()));
+			Jwk jwk = provider.get(this.kid);
+
+			verify(token, jwk, checkDelay);
+
 			// message type
 			final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE.getName());
 			if (messageTypeClaim == null || !ALLOWED_MESSAGE_TYPES.contains(messageTypeClaim.asString())) {
 				reason = "Unknown Message Type";
 				valid = false;
+				return valid;
 			}
 
 			// version
@@ -61,6 +94,7 @@ public class LTIEnvironment {
 			if (versionClaim == null || !VERSION.equals(versionClaim.asString())) {
 				reason = "Invalid Version";
 				valid = false;
+				return valid;
 			}
 			valid = true;
 		} catch (Throwable t) {
@@ -70,11 +104,32 @@ public class LTIEnvironment {
 		return valid;
 	}
 
+	private void verify(String token, Jwk jwk, boolean checkDelay) throws InvalidPublicKeyException {
+		Algorithm algorithm = AlgorithmFactory.createAlgorithm(jwk);
+
+		final Verification verifierBuilder = JWT.require(algorithm);
+
+		if (checkDelay) {
+			verifierBuilder.acceptIssuedAt(_5_MINUTES);
+		} else {
+			verifierBuilder.acceptLeeway(_1_YEAR); // only for test!!
+		}
+
+		JWTVerifier verifier = verifierBuilder.build();
+		verifier.verify(token);
+	}
+
 	public void decode(String token) {
 		try {
 
 			// validate and decode token
 			DecodedJWT jwt = JWT.decode(token);
+
+			final Claim kidClaim = jwt.getHeaderClaim(ClaimsEnum.KID.getName());
+			if (kidClaim == null) {
+				throw new InvalidLTICallException("kid header not found");
+			}
+			this.kid = kidClaim.asString();
 
 			// get the standard JWT payload claims
 			this.issuer = jwt.getIssuer();
