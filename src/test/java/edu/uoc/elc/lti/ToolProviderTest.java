@@ -1,5 +1,6 @@
 package edu.uoc.elc.lti;
 
+import edu.uoc.elc.lti.exception.InvalidTokenException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,7 @@ public class ToolProviderTest {
 	@Before
 	public void setUp() {
 		this.sut = new ToolProvider(
+						"Universitat Oberta de Catalunya",
 						"Universitat Oberta de Catalunya",
 						"https://lti-ri.imsglobal.org/platforms/68/platform_keys/60.json",
 						"https://lti-ri.imsglobal.org/platforms/68/access_tokens",

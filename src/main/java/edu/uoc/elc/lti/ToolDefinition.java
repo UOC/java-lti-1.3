@@ -10,6 +10,7 @@ import lombok.experimental.Builder;
 @Builder
 public class ToolDefinition {
 	private String clientId;
+	private String name;
 	private String keySetUrl;
 	private String accessTokenUrl;
 	private String privateKey;

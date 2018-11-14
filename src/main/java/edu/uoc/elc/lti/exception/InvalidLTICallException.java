@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti;
+package edu.uoc.elc.lti.exception;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>

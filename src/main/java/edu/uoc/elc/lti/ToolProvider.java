@@ -11,21 +11,24 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Verification;
+import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.elc.lti.exception.InvalidLTICallException;
+import edu.uoc.elc.lti.exception.InvalidTokenException;
 import edu.uoc.elc.lti.jwt.AlgorithmFactory;
+import edu.uoc.elc.lti.platform.AccessTokenResponse;
+import edu.uoc.elc.lti.platform.RequestHandler;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class ToolProvider {
 
-	private final static List<String> ALLOWED_MESSAGE_TYPES = Arrays.asList("LtiResourceLinkRequest");
+	private final static List<String> ALLOWED_MESSAGE_TYPES = Collections.singletonList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
 	private final static long _5_MINUTES = 5 * 60;
 	private final static long _1_YEAR = 365 * 24 * 60 * 60;
@@ -37,6 +40,7 @@ public class ToolProvider {
 	@Getter
 	List<String> audience;
 
+	@Getter
 	String kid;
 
 	@Getter
@@ -59,9 +63,12 @@ public class ToolProvider {
 	@Getter
 	private String reason;
 
-	public ToolProvider(String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
+	private AccessTokenResponse accessTokenResponse;
+
+	public ToolProvider(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
+						.name(name)
 						.keySetUrl(keySetUrl)
 						.accessTokenUrl(accessTokenUrl)
 						.privateKey(privateKey)
@@ -89,7 +96,7 @@ public class ToolProvider {
 			if (messageTypeClaim == null || !ALLOWED_MESSAGE_TYPES.contains(messageTypeClaim.asString())) {
 				reason = "Unknown Message Type";
 				valid = false;
-				return valid;
+				return false;
 			}
 
 			// version
@@ -97,7 +104,7 @@ public class ToolProvider {
 			if (versionClaim == null || !VERSION.equals(versionClaim.asString())) {
 				reason = "Invalid Version";
 				valid = false;
-				return valid;
+				return false;
 			}
 			valid = true;
 		} catch (Throwable t) {
@@ -110,6 +117,7 @@ public class ToolProvider {
 	private void verify(String token, Jwk jwk, boolean checkDelay) throws InvalidPublicKeyException {
 		Algorithm algorithm = AlgorithmFactory.createAlgorithm(jwk);
 
+		assert algorithm != null;
 		final Verification verifierBuilder = JWT.require(algorithm);
 
 		if (checkDelay) {
@@ -122,7 +130,7 @@ public class ToolProvider {
 		verifier.verify(token);
 	}
 
-	public void decode(String token) {
+	void decode(String token) {
 		try {
 
 			// validate and decode token
@@ -155,6 +163,19 @@ public class ToolProvider {
 		}
 	}
 
+	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
+		if (!valid) {
+			return null;
+		}
+
+		if (accessTokenResponse == null) {
+			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition);
+			accessTokenResponse = requestHandler.getAccessToken();
+		}
+
+		return accessTokenResponse;
+	}
+
 	private void createUser(String subject) {
 		this.user = User.builder()
 						.id(subject)
@@ -168,11 +189,11 @@ public class ToolProvider {
 	}
 
 
-	public Claim getClaim(String name) {
+	private Claim getClaim(String name) {
 		return claims != null ? claims.get(name) : null;
 	}
 
-	public String getClaimAsString(String name) {
+	private String getClaimAsString(String name) {
 		final Claim claim = getClaim(name);
 		return claim != null ? claim.asString() : null;
 	}
