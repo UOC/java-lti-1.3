@@ -1,9 +1,8 @@
 package edu.uoc.elc.lti.platform;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.uoc.elc.lti.ScopeEnum;
-import edu.uoc.elc.lti.ToolDefinition;
-import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.elc.lti.tool.ScopeEnum;
+import edu.uoc.elc.lti.tool.ToolDefinition;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.InvalidKeyException;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>

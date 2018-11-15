@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.platform;
 
-import edu.uoc.elc.lti.ToolDefinition;
+import edu.uoc.elc.lti.tool.ToolDefinition;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import org.junit.Assert;
 import org.junit.Before;

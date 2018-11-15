@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti;
+package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.InvalidTokenException;
 import org.junit.Assert;
@@ -8,12 +8,12 @@ import org.junit.Test;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class ToolProviderTest {
-	private ToolProvider sut;
+public class ToolTest {
+	private Tool sut;
 
 	@Before
 	public void setUp() {
-		this.sut = new ToolProvider(
+		this.sut = new Tool(
 						"Universitat Oberta de Catalunya",
 						"Universitat Oberta de Catalunya",
 						"https://lti-ri.imsglobal.org/platforms/68/platform_keys/60.json",

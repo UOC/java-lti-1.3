@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti;
+package edu.uoc.elc.lti.tool;
 
 import lombok.Getter;
 import lombok.Setter;

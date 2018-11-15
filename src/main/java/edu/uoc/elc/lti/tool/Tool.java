@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti;
+package edu.uoc.elc.lti.tool;
 
 import com.auth0.jwk.InvalidPublicKeyException;
 import com.auth0.jwk.Jwk;
@@ -26,7 +26,7 @@ import java.util.*;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class ToolProvider {
+public class Tool {
 
 	private final static List<String> ALLOWED_MESSAGE_TYPES = Collections.singletonList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
@@ -65,7 +65,7 @@ public class ToolProvider {
 
 	private AccessTokenResponse accessTokenResponse;
 
-	public ToolProvider(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
+	public Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
@@ -215,7 +215,7 @@ public class ToolProvider {
 	}
 
 	public NamesRoleService getNameRoleService() {
-		final Claim claim = getClaim(ClaimsEnum.RESOURCE_LINK.getName());
+		final Claim claim = getClaim(ClaimsEnum.NAMES_ROLE_SERVICE.getName());
 		return claim != null ? claim.as(NamesRoleService.class) : null;
 	}
 
