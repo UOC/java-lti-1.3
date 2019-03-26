@@ -1,7 +1,7 @@
 package edu.uoc.elc.lti.tool;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.Builder;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
