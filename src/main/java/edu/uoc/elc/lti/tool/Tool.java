@@ -219,6 +219,12 @@ public class Tool {
 		return claim != null ? claim.as(NamesRoleService.class) : null;
 	}
 
+	public AssignmentGradeService getAssignmentGradeService() {
+		final Claim claim = getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE.getName());
+		return claim != null ? claim.as(AssignmentGradeService.class) : null;
+
+	}
+
 	public List<String> getRoles() {
 		final Claim claim = getClaim(ClaimsEnum.ROLES.getName());
 		return claim != null ? claim.asList(String.class) : null;

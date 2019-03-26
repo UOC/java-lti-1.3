@@ -27,7 +27,7 @@ public enum ClaimsEnum {
 	CONTEXT("https://purl.imsglobal.org/spec/lti/claim/context"),
 	ROLES("https://purl.imsglobal.org/spec/lti/claim/roles"),
 	TOOL_PLATFORM("https://purl.imsglobal.org/spec/lti/claim/tool_platform"),
-	ENDPOINT("https://purl.imsglobal.org/spec/lti-ags/claim/endpoint"),
+	ASSIGNMENT_GRADE_SERVICE("https://purl.imsglobal.org/spec/lti-ags/claim/endpoint"),
 	NAMES_ROLE_SERVICE("https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice"),
 	CALIPER_SERVICE("https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service"),
 	PRESENTATION("https://purl.imsglobal.org/spec/lti/claim/launch_presentation"),
