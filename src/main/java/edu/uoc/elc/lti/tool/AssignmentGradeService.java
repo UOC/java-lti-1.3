@@ -19,10 +19,14 @@ public class AssignmentGradeService {
 	}
 
 	public boolean canReadLineItems() {
+		return canManageLineItems() || (scope != null && scope.contains(ScopeEnum.AGS_SCOPE_LINE_ITEM_READONLY.getScope()));
+	}
+
+	public boolean canManageLineItems() {
 		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_LINE_ITEM.getScope());
 	}
 
-	public boolean canWrite() {
-		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_LINE_ITEM.getScope());
+	public boolean canScore() {
+		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_SCORE.getScope());
 	}
 }
