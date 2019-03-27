@@ -164,7 +164,7 @@ public class Tool {
 	}
 
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
-		if (!valid) {
+		if (!this.isValid()) {
 			return null;
 		}
 
