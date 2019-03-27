@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.platform.ags;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,17 +9,35 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
-	@JsonProperty
+	/**
+	 * URL end point for the resource. It must be present on all responses containing the resource and may be used for subsequent operations on that resource.
+	 */
 	private String id;
-	@JsonProperty
+
+	/**
+	 * Recipient of the result, usually a student
+	 */
 	private String userId;
-	@JsonProperty
+
+	/**
+	 * Current score for this line item and user, in scale with resultMaximum
+	 */
 	private double resultScore;
-	@JsonProperty
-	private double resultMaximun;
-	@JsonProperty
+
+	/**
+	 * Maximum possible score for this result; 1 is the default value and will be assumed if not specified otherwise.
+	 */
+	private double resultMaximum;
+
+	/**
+	 * Comment visible to the student about the Result.
+	 */
 	private String comment;
-	@JsonProperty
+
+	/**
+	 * URL of the line item this result belongs to; must be the same as the url property of the line item.
+	 */
 	private String scoreOf;
 }

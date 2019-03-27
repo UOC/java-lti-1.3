@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.platform.ags;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +9,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Submission {
-	@JsonProperty
+	/**
+	 * Date and time in ISO 8601 format when a submission can start being submitted by learner
+	 */
 	private String startDateTime;
-	@JsonProperty
+
+	/**
+	 * Date and time in ISO 8601 format when a submission can last be submitted by learner
+	 */
 	private String endDateTime;
 }

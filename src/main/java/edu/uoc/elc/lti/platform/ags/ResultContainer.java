@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.platform.ags;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultContainer {
-	@JsonProperty
 	private List<Result> results;
 }
