@@ -44,7 +44,7 @@ public class Score {
 	private Instant timeStamp;
 
 	public String getTimeStamp() {
-		return timeStamp.toString();
+		return timeStamp != null ? timeStamp.toString() : null;
 	}
 
 	/**
