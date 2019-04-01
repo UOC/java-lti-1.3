@@ -256,7 +256,11 @@ public class Tool {
 
 	public MessageTypesEnum getMessageType() {
 		final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE);
-		return MessageTypesEnum.valueOf(messageTypeClaim.asString());
+		try {
+			return MessageTypesEnum.valueOf(messageTypeClaim.asString());
+		} catch (IllegalArgumentException ignored) {
+			return null;
+		}
 	}
 
 	public boolean isDeepLinkingRequest() {
