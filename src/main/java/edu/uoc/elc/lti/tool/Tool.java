@@ -100,7 +100,7 @@ public class Tool {
 			}
 
 			// version
-			final Claim versionClaim = getClaim(ClaimsEnum.VERSION.getName());
+			final Claim versionClaim = getClaim(ClaimsEnum.VERSION);
 			if (versionClaim == null || !VERSION.equals(versionClaim.asString())) {
 				reason = "Invalid Version";
 				valid = false;
@@ -155,7 +155,7 @@ public class Tool {
 			createUser(jwt.getSubject());
 
 			// update locale attribute
-			this.locale = getClaimAsString(ClaimsEnum.LOCALE.getName());
+			this.locale = getClaimAsString(ClaimsEnum.LOCALE);
 
 		} catch (JWTDecodeException exception){
 			//Invalid token
@@ -179,59 +179,59 @@ public class Tool {
 	private void createUser(String subject) {
 		this.user = User.builder()
 						.id(subject)
-						.givenName(getClaimAsString(ClaimsEnum.GIVEN_NAME.getName()))
-						.familyName(getClaimAsString(ClaimsEnum.FAMILY_NAME.getName()))
-						.middleName(getClaimAsString(ClaimsEnum.MIDDLE_NAME.getName()))
-						.picture(getClaimAsString(ClaimsEnum.PICTURE.getName()))
-						.email(getClaimAsString(ClaimsEnum.EMAIL.getName()))
-						.name(getClaimAsString(ClaimsEnum.NAME.getName()))
+						.givenName(getClaimAsString(ClaimsEnum.GIVEN_NAME))
+						.familyName(getClaimAsString(ClaimsEnum.FAMILY_NAME))
+						.middleName(getClaimAsString(ClaimsEnum.MIDDLE_NAME))
+						.picture(getClaimAsString(ClaimsEnum.PICTURE))
+						.email(getClaimAsString(ClaimsEnum.EMAIL))
+						.name(getClaimAsString(ClaimsEnum.NAME))
 						.build();
 	}
 
 
-	private Claim getClaim(String name) {
-		return claims != null ? claims.get(name) : null;
+	private Claim getClaim(ClaimsEnum name) {
+		return claims != null ? claims.get(name.getName()) : null;
 	}
 
-	private String getClaimAsString(String name) {
+	private String getClaimAsString(ClaimsEnum name) {
 		final Claim claim = getClaim(name);
 		return claim != null ? claim.asString() : null;
 	}
 
 	// general claims getters
 	public Platform getPlatform() {
-		final Claim claim = getClaim(ClaimsEnum.TOOL_PLATFORM.getName());
+		final Claim claim = getClaim(ClaimsEnum.TOOL_PLATFORM);
 		return claim != null ? claim.as(Platform.class) : null;
 	}
 
 	public Context getContext() {
-		final Claim claim = getClaim(ClaimsEnum.CONTEXT.getName());
+		final Claim claim = getClaim(ClaimsEnum.CONTEXT);
 		return claim != null ? claim.as(Context.class) : null;
 	}
 
 	public ResourceLink getResourceLink() {
-		final Claim claim = getClaim(ClaimsEnum.RESOURCE_LINK.getName());
+		final Claim claim = getClaim(ClaimsEnum.RESOURCE_LINK);
 		return claim != null ? claim.as(ResourceLink.class) : null;
 	}
 
 	public NamesRoleService getNameRoleService() {
-		final Claim claim = getClaim(ClaimsEnum.NAMES_ROLE_SERVICE.getName());
+		final Claim claim = getClaim(ClaimsEnum.NAMES_ROLE_SERVICE);
 		return claim != null ? claim.as(NamesRoleService.class) : null;
 	}
 
 	public AssignmentGradeService getAssignmentGradeService() {
-		final Claim claim = getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE.getName());
+		final Claim claim = getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE);
 		return claim != null ? claim.as(AssignmentGradeService.class) : null;
 
 	}
 
 	public List<String> getRoles() {
-		final Claim claim = getClaim(ClaimsEnum.ROLES.getName());
+		final Claim claim = getClaim(ClaimsEnum.ROLES);
 		return claim != null ? claim.asList(String.class) : null;
 	}
 
 	public Object getCustomParameter(String name) {
-		final Claim claim = getClaim(ClaimsEnum.CUSTOM.getName());
+		final Claim claim = getClaim(ClaimsEnum.CUSTOM);
 		if (claim != null) {
 			return claim.asMap().get(name);
 		}
