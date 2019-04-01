@@ -32,7 +32,8 @@ public enum ClaimsEnum {
 	CALIPER_SERVICE("https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service"),
 	PRESENTATION("https://purl.imsglobal.org/spec/lti/claim/launch_presentation"),
 	CUSTOM("https://purl.imsglobal.org/spec/lti/claim/custom"),
-	DEPLOYMENT_ID("https://purl.imsglobal.org/spec/lti/claim/deployment_id")
+	DEPLOYMENT_ID("https://purl.imsglobal.org/spec/lti/claim/deployment_id"),
+	DEEP_LINKING_SETTINGS("https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings")
 	;
 
 	private String name;

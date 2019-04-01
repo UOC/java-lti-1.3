@@ -17,6 +17,7 @@ import edu.uoc.elc.lti.exception.InvalidTokenException;
 import edu.uoc.elc.lti.jwt.AlgorithmFactory;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
+import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -232,6 +233,14 @@ public class Tool {
 
 	}
 
+	public Settings getDeepLinkingSettings() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		final Claim claim = getClaim(ClaimsEnum.DEEP_LINKING_SETTINGS);
+		return claim != null ? claim.as(Settings.class) : null;
+	}
+
 	public List<String> getRoles() {
 		final Claim claim = getClaim(ClaimsEnum.ROLES);
 		return claim != null ? claim.asList(String.class) : null;
@@ -243,6 +252,19 @@ public class Tool {
 			return claim.asMap().get(name);
 		}
 		return null;
+	}
+
+	public MessageTypesEnum getMessageType() {
+		final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE);
+		return MessageTypesEnum.valueOf(messageTypeClaim.asString());
+	}
+
+	public boolean isDeepLinkingRequest() {
+		return MessageTypesEnum.LtiDeepLinkingRequest == getMessageType();
+	}
+
+	public boolean isResourceLinkLaunch() {
+		return MessageTypesEnum.LtiResourceLinkRequest == getMessageType();
 	}
 
 	// roles commodity methods
