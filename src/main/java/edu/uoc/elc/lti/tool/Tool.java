@@ -28,7 +28,6 @@ import java.util.*;
  */
 public class Tool {
 
-	private final static List<String> ALLOWED_MESSAGE_TYPES = Collections.singletonList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
 	private final static long _5_MINUTES = 5 * 60;
 	private final static long _1_YEAR = 365 * 24 * 60 * 60;
@@ -92,8 +91,16 @@ public class Tool {
 			verify(token, jwk, checkDelay);
 
 			// message type
-			final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE.getName());
-			if (messageTypeClaim == null || !ALLOWED_MESSAGE_TYPES.contains(messageTypeClaim.asString())) {
+			final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE);
+			if (messageTypeClaim == null) {
+				reason = "Unknown Message Type";
+				valid = false;
+				return false;
+			}
+
+			try {
+				MessageTypesEnum.valueOf(messageTypeClaim.asString());
+			} catch (IllegalArgumentException e) {
 				reason = "Unknown Message Type";
 				valid = false;
 				return false;
