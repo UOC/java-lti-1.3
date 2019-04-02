@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Image {
-	private final String url;
+public class Presentation {
+	private String documentTarget;
 	private int width;
 	private int height;
+
 }

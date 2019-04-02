@@ -12,4 +12,6 @@ import lombok.Setter;
 @Getter
 public abstract class Item {
 	private final String type;
+
+	// TODO: extending a type https://www.imsglobal.org/spec/lti-dl/v2p0#extending-a-type
 }

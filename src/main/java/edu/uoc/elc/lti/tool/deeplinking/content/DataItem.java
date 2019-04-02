@@ -9,9 +9,12 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@Builder
-public class Image {
-	private final String url;
-	private int width;
-	private int height;
+public class DataItem extends Item {
+	private String data;
+
+	@Builder
+	public DataItem(String type, String data) {
+		super(type);
+		this.data = data;
+	}
 }

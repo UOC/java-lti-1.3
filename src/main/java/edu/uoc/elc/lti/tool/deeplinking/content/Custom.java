@@ -10,8 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Image {
-	private final String url;
-	private int width;
-	private int height;
+public class Custom {
+	private String quiz_id;
+	private String duedate;
 }

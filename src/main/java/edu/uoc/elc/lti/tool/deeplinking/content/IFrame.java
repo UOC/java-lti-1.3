@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Image {
+public class IFrame {
 	private final String url;
 	private int width;
 	private int height;
+
 }

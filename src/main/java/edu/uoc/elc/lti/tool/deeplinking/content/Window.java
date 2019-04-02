@@ -10,8 +10,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Image {
-	private final String url;
-	private int width;
+public class Window {
+	private String targetName;
+	private int with;
 	private int height;
+	private String windowFeatures;
 }
