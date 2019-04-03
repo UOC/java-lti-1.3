@@ -1,15 +1,20 @@
 package edu.uoc.elc.lti.tool.deeplinking.content;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-@Getter
 @Setter
+@Getter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LtiResourceItem extends Item {
 	private static String TYPE = "ltiResourceLink";
@@ -23,6 +28,7 @@ public class LtiResourceItem extends Item {
 	 * Fully qualified url of the resource. If absent, the base LTI URL of the tool must be used for launch.
 	 */
 	private String url;
+
 	private Presentation presentation;
 
 	/**
@@ -38,7 +44,11 @@ public class LtiResourceItem extends Item {
 	 */
 	private Image thumbnail;
 
-	//TODO: custom data private Custom custom;
+	/**
+	 * A map of key/value custom parameters. Those parameters must be included in the LtiResourceLinkRequest payload.
+	 * Value may include substitution parameters as defined in the LTI Core Specification [LTI-13].
+	 */
+	private Map<String, Object> custom = new HashMap<>();
 
 	private Window window;
 
@@ -76,7 +86,6 @@ public class LtiResourceItem extends Item {
 	}
 
 	@Builder
-
 	public LtiResourceItem(String title, String url, Presentation presentation, Image icon, Image thumbnail, Window window, IFrame iFrame, Duration available, Duration submission) {
 		this();
 		this.title = title;
@@ -88,5 +97,13 @@ public class LtiResourceItem extends Item {
 		this.iFrame = iFrame;
 		this.available = available;
 		this.submission = submission;
+	}
+
+	public void setCustom(String key, Object value) {
+		this.custom.put(key, value);
+	}
+
+	public Object getCustom(String key) {
+		return this.custom.get(key);
 	}
 }
