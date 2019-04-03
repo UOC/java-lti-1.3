@@ -1,5 +1,6 @@
 package edu.uoc.elc.lti.tool.deeplinking.content;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DataItem extends Item {
 	private String data;
 

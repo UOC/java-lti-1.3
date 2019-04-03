@@ -1,5 +1,6 @@
 package edu.uoc.elc.lti.tool.deeplinking.content;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LineItem {
 	/**
 	 * Positive decimal value indicating the maximum score possible for this activity
