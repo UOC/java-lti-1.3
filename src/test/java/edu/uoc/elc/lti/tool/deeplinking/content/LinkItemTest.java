@@ -12,11 +12,11 @@ public class LinkItemTest {
 
 	@Test
 	public void typeIsCorrect() {
-		this.sut = LinkItem.builder().build();
+		this.sut = LinkItem.builder().url("url").build();
 		assertNotNull(this.sut);
 		assertEquals("link", this.sut.getType());
 
-		this.sut = new LinkItem();
+		this.sut = new LinkItem("url");
 		assertNotNull(this.sut);
 		assertEquals("link", this.sut.getType());
 	}
