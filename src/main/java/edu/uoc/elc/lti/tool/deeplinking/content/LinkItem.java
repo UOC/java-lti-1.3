@@ -1,5 +1,6 @@
 package edu.uoc.elc.lti.tool.deeplinking.content;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 /**
@@ -7,6 +8,7 @@ import lombok.*;
  */
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class LinkItem extends Item {
 	private static String TYPE = "link";
 
