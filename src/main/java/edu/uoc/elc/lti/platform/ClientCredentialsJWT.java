@@ -24,7 +24,6 @@ class ClientCredentialsJWT {
 
 	String build() {
 		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
-		//Algorithm algorithm = algorithmFactory.getAlgorithm();
 		byte bytes[] = new byte[10];
 		secureRandom.nextBytes(bytes);
 		return Jwts.builder()
