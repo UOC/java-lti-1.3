@@ -1,11 +1,11 @@
 package edu.uoc.elc.lti.platform;
 
-import edu.uoc.elc.lti.exception.LTISignatureException;
 import edu.uoc.elc.lti.tool.ClaimsEnum;
 import edu.uoc.elc.lti.tool.MessageTypesEnum;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.deeplinking.content.Item;
-import lombok.Getter;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
@@ -41,53 +41,45 @@ public class DeepLinkingResponseJWT {
 
 	private SecureRandom secureRandom = new SecureRandom();
 
-	/*
 	String build() {
-		try {
-			AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
-			Algorithm algorithm = algorithmFactory.getAlgorithm();
-			byte bytes[] = new byte[10];
-			secureRandom.nextBytes(bytes);
+		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
+		byte bytes[] = new byte[10];
+		secureRandom.nextBytes(bytes);
 
-			final JWTCreator.Builder builder = JWT.create()
-							.withIssuer(toolName)
-							.withAudience(platformName)
-							.withClaim("azp", this.azp)
-							.withIssuedAt(new Date())
-							.withExpiresAt(new Date(System.currentTimeMillis() + _5_MINUTES))
-							.withJWTId(new String(bytes))
-							.withClaim(ClaimsEnum.MESSAGE_TYPE.getName(), MessageTypesEnum.LtiDeepLinkingRequest.name())
-							.withClaim(ClaimsEnum.VERSION.getName(), "1.3.0")
-							.withClaim(ClaimsEnum.DEPLOYMENT_ID.getName(), deploymentId);
-
-			if (this.settings.getData() != null) {
-				builder.withClaim(ClaimsEnum.DEEP_LINKING_DATA.getName(), this.settings.getData());
-			}
-
-			if (this.message != null) {
-				builder.withClaim(ClaimsEnum.DEEP_LINKING_MESSAGE.getName(), this.message);
-			}
-
-			if (this.log != null) {
-				builder.withClaim(ClaimsEnum.DEEP_LINKING_LOG.getName(), this.log);
-			}
-
-			if (this.errorMessage != null) {
-				builder.withClaim(ClaimsEnum.DEEP_LINKING_ERROR_MESSAGE.getName(), this.errorMessage);
-			}
-
-			if (this.errorLog != null) {
-				builder.withClaim(ClaimsEnum.DEEP_LINKING_ERROR_LOG.getName(), this.errorLog);
-			}
-
-			// TODO: content items
+		final JwtBuilder builder = Jwts.builder()
+						.setIssuer(toolName)
+						.setAudience(platformName)
+						.claim("azp", this.azp)
+						.setIssuedAt(new Date())
+						.setExpiration(new Date(System.currentTimeMillis() + _5_MINUTES))
+						.setId(new String(bytes))
+						.signWith(algorithmFactory.getPrivateKey())
+						.claim(ClaimsEnum.MESSAGE_TYPE.getName(), MessageTypesEnum.LtiDeepLinkingRequest.name())
+						.claim(ClaimsEnum.VERSION.getName(), "1.3.0")
+						.claim(ClaimsEnum.DEPLOYMENT_ID.getName(), deploymentId)
+						.claim(ClaimsEnum.DEEP_LINKING_CONTENT_ITEMS.getName(), itemList);
 
 
-			return builder.sign(algorithm);
-		} catch (JWTCreationException exception){
-			//Invalid Signing configuration / Couldn't convert Claims.
-			throw new LTISignatureException(exception);
+		if (this.settings.getData() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_DATA.getName(), this.settings.getData());
 		}
+
+		if (this.message != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_MESSAGE.getName(), this.message);
+		}
+
+		if (this.log != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_LOG.getName(), this.log);
+		}
+
+		if (this.errorMessage != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_MESSAGE.getName(), this.errorMessage);
+		}
+
+		if (this.errorLog != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_LOG.getName(), this.errorLog);
+		}
+
+		return builder.compact();
 	}
-	 */
 }
