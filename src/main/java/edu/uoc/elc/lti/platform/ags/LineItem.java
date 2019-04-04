@@ -20,7 +20,7 @@ public class LineItem {
 	/**
 	 *
 	 */
-	@NonNull private double scoreMaximum;
+	private double scoreMaximum;
 
 	/**
 	 * label to use in the Tool Consumer UI (Gradebook)
