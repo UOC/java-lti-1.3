@@ -7,6 +7,7 @@ import edu.uoc.elc.lti.exception.InvalidTokenException;
 import edu.uoc.elc.lti.jwt.LtiSigningKeyResolver;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
+import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -150,57 +151,6 @@ public class Tool {
 
 	}
 
-/*
-	private void verify(String token, Jwk jwk, boolean checkDelay) throws InvalidPublicKeyException {
-		Algorithm algorithm = AlgorithmFactory.createAlgorithm(jwk);
-
-		assert algorithm != null;
-		final Verification verifierBuilder = JWT.require(algorithm);
-
-		if (checkDelay) {
-			verifierBuilder.acceptIssuedAt(_5_MINUTES);
-		} else {
-			verifierBuilder.acceptLeeway(_1_YEAR); // only for test!!
-		}
-
-		JWTVerifier verifier = verifierBuilder.build();
-		verifier.verify(token);
-	}
-
-	void decode(String token) {
-		try {
-
-			// validate and decode token
-			DecodedJWT jwt = JWT.decode(token);
-
-			final Claim kidClaim = jwt.getHeaderClaim(ClaimsEnum.KID.getName());
-			if (kidClaim == null) {
-				throw new InvalidLTICallException("kid header not found");
-			}
-			this.kid = kidClaim.asString();
-
-			// get the standard JWT payload claims
-			this.issuer = jwt.getIssuer();
-			this.audience = jwt.getAudience();
-			this.issuedAt = jwt.getIssuedAt();
-			this.expiresAt = jwt.getExpiresAt();
-
-			// get the private claims (contains all LTI claims)
-			this.claims = jwt.getClaims();
-
-			// create the user attribute
-			createUser(jwt.getSubject());
-
-			// update locale attribute
-			this.locale = getClaimAsString(ClaimsEnum.LOCALE);
-
-		} catch (JWTDecodeException exception){
-			//Invalid token
-			throw new InvalidTokenException("JWT is invalid");
-		}
-	}
-*/
-
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
 		if (!this.isValid()) {
 			return null;
@@ -278,6 +228,7 @@ public class Tool {
 		return getClaim(ClaimsEnum.DEEP_LINKING_SETTINGS, Settings.class);
 	}
 
+
 	public List<String> getRoles() {
 		Class<List<String>> rolesClass = (Class) List.class;
 		return getClaim(ClaimsEnum.ROLES, rolesClass);
@@ -306,6 +257,20 @@ public class Tool {
 
 	public boolean isResourceLinkLaunch() {
 		return MessageTypesEnum.LtiResourceLinkRequest == getMessageType();
+	}
+
+	public DeepLinkingClient getDeepLinkingClient() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		return new DeepLinkingClient(getIssuer(),
+						getAudience(),
+						getAuthorizedPart(),
+						this.kid,
+						toolDefinition.getPublicKey(),
+						toolDefinition.getPrivateKey(),
+						getDeploymentId(),
+						getDeepLinkingSettings());
 	}
 
 	// roles commodity methods

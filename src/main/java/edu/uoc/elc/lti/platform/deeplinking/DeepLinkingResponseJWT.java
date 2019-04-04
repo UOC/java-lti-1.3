@@ -26,10 +26,11 @@ public class DeepLinkingResponseJWT {
 	private final String toolName;
 	private final String azp;
 
+	private final String kid;
 	private final String publicKey;
 	private final String privateKey;
 	private final String deploymentId;
-	private final Settings settings;
+	private final String data;
 	private final List<Item> itemList;
 
 	@Setter
@@ -41,20 +42,15 @@ public class DeepLinkingResponseJWT {
 	@Setter
 	private String errorLog;
 
-	private SecureRandom secureRandom = new SecureRandom();
-
 	String build() {
 		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
-		byte bytes[] = new byte[10];
-		secureRandom.nextBytes(bytes);
 
 		final JwtBuilder builder = Jwts.builder()
+						.setHeaderParam("kid", kid)
 						.setIssuer(toolName)
 						.setAudience(platformName)
-						.claim(AUTHORIZED_PART, this.azp)
 						.setIssuedAt(new Date())
 						.setExpiration(new Date(System.currentTimeMillis() + _5_MINUTES))
-						.setId(new String(bytes))
 						.signWith(algorithmFactory.getPrivateKey())
 						.claim(ClaimsEnum.MESSAGE_TYPE.getName(), MessageTypesEnum.LtiDeepLinkingRequest.name())
 						.claim(ClaimsEnum.VERSION.getName(), "1.3.0")
@@ -62,8 +58,12 @@ public class DeepLinkingResponseJWT {
 						.claim(ClaimsEnum.DEEP_LINKING_CONTENT_ITEMS.getName(), itemList);
 
 
-		if (this.settings.getData() != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_DATA.getName(), this.settings.getData());
+		if (this.azp != null) {
+			builder.claim(AUTHORIZED_PART, this.azp);
+		}
+
+		if (this.data != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_DATA.getName(), this.data);
 		}
 
 		if (this.message != null) {

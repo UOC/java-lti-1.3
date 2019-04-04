@@ -3,6 +3,7 @@ package edu.uoc.elc.lti.tool.deeplinking;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,4 +21,12 @@ public class Settings {
 	private String text;
 	private String data;
 	private String deep_link_return_url;
+
+	public List<String> getAcceptMediaTypesAsList() {
+		if (getAccept_media_types() == null) {
+			return null;
+		}
+
+		return Arrays.asList(getAccept_media_types().split(","));
+	}
 }
