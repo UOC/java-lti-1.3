@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti.tool.deeplinking.content;
+package edu.uoc.elc.lti.platform.deeplinking.content;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

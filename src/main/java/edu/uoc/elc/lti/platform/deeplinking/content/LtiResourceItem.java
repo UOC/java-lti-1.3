@@ -1,7 +1,5 @@
-package edu.uoc.elc.lti.tool.deeplinking.content;
+package edu.uoc.elc.lti.platform.deeplinking.content;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;

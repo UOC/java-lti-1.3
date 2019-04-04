@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti.tool.deeplinking.content;
+package edu.uoc.elc.lti.platform.deeplinking.content;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -12,8 +12,9 @@ import lombok.Setter;
 @Setter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Presentation {
-	private String documentTarget;
-	private int width;
+public class Window {
+	private String targetName;
+	private int with;
 	private int height;
+	private String windowFeatures;
 }

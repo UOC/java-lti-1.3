@@ -1,9 +1,10 @@
-package edu.uoc.elc.lti.platform;
+package edu.uoc.elc.lti.platform.deeplinking;
 
+import edu.uoc.elc.lti.platform.AlgorithmFactory;
 import edu.uoc.elc.lti.tool.ClaimsEnum;
 import edu.uoc.elc.lti.tool.MessageTypesEnum;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
-import edu.uoc.elc.lti.tool.deeplinking.content.Item;
+import edu.uoc.elc.lti.platform.deeplinking.content.Item;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeepLinkingResponseJWT {
 	private final static long _5_MINUTES = 5 * 30 * 1000;
+	private final static String AUTHORIZED_PART = "azp";
 
 	private final String platformName;
 	private final String toolName;
@@ -49,7 +51,7 @@ public class DeepLinkingResponseJWT {
 		final JwtBuilder builder = Jwts.builder()
 						.setIssuer(toolName)
 						.setAudience(platformName)
-						.claim("azp", this.azp)
+						.claim(AUTHORIZED_PART, this.azp)
 						.setIssuedAt(new Date())
 						.setExpiration(new Date(System.currentTimeMillis() + _5_MINUTES))
 						.setId(new String(bytes))
