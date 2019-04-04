@@ -228,6 +228,9 @@ public class Tool {
 
 
 	private <T> T getClaim(ClaimsEnum claim, Class<T> returnClass) {
+		if (claims == null || !claims.containsKey(claim.getName())) {
+			return null;
+		}
 		final Object o = claims.get(claim.getName());
 		// doing this way because Jwts deserialize json classes as LinkedHashMap
 		return objectMapper.convertValue(o, returnClass);
