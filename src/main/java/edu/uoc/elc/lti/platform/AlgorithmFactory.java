@@ -1,7 +1,7 @@
 package edu.uoc.elc.lti.platform;
 
-import com.auth0.jwt.algorithms.Algorithm;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import lombok.Getter;
 import sun.security.util.DerInputStream;
 import sun.security.util.DerValue;
 
@@ -20,6 +20,7 @@ import java.util.Base64;
  */
 public class AlgorithmFactory {
 	private final RSAPublicKey publicKey;
+	@Getter
 	private final RSAPrivateKey privateKey;
 
 	public AlgorithmFactory(String publicKey, String privateKey) {
@@ -55,9 +56,5 @@ public class AlgorithmFactory {
 		} catch (GeneralSecurityException | IOException e) {
 			throw new BadToolProviderConfigurationException(e);
 		}
-	}
-
-	public Algorithm getAlgorithm() {
-		return Algorithm.RSA256(publicKey, privateKey);
 	}
 }

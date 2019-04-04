@@ -1,28 +1,23 @@
 package edu.uoc.elc.lti.tool;
 
-import com.auth0.jwk.InvalidPublicKeyException;
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.UrlJwkProvider;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.exception.InvalidTokenException;
-import edu.uoc.elc.lti.jwt.AlgorithmFactory;
+import edu.uoc.elc.lti.jwt.LtiSigningKeyResolver;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -33,12 +28,12 @@ public class Tool {
 	private final static long _5_MINUTES = 5 * 60;
 	private final static long _1_YEAR = 365 * 24 * 60 * 60;
 
-	Map<String, Claim> claims;
+	Claims claims;
 
 	@Getter
 	String issuer;
 	@Getter
-	List<String> audience;
+	String audience;
 
 	@Getter
 	String kid;
@@ -65,6 +60,8 @@ public class Tool {
 
 	private AccessTokenResponse accessTokenResponse;
 
+	private ObjectMapper objectMapper = new ObjectMapper();
+
 	public Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
@@ -83,16 +80,11 @@ public class Tool {
 	public boolean validate(String token, boolean checkDelay) {
 		valid = false;
 		try {
-			decode(token);
 
-			// validate lti headers
-			JwkProvider provider = new UrlJwkProvider(new URL(toolDefinition.getKeySetUrl()));
-			Jwk jwk = provider.get(this.kid);
-
-			verify(token, jwk, checkDelay);
+			decodeAndVerify(token, checkDelay);
 
 			// message type
-			final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE);
+			final String messageTypeClaim = getClaimAsString(ClaimsEnum.MESSAGE_TYPE);
 			if (messageTypeClaim == null) {
 				reason = "Unknown Message Type";
 				valid = false;
@@ -100,7 +92,7 @@ public class Tool {
 			}
 
 			try {
-				MessageTypesEnum.valueOf(messageTypeClaim.asString());
+				MessageTypesEnum.valueOf(messageTypeClaim);
 			} catch (IllegalArgumentException e) {
 				reason = "Unknown Message Type";
 				valid = false;
@@ -108,8 +100,8 @@ public class Tool {
 			}
 
 			// version
-			final Claim versionClaim = getClaim(ClaimsEnum.VERSION);
-			if (versionClaim == null || !VERSION.equals(versionClaim.asString())) {
+			final String versionClaim = getClaimAsString(ClaimsEnum.VERSION);
+			if (versionClaim == null || !VERSION.equals(versionClaim)) {
 				reason = "Invalid Version";
 				valid = false;
 				return false;
@@ -122,6 +114,43 @@ public class Tool {
 		return valid;
 	}
 
+	void decodeAndVerify(String token, boolean checkDelay) {
+		LtiSigningKeyResolver ltiSigningKeyResolver = new LtiSigningKeyResolver(toolDefinition.getKeySetUrl());
+
+		try {
+			Jws<Claims> jws = Jwts.parser()
+							.setSigningKeyResolver(ltiSigningKeyResolver)
+							.setAllowedClockSkewSeconds(checkDelay ? _5_MINUTES : _1_YEAR)
+							.parseClaimsJws(token);
+
+			this.kid = jws.getHeader().getKeyId();
+			if (this.kid == null) {
+				throw new InvalidLTICallException("kid header not found");
+			}
+
+			// get the standard JWT payload claims
+			this.issuer = jws.getBody().getIssuer();
+			this.audience = jws.getBody().getAudience();
+			this.issuedAt = jws.getBody().getIssuedAt();
+			this.expiresAt = jws.getBody().getExpiration();
+
+			// get the private claims (contains all LTI claims)
+			this.claims = jws.getBody();
+
+			// create the user attribute
+			createUser(jws.getBody().getSubject());
+
+			// update locale attribute
+			this.locale = getClaimAsString(ClaimsEnum.LOCALE);
+
+		} catch (JwtException ex) {
+			//Invalid token
+			throw new InvalidTokenException("JWT is invalid");
+		}
+
+	}
+
+/*
 	private void verify(String token, Jwk jwk, boolean checkDelay) throws InvalidPublicKeyException {
 		Algorithm algorithm = AlgorithmFactory.createAlgorithm(jwk);
 
@@ -170,6 +199,7 @@ public class Tool {
 			throw new InvalidTokenException("JWT is invalid");
 		}
 	}
+*/
 
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
 		if (!this.isValid()) {
@@ -197,67 +227,71 @@ public class Tool {
 	}
 
 
-	private Claim getClaim(ClaimsEnum name) {
-		return claims != null ? claims.get(name.getName()) : null;
+	private <T> T getClaim(ClaimsEnum claim, Class<T> returnClass) {
+		final Object o = claims.get(claim.getName());
+		// doing this way because Jwts deserialize json classes as LinkedHashMap
+		return objectMapper.convertValue(o, returnClass);
 	}
 
 	private String getClaimAsString(ClaimsEnum name) {
-		final Claim claim = getClaim(name);
-		return claim != null ? claim.asString() : null;
+		return claims.get(name.getName(), String.class);
 	}
 
 	// general claims getters
 	public Platform getPlatform() {
-		final Claim claim = getClaim(ClaimsEnum.TOOL_PLATFORM);
-		return claim != null ? claim.as(Platform.class) : null;
+		return getClaim(ClaimsEnum.TOOL_PLATFORM, Platform.class);
 	}
 
 	public Context getContext() {
-		final Claim claim = getClaim(ClaimsEnum.CONTEXT);
-		return claim != null ? claim.as(Context.class) : null;
+		return getClaim(ClaimsEnum.CONTEXT, Context.class);
 	}
 
 	public ResourceLink getResourceLink() {
-		final Claim claim = getClaim(ClaimsEnum.RESOURCE_LINK);
-		return claim != null ? claim.as(ResourceLink.class) : null;
+		return getClaim(ClaimsEnum.RESOURCE_LINK, ResourceLink.class);
 	}
 
 	public NamesRoleService getNameRoleService() {
-		final Claim claim = getClaim(ClaimsEnum.NAMES_ROLE_SERVICE);
-		return claim != null ? claim.as(NamesRoleService.class) : null;
+		return getClaim(ClaimsEnum.NAMES_ROLE_SERVICE, NamesRoleService.class);
 	}
 
 	public AssignmentGradeService getAssignmentGradeService() {
-		final Claim claim = getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE);
-		return claim != null ? claim.as(AssignmentGradeService.class) : null;
+		return getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE, AssignmentGradeService.class);
+	}
 
+	public String getAuthorizedPart() {
+		return getClaimAsString(ClaimsEnum.AUTHORIZED_PART);
+	}
+	public String getDeploymentId() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		return getClaimAsString(ClaimsEnum.DEPLOYMENT_ID);
 	}
 
 	public Settings getDeepLinkingSettings() {
 		if (!isDeepLinkingRequest()) {
 			return null;
 		}
-		final Claim claim = getClaim(ClaimsEnum.DEEP_LINKING_SETTINGS);
-		return claim != null ? claim.as(Settings.class) : null;
+		return getClaim(ClaimsEnum.DEEP_LINKING_SETTINGS, Settings.class);
 	}
 
 	public List<String> getRoles() {
-		final Claim claim = getClaim(ClaimsEnum.ROLES);
-		return claim != null ? claim.asList(String.class) : null;
+		Class<List<String>> rolesClass = (Class) List.class;
+		return getClaim(ClaimsEnum.ROLES, rolesClass);
 	}
 
 	public Object getCustomParameter(String name) {
-		final Claim claim = getClaim(ClaimsEnum.CUSTOM);
+		Class<Map<String, Object>> customClass = (Class) Map.class;
+		final Map<String, Object> claim = getClaim(ClaimsEnum.CUSTOM, customClass);
 		if (claim != null) {
-			return claim.asMap().get(name);
+			return claim.get(name);
 		}
 		return null;
 	}
 
 	public MessageTypesEnum getMessageType() {
-		final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE);
 		try {
-			return MessageTypesEnum.valueOf(messageTypeClaim.asString());
+			return MessageTypesEnum.valueOf(getClaimAsString(ClaimsEnum.MESSAGE_TYPE));
 		} catch (IllegalArgumentException ignored) {
 			return null;
 		}

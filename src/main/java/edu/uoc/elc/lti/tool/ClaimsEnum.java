@@ -32,8 +32,17 @@ public enum ClaimsEnum {
 	CALIPER_SERVICE("https://purl.imsglobal.org/spec/lti-ces/claim/caliper-endpoint-service"),
 	PRESENTATION("https://purl.imsglobal.org/spec/lti/claim/launch_presentation"),
 	CUSTOM("https://purl.imsglobal.org/spec/lti/claim/custom"),
+
+	// deep linking claims
 	DEPLOYMENT_ID("https://purl.imsglobal.org/spec/lti/claim/deployment_id"),
-	DEEP_LINKING_SETTINGS("https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings")
+	AUTHORIZED_PART("azp"),
+	DEEP_LINKING_SETTINGS("https://purl.imsglobal.org/spec/lti-dl/claim/deep_linking_settings"),
+	DEEP_LINKING_CONTENT_ITEMS("https://purl.imsglobal.org/spec/lti-dl/claim/content_items"),
+	DEEP_LINKING_MESSAGE("https://purl.imsglobal.org/spec/lti-dl/claim/msg"),
+	DEEP_LINKING_LOG("https://purl.imsglobal.org/spec/lti-dl/claim/log"),
+	DEEP_LINKING_ERROR_MESSAGE("https://purl.imsglobal.org/spec/lti-dl/claim/errormsg"),
+	DEEP_LINKING_ERROR_LOG("https://purl.imsglobal.org/spec/lti-dl/claim/errorlog"),
+	DEEP_LINKING_DATA("https://purl.imsglobal.org/spec/lti-dl/data")
 	;
 
 	private String name;
