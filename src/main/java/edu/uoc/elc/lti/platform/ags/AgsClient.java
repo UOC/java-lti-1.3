@@ -54,7 +54,7 @@ public interface AgsClient {
 	 * @param userId limit the line items returned to only those which have been associated with this user. Results must contain at most one result.
 	 * @return all the results for the line item
 	 */
-	ResultContainer getLineItemResults(String id, Integer limit, Integer page, String userId);
+	List<Result> getLineItemResults(String id, Integer limit, Integer page, String userId);
 
 	/**
 	 * Publishes a score update. Tool platform may decide to change the result value based on the updated score.

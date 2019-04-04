@@ -1,44 +1,40 @@
 package edu.uoc.elc.lti.tool;
 
-import com.auth0.jwk.InvalidPublicKeyException;
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.UrlJwkProvider;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.exception.InvalidTokenException;
-import edu.uoc.elc.lti.jwt.AlgorithmFactory;
+import edu.uoc.elc.lti.jwt.LtiSigningKeyResolver;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
+import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
+import edu.uoc.elc.lti.tool.deeplinking.Settings;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class Tool {
 
-	private final static List<String> ALLOWED_MESSAGE_TYPES = Collections.singletonList("LtiResourceLinkRequest");
 	private final static String VERSION = "1.3.0";
 	private final static long _5_MINUTES = 5 * 60;
 	private final static long _1_YEAR = 365 * 24 * 60 * 60;
 
-	Map<String, Claim> claims;
+	Claims claims;
 
 	@Getter
 	String issuer;
 	@Getter
-	List<String> audience;
+	String audience;
 
 	@Getter
 	String kid;
@@ -65,6 +61,8 @@ public class Tool {
 
 	private AccessTokenResponse accessTokenResponse;
 
+	private ObjectMapper objectMapper = new ObjectMapper();
+
 	public Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
@@ -83,25 +81,28 @@ public class Tool {
 	public boolean validate(String token, boolean checkDelay) {
 		valid = false;
 		try {
-			decode(token);
 
-			// validate lti headers
-			JwkProvider provider = new UrlJwkProvider(new URL(toolDefinition.getKeySetUrl()));
-			Jwk jwk = provider.get(this.kid);
-
-			verify(token, jwk, checkDelay);
+			decodeAndVerify(token, checkDelay);
 
 			// message type
-			final Claim messageTypeClaim = getClaim(ClaimsEnum.MESSAGE_TYPE.getName());
-			if (messageTypeClaim == null || !ALLOWED_MESSAGE_TYPES.contains(messageTypeClaim.asString())) {
+			final String messageTypeClaim = getClaimAsString(ClaimsEnum.MESSAGE_TYPE);
+			if (messageTypeClaim == null) {
+				reason = "Unknown Message Type";
+				valid = false;
+				return false;
+			}
+
+			try {
+				MessageTypesEnum.valueOf(messageTypeClaim);
+			} catch (IllegalArgumentException e) {
 				reason = "Unknown Message Type";
 				valid = false;
 				return false;
 			}
 
 			// version
-			final Claim versionClaim = getClaim(ClaimsEnum.VERSION.getName());
-			if (versionClaim == null || !VERSION.equals(versionClaim.asString())) {
+			final String versionClaim = getClaimAsString(ClaimsEnum.VERSION);
+			if (versionClaim == null || !VERSION.equals(versionClaim)) {
 				reason = "Invalid Version";
 				valid = false;
 				return false;
@@ -114,53 +115,40 @@ public class Tool {
 		return valid;
 	}
 
-	private void verify(String token, Jwk jwk, boolean checkDelay) throws InvalidPublicKeyException {
-		Algorithm algorithm = AlgorithmFactory.createAlgorithm(jwk);
+	void decodeAndVerify(String token, boolean checkDelay) {
+		LtiSigningKeyResolver ltiSigningKeyResolver = new LtiSigningKeyResolver(toolDefinition.getKeySetUrl());
 
-		assert algorithm != null;
-		final Verification verifierBuilder = JWT.require(algorithm);
-
-		if (checkDelay) {
-			verifierBuilder.acceptIssuedAt(_5_MINUTES);
-		} else {
-			verifierBuilder.acceptLeeway(_1_YEAR); // only for test!!
-		}
-
-		JWTVerifier verifier = verifierBuilder.build();
-		verifier.verify(token);
-	}
-
-	void decode(String token) {
 		try {
+			Jws<Claims> jws = Jwts.parser()
+							.setSigningKeyResolver(ltiSigningKeyResolver)
+							.setAllowedClockSkewSeconds(checkDelay ? _5_MINUTES : _1_YEAR)
+							.parseClaimsJws(token);
 
-			// validate and decode token
-			DecodedJWT jwt = JWT.decode(token);
-
-			final Claim kidClaim = jwt.getHeaderClaim(ClaimsEnum.KID.getName());
-			if (kidClaim == null) {
+			this.kid = jws.getHeader().getKeyId();
+			if (this.kid == null) {
 				throw new InvalidLTICallException("kid header not found");
 			}
-			this.kid = kidClaim.asString();
 
 			// get the standard JWT payload claims
-			this.issuer = jwt.getIssuer();
-			this.audience = jwt.getAudience();
-			this.issuedAt = jwt.getIssuedAt();
-			this.expiresAt = jwt.getExpiresAt();
+			this.issuer = jws.getBody().getIssuer();
+			this.audience = jws.getBody().getAudience();
+			this.issuedAt = jws.getBody().getIssuedAt();
+			this.expiresAt = jws.getBody().getExpiration();
 
 			// get the private claims (contains all LTI claims)
-			this.claims = jwt.getClaims();
+			this.claims = jws.getBody();
 
 			// create the user attribute
-			createUser(jwt.getSubject());
+			createUser(jws.getBody().getSubject());
 
 			// update locale attribute
-			this.locale = getClaimAsString(ClaimsEnum.LOCALE.getName());
+			this.locale = getClaimAsString(ClaimsEnum.LOCALE);
 
-		} catch (JWTDecodeException exception){
+		} catch (JwtException ex) {
 			//Invalid token
 			throw new InvalidTokenException("JWT is invalid");
 		}
+
 	}
 
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
@@ -179,63 +167,110 @@ public class Tool {
 	private void createUser(String subject) {
 		this.user = User.builder()
 						.id(subject)
-						.givenName(getClaimAsString(ClaimsEnum.GIVEN_NAME.getName()))
-						.familyName(getClaimAsString(ClaimsEnum.FAMILY_NAME.getName()))
-						.middleName(getClaimAsString(ClaimsEnum.MIDDLE_NAME.getName()))
-						.picture(getClaimAsString(ClaimsEnum.PICTURE.getName()))
-						.email(getClaimAsString(ClaimsEnum.EMAIL.getName()))
-						.name(getClaimAsString(ClaimsEnum.NAME.getName()))
+						.givenName(getClaimAsString(ClaimsEnum.GIVEN_NAME))
+						.familyName(getClaimAsString(ClaimsEnum.FAMILY_NAME))
+						.middleName(getClaimAsString(ClaimsEnum.MIDDLE_NAME))
+						.picture(getClaimAsString(ClaimsEnum.PICTURE))
+						.email(getClaimAsString(ClaimsEnum.EMAIL))
+						.name(getClaimAsString(ClaimsEnum.NAME))
 						.build();
 	}
 
 
-	private Claim getClaim(String name) {
-		return claims != null ? claims.get(name) : null;
+	private <T> T getClaim(ClaimsEnum claim, Class<T> returnClass) {
+		if (claims == null || !claims.containsKey(claim.getName())) {
+			return null;
+		}
+		final Object o = claims.get(claim.getName());
+		// doing this way because Jwts deserialize json classes as LinkedHashMap
+		return objectMapper.convertValue(o, returnClass);
 	}
 
-	private String getClaimAsString(String name) {
-		final Claim claim = getClaim(name);
-		return claim != null ? claim.asString() : null;
+	private String getClaimAsString(ClaimsEnum name) {
+		return claims.get(name.getName(), String.class);
 	}
 
 	// general claims getters
 	public Platform getPlatform() {
-		final Claim claim = getClaim(ClaimsEnum.TOOL_PLATFORM.getName());
-		return claim != null ? claim.as(Platform.class) : null;
+		return getClaim(ClaimsEnum.TOOL_PLATFORM, Platform.class);
 	}
 
 	public Context getContext() {
-		final Claim claim = getClaim(ClaimsEnum.CONTEXT.getName());
-		return claim != null ? claim.as(Context.class) : null;
+		return getClaim(ClaimsEnum.CONTEXT, Context.class);
 	}
 
 	public ResourceLink getResourceLink() {
-		final Claim claim = getClaim(ClaimsEnum.RESOURCE_LINK.getName());
-		return claim != null ? claim.as(ResourceLink.class) : null;
+		return getClaim(ClaimsEnum.RESOURCE_LINK, ResourceLink.class);
 	}
 
 	public NamesRoleService getNameRoleService() {
-		final Claim claim = getClaim(ClaimsEnum.NAMES_ROLE_SERVICE.getName());
-		return claim != null ? claim.as(NamesRoleService.class) : null;
+		return getClaim(ClaimsEnum.NAMES_ROLE_SERVICE, NamesRoleService.class);
 	}
 
 	public AssignmentGradeService getAssignmentGradeService() {
-		final Claim claim = getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE.getName());
-		return claim != null ? claim.as(AssignmentGradeService.class) : null;
-
+		return getClaim(ClaimsEnum.ASSIGNMENT_GRADE_SERVICE, AssignmentGradeService.class);
 	}
 
+	public String getAuthorizedPart() {
+		return getClaimAsString(ClaimsEnum.AUTHORIZED_PART);
+	}
+	public String getDeploymentId() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		return getClaimAsString(ClaimsEnum.DEPLOYMENT_ID);
+	}
+
+	public Settings getDeepLinkingSettings() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		return getClaim(ClaimsEnum.DEEP_LINKING_SETTINGS, Settings.class);
+	}
+
+
 	public List<String> getRoles() {
-		final Claim claim = getClaim(ClaimsEnum.ROLES.getName());
-		return claim != null ? claim.asList(String.class) : null;
+		Class<List<String>> rolesClass = (Class) List.class;
+		return getClaim(ClaimsEnum.ROLES, rolesClass);
 	}
 
 	public Object getCustomParameter(String name) {
-		final Claim claim = getClaim(ClaimsEnum.CUSTOM.getName());
+		Class<Map<String, Object>> customClass = (Class) Map.class;
+		final Map<String, Object> claim = getClaim(ClaimsEnum.CUSTOM, customClass);
 		if (claim != null) {
-			return claim.asMap().get(name);
+			return claim.get(name);
 		}
 		return null;
+	}
+
+	public MessageTypesEnum getMessageType() {
+		try {
+			return MessageTypesEnum.valueOf(getClaimAsString(ClaimsEnum.MESSAGE_TYPE));
+		} catch (IllegalArgumentException ignored) {
+			return null;
+		}
+	}
+
+	public boolean isDeepLinkingRequest() {
+		return MessageTypesEnum.LtiDeepLinkingRequest == getMessageType();
+	}
+
+	public boolean isResourceLinkLaunch() {
+		return MessageTypesEnum.LtiResourceLinkRequest == getMessageType();
+	}
+
+	public DeepLinkingClient getDeepLinkingClient() {
+		if (!isDeepLinkingRequest()) {
+			return null;
+		}
+		return new DeepLinkingClient(getIssuer(),
+						getAudience(),
+						getAuthorizedPart(),
+						this.kid,
+						toolDefinition.getPublicKey(),
+						toolDefinition.getPrivateKey(),
+						getDeploymentId(),
+						getDeepLinkingSettings());
 	}
 
 	// roles commodity methods
