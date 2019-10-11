@@ -13,6 +13,7 @@ public class ToolDefinition {
 	private String name;
 	private String keySetUrl;
 	private String accessTokenUrl;
+	private String oidcAuthUrl;
 	private String privateKey;
 	private String publicKey;
 }

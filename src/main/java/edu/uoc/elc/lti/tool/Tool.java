@@ -9,16 +9,24 @@ import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
+import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
+import edu.uoc.elc.lti.tool.oidc.LoginRequest;
+import edu.uoc.elc.lti.tool.oidc.LoginResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.Getter;
+import org.apache.commons.codec.digest.Crypt;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.CryptoPrimitive;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -63,12 +71,13 @@ public class Tool {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	public Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String privateKey, String publicKey) {
+	public Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
 						.keySetUrl(keySetUrl)
 						.accessTokenUrl(accessTokenUrl)
+						.oidcAuthUrl(oidcAuthUrl)
 						.privateKey(privateKey)
 						.publicKey(publicKey)
 						.build();
@@ -128,6 +137,8 @@ public class Tool {
 			if (this.kid == null) {
 				throw new InvalidLTICallException("kid header not found");
 			}
+
+			// TODO: validate id_token, if present, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
 
 			// get the standard JWT payload claims
 			this.issuer = jws.getBody().getIssuer();
@@ -280,5 +291,21 @@ public class Tool {
 
 	public boolean isInstructor() {
 		return getRoles() != null && getRoles().contains(RolesEnum.INSTRUCTOR.getName());
+	}
+
+	// openid methods
+	public LoginResponse getOidcAuthParams(LoginRequest loginRequest) {
+		return LoginResponse.builder()
+						.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id() : toolDefinition.getClientId())
+						.redirect_uri(loginRequest.getTarget_link_uri())
+						.login_hint(loginRequest.getLogin_hint())
+						.state(new BigInteger(50, new SecureRandom()).toString(16))
+						.nonce(new BigInteger(50, new SecureRandom()).toString(16))
+						.lti_message_hint(loginRequest.getLti_message_hint())
+						.build();
+	}
+
+	public String getOidcAuthUrl(LoginResponse loginResponse) {
+		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);
 	}
 }
