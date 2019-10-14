@@ -11,6 +11,7 @@ import lombok.Getter;
 public class ToolDefinition {
 	private String clientId;
 	private String name;
+	private String platform;
 	private String keySetUrl;
 	private String accessTokenUrl;
 	private String oidcAuthUrl;

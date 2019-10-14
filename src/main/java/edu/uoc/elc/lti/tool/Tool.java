@@ -8,7 +8,6 @@ import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.claims.ClaimAccessor;
 import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
-import edu.uoc.elc.lti.tool.claims.JWSClaimAccessor;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
@@ -28,7 +27,6 @@ import java.util.Map;
  */
 public class Tool {
 
-	private final static String VERSION = "1.3.0";
 
 	@Getter
 	String issuer;
@@ -61,10 +59,11 @@ public class Tool {
 
 	private AccessTokenResponse accessTokenResponse;
 
-	Tool(String name, String clientId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor) {
+	Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
+						.platform(platform)
 						.keySetUrl(keySetUrl)
 						.accessTokenUrl(accessTokenUrl)
 						.oidcAuthUrl(oidcAuthUrl)
@@ -75,82 +74,37 @@ public class Tool {
 	}
 
 	public boolean validate(String token) {
+
 		valid = false;
 		try {
-
-			decodeAndVerify(token);
-
-			// message type
-			final String messageTypeClaim = this.claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
-			if (messageTypeClaim == null) {
-				reason = "Unknown Message Type";
-				valid = false;
-				return false;
-			}
-
-			try {
-				MessageTypesEnum.valueOf(messageTypeClaim);
-			} catch (IllegalArgumentException e) {
-				reason = "Unknown Message Type";
-				valid = false;
-				return false;
-			}
-
-			// version
-			final String versionClaim = this.claimAccessor.get(ClaimsEnum.VERSION);
-			if (versionClaim == null || !VERSION.equals(versionClaim)) {
-				reason = "Invalid Version";
-				valid = false;
-				return false;
-			}
-			valid = true;
-		} catch (Throwable t) {
-			reason = t.getMessage();
-		}
-
-		return valid;
-	}
-
-	void decodeAndVerify(String token) {
-
-		try {
+			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
+			// Section 5.2 using the Public Key from the Platform;
 			this.claimAccessor.decode(token);
-
-			this.kid = this.claimAccessor.getKId();
-			if (this.kid == null) {
-				throw new InvalidLTICallException("kid header not found");
-			}
-
-			// TODO: validate id_token, if present, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
-
-			// get the standard JWT payload claims
-			this.issuer = this.claimAccessor.getIssuer();
-			this.audience = this.claimAccessor.getAudience();
-			this.issuedAt = this.claimAccessor.getIssuedAt();
-			this.expiresAt = this.claimAccessor.getExpiration();
-
-			/**
-			 * 3. The Tool MUST validate that the aud (audience) Claim contains its client_id value registered as an
-			 * audience with the Issuer identified by the iss (Issuer) Claim. The aud (audience) Claim MAY contain an array
-			 * with more than one element. The Tool MUST reject the ID Token if it does not list the client_id as a valid
-			 * audience, or if it contains additional audiences not trusted by the Tool. The request message will be
-			 * rejected with a HTTP code of 401;
-			 */
-			if (!this.toolDefinition.getClientId().equals(this.audience)) {
-				throw new InvalidLTICallException("Audience invalid");
-			}
-
-			// create the user attribute
-			createUser(this.claimAccessor.getSubject());
-
-			// update locale attribute
-			this.locale = this.claimAccessor.get(ClaimsEnum.LOCALE);
-
 		} catch (JwtException ex) {
 			//Invalid token
 			throw new InvalidTokenException("JWT is invalid");
 		}
 
+		// verify launch
+		LaunchVerifier launchVerifier = new LaunchVerifier(toolDefinition, claimAccessor);
+		this.valid = launchVerifier.validate();
+		if (!this.valid) {
+			throw new InvalidLTICallException(launchVerifier.getReason());
+		}
+
+		// get the standard JWT payload claims
+		this.issuer = this.claimAccessor.getIssuer();
+		this.audience = this.claimAccessor.getAudience();
+		this.issuedAt = this.claimAccessor.getIssuedAt();
+		this.expiresAt = this.claimAccessor.getExpiration();
+
+		// create the user attribute
+		createUser(this.claimAccessor.getSubject());
+
+		// update locale attribute
+		this.locale = this.claimAccessor.get(ClaimsEnum.LOCALE);
+
+		return valid;
 	}
 
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
