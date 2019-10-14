@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti.tool;
+package edu.uoc.elc.lti.tool.claims;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

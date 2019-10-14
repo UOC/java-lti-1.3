@@ -1,16 +1,14 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
 import edu.uoc.elc.lti.platform.AlgorithmFactory;
-import edu.uoc.elc.lti.tool.ClaimsEnum;
-import edu.uoc.elc.lti.tool.MessageTypesEnum;
-import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.platform.deeplinking.content.Item;
+import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
+import edu.uoc.elc.lti.tool.MessageTypesEnum;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
 
