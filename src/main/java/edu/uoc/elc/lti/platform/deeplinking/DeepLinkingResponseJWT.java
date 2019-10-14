@@ -2,7 +2,7 @@ package edu.uoc.elc.lti.platform.deeplinking;
 
 import edu.uoc.elc.lti.platform.AlgorithmFactory;
 import edu.uoc.elc.lti.platform.deeplinking.content.Item;
-import edu.uoc.elc.lti.tool.ClaimsEnum;
+import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
 import edu.uoc.elc.lti.tool.MessageTypesEnum;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
