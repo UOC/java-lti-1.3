@@ -1,7 +1,5 @@
 package edu.uoc.elc.lti.tool.claims;
 
-import io.jsonwebtoken.Jwts;
-
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
@@ -10,13 +8,7 @@ public class TestJWSClaimAccessor extends JWSClaimAccessor {
 
 	public TestJWSClaimAccessor(String keySetUrl) {
 		super(keySetUrl);
+		allowedClockSkewSeconds = _1_YEAR;
 	}
 
-	@Override
-	public void decode(String token) {
-		this.jws = Jwts.parser()
-						.setSigningKeyResolver(ltiSigningKeyResolver)
-						.setAllowedClockSkewSeconds(_1_YEAR)
-						.parseClaimsJws(token);
-	}
 }

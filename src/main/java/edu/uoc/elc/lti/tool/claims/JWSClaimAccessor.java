@@ -17,9 +17,11 @@ public class JWSClaimAccessor implements ClaimAccessor {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-	LtiSigningKeyResolver ltiSigningKeyResolver;
+	private LtiSigningKeyResolver ltiSigningKeyResolver;
 
-	Jws<Claims> jws;
+	private Jws<Claims> jws;
+
+	long allowedClockSkewSeconds = _5_MINUTES;
 
 
 	public JWSClaimAccessor(String keySetUrl) {
@@ -30,7 +32,7 @@ public class JWSClaimAccessor implements ClaimAccessor {
 	public void decode(String token) {
 		this.jws = Jwts.parser()
 						.setSigningKeyResolver(ltiSigningKeyResolver)
-						.setAllowedClockSkewSeconds(_5_MINUTES)
+						.setAllowedClockSkewSeconds(allowedClockSkewSeconds)
 						.parseClaimsJws(token);
 	}
 
