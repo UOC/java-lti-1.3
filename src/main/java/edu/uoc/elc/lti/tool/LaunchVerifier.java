@@ -2,6 +2,7 @@ package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.tool.claims.ClaimAccessor;
 import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
+import edu.uoc.elc.lti.tool.oidc.OIDCLaunchSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +19,13 @@ public class LaunchVerifier {
 
 	private final ToolDefinition toolDefinition;
 	private final ClaimAccessor claimAccessor;
+	private final OIDCLaunchSession oidcLaunchSession;
 
 	@Getter
 	private String reason;
 
 
-	public boolean validate() {
+	public boolean validate(String state) {
 		// message type
 		final String messageTypeClaim = this.claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		if (messageTypeClaim == null) {
@@ -45,6 +47,19 @@ public class LaunchVerifier {
 			return false;
 		}
 
+		// state
+		if (state != null) {
+			if (!state.equals(this.oidcLaunchSession.getState())) {
+				reason = "Invalid state";
+				return false;
+			}
+			if (claimAccessor.get(ClaimsEnum.NONCE) != null) {
+				if (!claimAccessor.get(ClaimsEnum.NONCE).equals(this.oidcLaunchSession.getNonce())) {
+					reason = "Invalid nonce";
+					return false;
+				}
+			}
+		}
 		// validate id_token, if present, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
 
 		/**

@@ -12,11 +12,14 @@ import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
+import edu.uoc.elc.lti.tool.oidc.OIDCLaunchSession;
 import io.jsonwebtoken.JwtException;
 import lombok.Getter;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +50,7 @@ public class Tool {
 
 	private final ToolDefinition toolDefinition;
 	private final ClaimAccessor claimAccessor;
+	private final OIDCLaunchSession oidcLaunchSession;
 
 	@Getter
 	private String locale;
@@ -54,12 +58,9 @@ public class Tool {
 	@Getter
 	private boolean valid;
 
-	@Getter
-	private String reason;
-
 	private AccessTokenResponse accessTokenResponse;
 
-	Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor) {
+	public Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
@@ -71,23 +72,26 @@ public class Tool {
 						.publicKey(publicKey)
 						.build();
 		this.claimAccessor = claimAccessor;
+		this.oidcLaunchSession = oidcLaunchSession;
 	}
 
-	public boolean validate(String token) {
+	public boolean validate(String token, String state) {
 
 		valid = false;
 		try {
 			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
 			// Section 5.2 using the Public Key from the Platform;
 			this.claimAccessor.decode(token);
-		} catch (JwtException ex) {
+
+		} catch (Throwable ex) {
 			//Invalid token
-			throw new InvalidTokenException("JWT is invalid");
+			this.valid = false;
+			return this.valid;
 		}
 
 		// verify launch
-		LaunchVerifier launchVerifier = new LaunchVerifier(toolDefinition, claimAccessor);
-		this.valid = launchVerifier.validate();
+		LaunchVerifier launchVerifier = new LaunchVerifier(toolDefinition, claimAccessor, oidcLaunchSession);
+		this.valid = launchVerifier.validate(state);
 		if (!this.valid) {
 			throw new InvalidLTICallException(launchVerifier.getReason());
 		}
@@ -223,8 +227,8 @@ public class Tool {
 	}
 
 	// openid methods
-	public LoginResponse getOidcAuthParams(LoginRequest loginRequest) {
-		return LoginResponse.builder()
+	public String getOidcAuthUrl(LoginRequest loginRequest) throws URISyntaxException {
+		final LoginResponse loginResponse = LoginResponse.builder()
 						.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id() : toolDefinition.getClientId())
 						.redirect_uri(loginRequest.getTarget_link_uri())
 						.login_hint(loginRequest.getLogin_hint())
@@ -232,9 +236,14 @@ public class Tool {
 						.nonce(new BigInteger(50, new SecureRandom()).toString(16))
 						.lti_message_hint(loginRequest.getLti_message_hint())
 						.build();
-	}
 
-	public String getOidcAuthUrl(LoginResponse loginResponse) {
+		final URI uri = new URI(loginRequest.getTarget_link_uri());
+
+		// save in session
+		this.oidcLaunchSession.setState(loginResponse.getState());
+		this.oidcLaunchSession.setNonce(loginResponse.getNonce());
+
+		// return url
 		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);
 	}
 }
