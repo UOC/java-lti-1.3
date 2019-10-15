@@ -101,7 +101,7 @@ public class LaunchVerifier {
 		/**
 		 * 7. The current time MUST be before the time represented by the exp Claim;
 		 */
-		if (this.claimAccessor.getExpiration().after(new Date())) {
+		if (this.claimAccessor.getExpiration().before(new Date())) {
 			reason = "Expired";
 			return false;
 		}
