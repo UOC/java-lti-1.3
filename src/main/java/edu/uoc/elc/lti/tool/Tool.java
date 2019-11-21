@@ -77,7 +77,7 @@ public class Tool {
 
 	public boolean validate(String token, String state) {
 
-		valid = false;
+		this.valid = false;
 		try {
 			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
 			// Section 5.2 using the Public Key from the Platform;
@@ -108,7 +108,7 @@ public class Tool {
 		// update locale attribute
 		this.locale = this.claimAccessor.get(ClaimsEnum.LOCALE);
 
-		return valid;
+		return this.valid;
 	}
 
 	public AccessTokenResponse getAccessToken() throws IOException, BadToolProviderConfigurationException {
