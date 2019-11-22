@@ -60,6 +60,7 @@ public class LaunchVerifier {
 				}
 			}
 		}
+
 		// validate id_token, if present, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
 
 		/**
@@ -137,6 +138,13 @@ public class LaunchVerifier {
 		 */
 		if (this.claimAccessor.get(ClaimsEnum.NONCE) == null) {
 			reason = "Nonce not present";
+			return false;
+		}
+
+		// The ID Token MUST contain a roles Claims
+		Class<List<String>> rolesClass = (Class) List.class;
+		if (this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass) == null) {
+			reason = "Roles not present";
 			return false;
 		}
 
