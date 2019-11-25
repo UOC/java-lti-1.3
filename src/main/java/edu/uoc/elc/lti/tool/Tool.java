@@ -6,6 +6,8 @@ import edu.uoc.elc.lti.exception.InvalidTokenException;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
+import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingResponseJWT;
+import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingTokenBuilder;
 import edu.uoc.elc.lti.tool.claims.ClaimAccessor;
 import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
@@ -207,12 +209,16 @@ public class Tool {
 		if (!isDeepLinkingRequest()) {
 			return null;
 		}
-		return new DeepLinkingClient(getIssuer(),
+		DeepLinkingTokenBuilder deepLinkingTokenBuilder = new DeepLinkingResponseJWT(
+						toolDefinition.getPublicKey(),
+						toolDefinition.getPrivateKey());
+
+		return new DeepLinkingClient(
+						deepLinkingTokenBuilder,
+						getIssuer(),
 						getAudience(),
 						this.claimAccessor.getAzp(),
 						this.kid,
-						toolDefinition.getPublicKey(),
-						toolDefinition.getPrivateKey(),
 						getDeploymentId(),
 						getDeepLinkingSettings());
 	}

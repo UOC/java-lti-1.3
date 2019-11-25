@@ -1,83 +1,64 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
 import edu.uoc.elc.lti.platform.AlgorithmFactory;
-import edu.uoc.elc.lti.platform.deeplinking.content.Item;
-import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
 import edu.uoc.elc.lti.tool.MessageTypesEnum;
+import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @RequiredArgsConstructor
-public class DeepLinkingResponseJWT {
+public class DeepLinkingResponseJWT implements DeepLinkingTokenBuilder {
 	private final static long _5_MINUTES = 5 * 30 * 1000;
 	private final static String AUTHORIZED_PART = "azp";
 
-	private final String platformName;
-	private final String toolName;
-	private final String azp;
-
-	private final String kid;
 	private final String publicKey;
 	private final String privateKey;
-	private final String deploymentId;
-	private final String data;
-	private final List<Item> itemList;
 
-	@Setter
-	private String message;
-	@Setter
-	private String log;
-	@Setter
-	private String errorMessage;
-	@Setter
-	private String errorLog;
-
-	String build() {
+	@Override
+	public String build(DeepLinkingResponse deepLinkingResponse) {
 		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
 
 		final JwtBuilder builder = Jwts.builder()
-						.setHeaderParam("kid", kid)
-						.setIssuer(toolName)
-						.setAudience(platformName)
+						.setHeaderParam("kid", deepLinkingResponse.getKid())
+						.setIssuer(deepLinkingResponse.getToolName())
+						.setAudience(deepLinkingResponse.getPlatformName())
 						.setIssuedAt(new Date())
 						.setExpiration(new Date(System.currentTimeMillis() + _5_MINUTES))
 						.signWith(algorithmFactory.getPrivateKey())
 						.claim(ClaimsEnum.MESSAGE_TYPE.getName(), MessageTypesEnum.LtiDeepLinkingRequest.name())
 						.claim(ClaimsEnum.VERSION.getName(), "1.3.0")
-						.claim(ClaimsEnum.DEPLOYMENT_ID.getName(), deploymentId)
-						.claim(ClaimsEnum.DEEP_LINKING_CONTENT_ITEMS.getName(), itemList);
+						.claim(ClaimsEnum.DEPLOYMENT_ID.getName(), deepLinkingResponse.getDeploymentId())
+						.claim(ClaimsEnum.DEEP_LINKING_CONTENT_ITEMS.getName(), deepLinkingResponse.getItemList());
 
 
-		if (this.azp != null) {
-			builder.claim(AUTHORIZED_PART, this.azp);
+		if (deepLinkingResponse.getAzp() != null) {
+			builder.claim(AUTHORIZED_PART, deepLinkingResponse.getAzp());
 		}
 
-		if (this.data != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_DATA.getName(), this.data);
+		if (deepLinkingResponse.getData() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_DATA.getName(), deepLinkingResponse.getData());
 		}
 
-		if (this.message != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_MESSAGE.getName(), this.message);
+		if (deepLinkingResponse.getMessage() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_MESSAGE.getName(), deepLinkingResponse.getMessage());
 		}
 
-		if (this.log != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_LOG.getName(), this.log);
+		if (deepLinkingResponse.getLog() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_LOG.getName(), deepLinkingResponse.getLog());
 		}
 
-		if (this.errorMessage != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_MESSAGE.getName(), this.errorMessage);
+		if (deepLinkingResponse.getErrorMessage() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_MESSAGE.getName(), deepLinkingResponse.getErrorMessage());
 		}
 
-		if (this.errorLog != null) {
-			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_LOG.getName(), this.errorLog);
+		if (deepLinkingResponse.getErrorLog() != null) {
+			builder.claim(ClaimsEnum.DEEP_LINKING_ERROR_LOG.getName(), deepLinkingResponse.getErrorLog());
 		}
 
 		return builder.compact();

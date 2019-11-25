@@ -24,13 +24,13 @@ import java.util.List;
 @Setter
 public class DeepLinkingClient {
 
+	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
+
 	private final String platformName;
 	private final String toolName;
 	private final String azp;
 	private final String kid;
 
-	private final String publicKey;
-	private final String privateKey;
 	private final String deploymentId;
 	private final Settings settings;
 
@@ -95,9 +95,9 @@ public class DeepLinkingClient {
 	public void perform() throws IOException {
 
 		// generate the JWT
-		DeepLinkingResponseJWT deepLinkingResponseJWT = new DeepLinkingResponseJWT(platformName,
-						toolName, azp, kid, publicKey, privateKey, deploymentId, settings.getData(), itemList);
-		String token = deepLinkingResponseJWT.build();
+		DeepLinkingResponse deepLinkingResponse = new DeepLinkingResponse(platformName,
+						toolName, azp, kid, deploymentId, settings.getData(), itemList);
+		String token = deepLinkingTokenBuilder.build(deepLinkingResponse);
 
 
 		URL url = new URL(settings.getDeep_link_return_url());
