@@ -14,7 +14,7 @@ import java.util.List;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @RequiredArgsConstructor
-public class LaunchVerifier {
+public class AuthenticationResponseValidator {
 	private final static String VERSION = "1.3.0";
 
 	private final ToolDefinition toolDefinition;

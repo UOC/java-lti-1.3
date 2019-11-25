@@ -94,10 +94,10 @@ public class Tool {
 		}
 
 		// verify launch
-		LaunchVerifier launchVerifier = new LaunchVerifier(toolDefinition, claimAccessor, oidcLaunchSession);
-		this.valid = launchVerifier.validate(state);
+		AuthenticationResponseValidator authenticationResponseValidator = new AuthenticationResponseValidator(toolDefinition, claimAccessor, oidcLaunchSession);
+		this.valid = authenticationResponseValidator.validate(state);
 		if (!this.valid) {
-			throw new InvalidLTICallException(launchVerifier.getReason());
+			throw new InvalidLTICallException(authenticationResponseValidator.getReason());
 		}
 
 		// get the standard JWT payload claims
