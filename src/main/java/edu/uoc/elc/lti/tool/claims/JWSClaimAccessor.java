@@ -5,7 +5,6 @@ import edu.uoc.elc.lti.jwt.LtiSigningKeyResolver;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import lombok.Getter;
 
 import java.util.Date;
 
