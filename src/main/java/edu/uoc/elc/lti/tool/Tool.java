@@ -2,20 +2,18 @@ package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
-import edu.uoc.elc.lti.exception.InvalidTokenException;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
-import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingResponseJWT;
-import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingTokenBuilder;
-import edu.uoc.elc.lti.tool.claims.ClaimAccessor;
-import edu.uoc.elc.lti.tool.claims.ClaimsEnum;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
-import edu.uoc.elc.lti.tool.oidc.OIDCLaunchSession;
-import io.jsonwebtoken.JwtException;
+import edu.uoc.lti.claims.ClaimAccessor;
+import edu.uoc.lti.claims.ClaimsEnum;
+import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
+import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
+import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -53,6 +51,8 @@ public class Tool {
 	private final ToolDefinition toolDefinition;
 	private final ClaimAccessor claimAccessor;
 	private final OIDCLaunchSession oidcLaunchSession;
+	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
+	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
 
 	@Getter
 	private String locale;
@@ -62,7 +62,8 @@ public class Tool {
 
 	private AccessTokenResponse accessTokenResponse;
 
-	public Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
+		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
@@ -75,6 +76,7 @@ public class Tool {
 						.build();
 		this.claimAccessor = claimAccessor;
 		this.oidcLaunchSession = oidcLaunchSession;
+		this.deepLinkingTokenBuilder = deepLinkingTokenBuilder;
 	}
 
 	public boolean validate(String token, String state) {
@@ -119,7 +121,7 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition);
+			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder);
 			accessTokenResponse = requestHandler.getAccessToken();
 		}
 
@@ -209,9 +211,6 @@ public class Tool {
 		if (!isDeepLinkingRequest()) {
 			return null;
 		}
-		DeepLinkingTokenBuilder deepLinkingTokenBuilder = new DeepLinkingResponseJWT(
-						toolDefinition.getPublicKey(),
-						toolDefinition.getPrivateKey());
 
 		return new DeepLinkingClient(
 						deepLinkingTokenBuilder,

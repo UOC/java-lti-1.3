@@ -1,9 +1,11 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
-import edu.uoc.elc.lti.platform.deeplinking.content.FileItem;
-import edu.uoc.elc.lti.platform.deeplinking.content.Item;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
+import edu.uoc.lti.deeplink.DeepLinkingResponse;
+import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
+import edu.uoc.lti.deeplink.content.FileItem;
+import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

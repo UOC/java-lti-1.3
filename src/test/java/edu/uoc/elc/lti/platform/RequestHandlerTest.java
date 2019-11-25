@@ -2,6 +2,8 @@ package edu.uoc.elc.lti.platform;
 
 import edu.uoc.elc.lti.tool.ToolDefinition;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
+import edu.uoc.lti.jwt.client.JWSClientCredentialsTokenBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,8 @@ public class RequestHandlerTest {
 						.publicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwDN0DFZnsxETm+lzQh7dsbBX6srNGqQ+Ougc485pqys81TzjoWDsubj70NdTge8DO3ycJbPpDsTH5P1Ea+vCHq/h1SzFLLF0yLw5Y2sWrLlDF9PrvR9yApu0bZ3zNTl55B4EblYns3j3JydwfnnLuNeNVpwv7wosLZKhMvg9CQv39prJj8xI+l5FoRkhKS86tl5PrU4Xld+jBo84GWAx0SYxbGF/vR9ve9lnErNWLv8ozYC2J9FusberZrsZ8M0mpNR1vJMayqDIwMPX5rsKtWZJh33XwAKRsEIxWT0WUGM54SUc0jrszapXfOoznblwmcAd/MVLXOlgOoaeiQbxFwIDAQAB")
 						.build();
 
-		this.sut = new RequestHandler(null, toolDefinition);
+		ClientCredentialsTokenBuilder clientCredentialsTokenBuilder = new JWSClientCredentialsTokenBuilder(toolDefinition.getPublicKey(), toolDefinition.getPrivateKey());
+		this.sut = new RequestHandler(null, toolDefinition, clientCredentialsTokenBuilder);
 	}
 
 	@Test

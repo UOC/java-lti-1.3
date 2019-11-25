@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti.tool.claims;
+package edu.uoc.lti.jwt.claims;
 
 import java.util.Date;
 

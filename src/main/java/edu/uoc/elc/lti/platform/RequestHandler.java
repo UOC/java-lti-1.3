@@ -3,6 +3,8 @@ package edu.uoc.elc.lti.platform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.elc.lti.tool.ScopeEnum;
 import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
+import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 
@@ -18,6 +20,7 @@ import java.net.URL;
 public class RequestHandler {
 	private String kid;
 	private ToolDefinition toolDefinition;
+	private ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
 
 	public AccessTokenResponse getAccessToken() throws IOException {
 		AccessTokenRequest request = AccessTokenRequest.builder()
@@ -32,14 +35,11 @@ public class RequestHandler {
 	}
 
 	private String getClientAssertion() {
-		ClientCredentialsJWT clientCredentialsJWT = new ClientCredentialsJWT(toolDefinition.getPublicKey(),
-						toolDefinition.getPrivateKey(),
-						kid,
+		ClientCredentialsRequest clientCredentialsRequest = new ClientCredentialsRequest(kid,
 						toolDefinition.getName(),
 						toolDefinition.getClientId(),
-						toolDefinition.getAccessTokenUrl()
-		);
-		return clientCredentialsJWT.build();
+						toolDefinition.getAccessTokenUrl());
+		return clientCredentialsTokenBuilder.build(clientCredentialsRequest);
 	}
 
 
