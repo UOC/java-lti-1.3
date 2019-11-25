@@ -1,12 +1,12 @@
 package edu.uoc.elc.lti.platform.ags;
 
+import edu.uoc.lti.ags.ActivityProgressEnum;
+import edu.uoc.lti.ags.GradingProgressEnum;
+import edu.uoc.lti.ags.Score;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Instant;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>

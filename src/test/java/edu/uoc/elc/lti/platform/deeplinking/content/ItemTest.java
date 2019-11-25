@@ -2,6 +2,8 @@ package edu.uoc.elc.lti.platform.deeplinking.content;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.uoc.lti.deeplink.content.Item;
+import edu.uoc.lti.deeplink.content.LinkItem;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
