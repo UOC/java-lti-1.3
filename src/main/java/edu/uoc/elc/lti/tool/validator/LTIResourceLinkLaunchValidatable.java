@@ -4,21 +4,14 @@ import edu.uoc.elc.lti.tool.*;
 import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
-import edu.uoc.lti.deeplink.content.DocumentTargetEnum;
-import edu.uoc.lti.deeplink.content.Presentation;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @RequiredArgsConstructor
-public class LTIResourceLinkLaunchValidatable extends LtiCoreValidator {
+public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	private static final int ID_MAX_LENGTH = 255;
 
 	@Override

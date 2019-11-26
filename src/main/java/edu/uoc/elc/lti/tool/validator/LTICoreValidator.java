@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * Intented to expand by subclasses
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class LtiCoreValidator implements LaunchValidatable {
+public class LTICoreValidator implements LaunchValidatable {
 	static final int ID_MAX_LENGTH = 255;
 	final static String VERSION = "1.3.0";
 

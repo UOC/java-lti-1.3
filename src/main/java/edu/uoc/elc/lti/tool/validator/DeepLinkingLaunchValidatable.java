@@ -6,14 +6,13 @@ import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
-import lombok.Getter;
 
 import java.util.List;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-public class DeepLinkingLaunchValidatable extends LtiCoreValidator {
+public class DeepLinkingLaunchValidatable extends LTICoreValidator {
 	/**
 	 * Validates request following https://www.imsglobal.org/spec/lti-dl/v2p0#deep-linking-request-message
 	 * @param state saved state, if present
