@@ -17,4 +17,5 @@ public class ToolDefinition {
 	private String oidcAuthUrl;
 	private String privateKey;
 	private String publicKey;
+	private String deploymentId;
 }

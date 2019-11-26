@@ -9,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Platform {
+	private String guid;
 	private String name;
 	private String contact_email;
 	private String description;

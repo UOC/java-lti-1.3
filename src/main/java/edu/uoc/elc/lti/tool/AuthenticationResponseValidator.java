@@ -15,53 +15,34 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class AuthenticationResponseValidator {
-	private final static String VERSION = "1.3.0";
-
 	private final ToolDefinition toolDefinition;
 	private final ClaimAccessor claimAccessor;
-	private final OIDCLaunchSession oidcLaunchSession;
 
 	@Getter
 	private String reason;
 
 
-	public boolean validate(String state) {
-		// message type
-		final String messageTypeClaim = this.claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
-		if (messageTypeClaim == null) {
-			reason = "Unknown Message Type";
-			return false;
-		}
+	/**
+	 * Validates token, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
+	 * @param token token to validate
+	 * @return true if token is valid, false otherwise
+	 */
+	public boolean validate(String token) {
+		// validate id_token, if present, using rules from
 
+		/**
+		 * 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
+		 * Section 5.2 using the Public Key from the Platform;
+		 */
 		try {
-			MessageTypesEnum.valueOf(messageTypeClaim);
-		} catch (IllegalArgumentException e) {
-			reason = "Unknown Message Type";
+			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
+			// Section 5.2 using the Public Key from the Platform;
+			this.claimAccessor.decode(token);
+
+		} catch (Throwable ex) {
+			reason = "Invalid token";
 			return false;
 		}
-
-		// version
-		final String versionClaim = this.claimAccessor.get(ClaimsEnum.VERSION);
-		if (versionClaim == null || !VERSION.equals(versionClaim)) {
-			reason = "Invalid Version";
-			return false;
-		}
-
-		// state
-		if (state != null) {
-			if (!state.equals(this.oidcLaunchSession.getState())) {
-				reason = "Invalid state";
-				return false;
-			}
-			if (claimAccessor.get(ClaimsEnum.NONCE) != null) {
-				if (!claimAccessor.get(ClaimsEnum.NONCE).equals(this.oidcLaunchSession.getNonce())) {
-					reason = "Invalid nonce";
-					return false;
-				}
-			}
-		}
-
-		// validate id_token, if present, using rules from https://www.imsglobal.org/spec/security/v1p0/#authentication-response-validation
 
 		/**
 		 * 2. The Issuer Identifier for the Platform MUST exactly match the value of the iss (Issuer) Claim
@@ -138,13 +119,6 @@ public class AuthenticationResponseValidator {
 		 */
 		if (this.claimAccessor.get(ClaimsEnum.NONCE) == null) {
 			reason = "Nonce not present";
-			return false;
-		}
-
-		// The ID Token MUST contain a roles Claims
-		Class<List<String>> rolesClass = (Class) List.class;
-		if (this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass) == null) {
-			reason = "Roles not present";
 			return false;
 		}
 
