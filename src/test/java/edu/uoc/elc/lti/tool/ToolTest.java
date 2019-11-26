@@ -1,6 +1,5 @@
 package edu.uoc.elc.lti.tool;
 
-import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.tool.oidc.InMemoryOIDCLaunchSession;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.jwt.claims.*;
@@ -12,7 +11,6 @@ import org.junit.Test;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -68,18 +66,18 @@ public class ToolTest {
 	@Test
 	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
 		final URL invalidTokensUrl = getClass().getResource(INVALID_TOKENS_DIR);
-		PayloadLoader payloadLoader = new PayloadLoader();
-		final List<TestPayload> payloads = payloadLoader.loadPayloads(invalidTokensUrl.toURI());
-		if (payloads != null && payloads.size() > 0) {
+		TestLaunchLoader testLaunchLoader = new TestLaunchLoader();
+		final List<TestLaunch> testLaunches = testLaunchLoader.loadTestLaunches(invalidTokensUrl.toURI());
+		if (testLaunches != null && testLaunches.size() > 0) {
 			int count  = 0;
-			for (TestPayload payload : payloads) {
-				final String s = tokenBuilder.build(payload.getPayload());
+			for (TestLaunch launch : testLaunches) {
+				final String s = tokenBuilder.build(launch);
 				boolean result = sut.validate(s, null);
-				Assert.assertNotNull("Reason for " + payload.getName(), sut.getReason());
-				Assert.assertFalse(payload.getName(), result);
+				Assert.assertNotNull("Reason for " + launch.getName(), sut.getReason());
+				Assert.assertFalse(launch.getName(), result);
 				count++;
 			}
-			Assert.assertEquals(count, payloads.size());
+			Assert.assertEquals(count, testLaunches.size());
 		}
 	}
 
