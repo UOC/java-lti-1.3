@@ -61,14 +61,18 @@ public class Tool {
 	@Getter
 	private boolean valid;
 
+	@Getter
+	private String reason;
+
 	private AccessTokenResponse accessTokenResponse;
 
-	public Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
+	public Tool(String name, String clientId, String platform, String deploymentId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
 		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
 						.platform(platform)
+						.deploymentId(deploymentId)
 						.keySetUrl(keySetUrl)
 						.accessTokenUrl(accessTokenUrl)
 						.oidcAuthUrl(oidcAuthUrl)
@@ -84,7 +88,8 @@ public class Tool {
 		LaunchValidator launchValidator = new LaunchValidator(toolDefinition, claimAccessor, oidcLaunchSession);
 		this.valid = launchValidator.validate(token, state);
 		if (!this.valid) {
-			throw new InvalidLTICallException(launchValidator.getReason());
+			this.reason = launchValidator.getReason();
+			return false;
 		}
 
 		// get the standard JWT payload claims
@@ -234,6 +239,7 @@ public class Tool {
 		// save in session
 		this.oidcLaunchSession.setState(loginResponse.getState());
 		this.oidcLaunchSession.setNonce(loginResponse.getNonce());
+		this.oidcLaunchSession.setTargetLinkUri(loginResponse.getRedirect_uri());
 
 		// return url
 		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);
