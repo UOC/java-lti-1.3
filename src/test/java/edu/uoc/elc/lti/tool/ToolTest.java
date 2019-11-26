@@ -83,7 +83,7 @@ public class ToolTest {
 
 	@Test
 	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
-		assertLaunches(VALID_LAUNCHES_DIR, false);
+		assertLaunches(INVALID_LAUNCHES_DIR, false);
 	}
 
 	@Test
