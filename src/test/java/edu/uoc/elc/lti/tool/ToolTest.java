@@ -2,7 +2,10 @@ package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.tool.oidc.InMemoryOIDCLaunchSession;
 import edu.uoc.lti.claims.ClaimAccessor;
-import edu.uoc.lti.jwt.claims.*;
+import edu.uoc.lti.jwt.claims.JWSClaimAccessor;
+import edu.uoc.lti.jwt.claims.TestLaunch;
+import edu.uoc.lti.jwt.claims.TestLaunchLoader;
+import edu.uoc.lti.jwt.claims.TokenBuilder;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,7 +30,7 @@ public class ToolTest {
 		String keysetUrl = "https://lti-ri.imsglobal.org/platforms/68/platform_keys/60.json";
 
 		// since it's a test, we don't check expiration
-		ClaimAccessor claimAccessor = new TestJWSClaimAccessor(keysetUrl);
+		ClaimAccessor claimAccessor = new JWSClaimAccessor(keysetUrl);
 		OIDCLaunchSession launchSession = new InMemoryOIDCLaunchSession();
 		this.sut = new Tool(
 						"Universitat Oberta de Catalunya",
@@ -84,14 +87,6 @@ public class ToolTest {
 	@Test
 	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
 		assertLaunches(INVALID_LAUNCHES_DIR, false);
-	}
-
-	@Test
-	public void validateWithInvalidTokenMustReturnFalse() {
-		String token = "invalid token";
-		boolean result = sut.validate(token, null);
-		Assert.assertFalse(result);
-		Assert.assertNotNull(sut.getReason());
 	}
 
 	/*
