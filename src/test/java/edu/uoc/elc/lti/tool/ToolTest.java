@@ -16,7 +16,8 @@ import java.util.List;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class ToolTest {
-	private final static String INVALID_TOKENS_DIR = "/invalid/";
+	private final static String INVALID_LAUNCHES_DIR = "/invalid/";
+	private final static String VALID_LAUNCHES_DIR = "/valid/";
 
 	private Tool sut;
 	private TokenBuilder tokenBuilder;
@@ -53,32 +54,36 @@ public class ToolTest {
 
 	}
 
-	/*
-	@Test
-	public void validate() {
-		String token = "eyJhbGciOiJSUzI1NiIsImtpZCI6InBVYUFkb2VmQ2Q1VGctVEM4MDdtalJlSGpTM2VjOG5zWTktbnJwV0RRUzAifQ.eyJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9tZXNzYWdlX3R5cGUiOiJMdGlSZXNvdXJjZUxpbmtSZXF1ZXN0IiwiZ2l2ZW5fbmFtZSI6IkVsZG9uIiwiZmFtaWx5X25hbWUiOiJIb3BwZSIsIm1pZGRsZV9uYW1lIjoiUm9kbmV5IiwicGljdHVyZSI6Imh0dHA6Ly9leGFtcGxlLm9yZy9FbGRvbi5qcGciLCJlbWFpbCI6IkVsZG9uLkhvcHBlQGV4YW1wbGUub3JnIiwibmFtZSI6IkVsZG9uIFJvZG5leSBIb3BwZSIsImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpL2NsYWltL3JvbGVzIjpbImh0dHA6Ly9wdXJsLmltc2dsb2JhbC5vcmcvdm9jYWIvbGlzL3YyL21lbWJlcnNoaXAjTGVhcm5lciIsImh0dHA6Ly9wdXJsLmltc2dsb2JhbC5vcmcvdm9jYWIvbGlzL3YyL2luc3RpdHV0aW9uL3BlcnNvbiNTdHVkZW50IiwiaHR0cDovL3B1cmwuaW1zZ2xvYmFsLm9yZy92b2NhYi9saXMvdjIvbWVtYmVyc2hpcCNNZW50b3IiXSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vcm9sZV9zY29wZV9tZW50b3IiOlsiYTYyYzUyYzAyYmEyNjIwMDNmNWUiXSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vcmVzb3VyY2VfbGluayI6eyJpZCI6IjMxOSIsInRpdGxlIjoiVGVzdCBUb29sIiwiZGVzY3JpcHRpb24iOiJMYXVuY2ggdGVzdCB0b29sIn0sImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpL2NsYWltL2NvbnRleHQiOnsiaWQiOiI4OCIsImxhYmVsIjoiVGVzdCBDb3Vyc2UiLCJ0aXRsZSI6IlRlc3QgQ291cnNlIiwidHlwZSI6WyJDb3Vyc2VPZmZlcmluZyJdfSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vdG9vbF9wbGF0Zm9ybSI6eyJuYW1lIjoiVU9DIFRlc3QgcGxhdGZvcm0iLCJjb250YWN0X2VtYWlsIjoiIiwiZGVzY3JpcHRpb24iOiIiLCJ1cmwiOiIiLCJwcm9kdWN0X2ZhbWlseV9jb2RlIjoiIiwidmVyc2lvbiI6IjEuMCJ9LCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS1hZ3MvY2xhaW0vZW5kcG9pbnQiOnsic2NvcGUiOlsiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGktYWdzL3Njb3BlL2xpbmVpdGVtIiwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGktYWdzL3Njb3BlL3Jlc3VsdC5yZWFkb25seSIsImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpLWFncy9zY29wZS9zY29yZSJdLCJsaW5laXRlbXMiOiJodHRwczovL2x0aS1yaS5pbXNnbG9iYWwub3JnL3BsYXRmb3Jtcy82OC9jb250ZXh0cy84OC9saW5lX2l0ZW1zIn0sImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpLW5ycHMvY2xhaW0vbmFtZXNyb2xlc2VydmljZSI6eyJjb250ZXh0X21lbWJlcnNoaXBzX3VybCI6Imh0dHBzOi8vbHRpLXJpLmltc2dsb2JhbC5vcmcvcGxhdGZvcm1zLzY4L2NvbnRleHRzLzg4L21lbWJlcnNoaXBzLmpzb24iLCJzZXJ2aWNlX3ZlcnNpb24iOiIyLjAifSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGktY2VzL2NsYWltL2NhbGlwZXItZW5kcG9pbnQtc2VydmljZSI6eyJzY29wZXMiOlsiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGktY2VzL3YxcDAvc2NvcGUvc2VuZCJdLCJjYWxpcGVyX2VuZHBvaW50X3VybCI6Imh0dHBzOi8vbHRpLXJpLmltc2dsb2JhbC5vcmcvcGxhdGZvcm1zLzY4L3NlbnNvcnMiLCJjYWxpcGVyX2ZlZGVyYXRlZF9zZXNzaW9uX2lkIjoidXJuOnV1aWQ6OTgyMDJhYzdmYTAxOWVmMDAwNWQifSwiaXNzIjoiaHR0cHM6Ly93d3cudW9jLmVkdSIsImF1ZCI6IlVuaXZlcnNpdGF0IE9iZXJ0YSBkZSBDYXRhbHVueWEiLCJpYXQiOjE1NDE2OTIwNTMsImV4cCI6MTU0MTY5MjM1Mywic3ViIjoiMWFkNGIzM2EyNTc5YTJhOThlZDciLCJub25jZSI6IjFmNTE3MmJiMjVhMjVlZjE3NmU1IiwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vdmVyc2lvbiI6IjEuMy4wIiwibG9jYWxlIjoiZW4tVVMiLCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9sYXVuY2hfcHJlc2VudGF0aW9uIjp7ImRvY3VtZW50X3RhcmdldCI6ImlmcmFtZSIsImhlaWdodCI6MzIwLCJ3aWR0aCI6MjQwLCJyZXR1cm5fdXJsIjoiaHR0cHM6Ly9sdGktcmkuaW1zZ2xvYmFsLm9yZy9wbGF0Zm9ybXMvNjgvcmV0dXJucyJ9LCJodHRwczovL3d3dy5leGFtcGxlLmNvbS9leHRlbnNpb24iOnsiY29sb3IiOiJ2aW9sZXQifSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vY3VzdG9tIjp7Im15Q3VzdG9tVmFsdWUiOiIxMjMifSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vZGVwbG95bWVudF9pZCI6IiJ9.S3If5Gz83DW-ZvSqqRnq-ga8uYj-kcOQ2JxuJtqjjERa3x6Z0KB_Sg9LIzgDCg2NqmuLSjP0VT6igbAUV2MekB1nGvjtMkJFxVczBe6BdqlZcDuoWIrxRlRUZ-03KPfLN7ErT4tJc-UksOgeV5m_3o3vIeoaAaJA0Vp8CfQgof54UNMmNEL44a-uOnFOSDptqkRuRRlHm-5UJ2vf2ZzFIyyOil0zJ_SOihpLTf56hAw9DpFWlN2uq0RlKXIPa1HCUrpHgstuez9r7shx1OU_gO9nNHu97x06PamCsPXo5h5wKmaC_MQZqnOosOzdvHq-Ft2hwFEIKIfswivgVmQfOw";
-		boolean result = sut.validate(token, null);
-		Assert.assertTrue(result);
-		Assert.assertTrue(sut.isResourceLinkLaunch());
-		Assert.assertFalse(sut.isDeepLinkingRequest());
-	}*/
-
-	@Test
-	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
-		final URL invalidTokensUrl = getClass().getResource(INVALID_TOKENS_DIR);
+	private void assertLaunches(String directory, boolean mustValidate) throws URISyntaxException {
+		final URL launchesDirectory = getClass().getResource(directory);
 		TestLaunchLoader testLaunchLoader = new TestLaunchLoader();
-		final List<TestLaunch> testLaunches = testLaunchLoader.loadTestLaunches(invalidTokensUrl.toURI());
+		final List<TestLaunch> testLaunches = testLaunchLoader.loadTestLaunches(launchesDirectory.toURI());
 		if (testLaunches != null && testLaunches.size() > 0) {
 			int count  = 0;
 			for (TestLaunch launch : testLaunches) {
 				final String s = tokenBuilder.build(launch);
 				boolean result = sut.validate(s, null);
-				Assert.assertNotNull("Reason for " + launch.getName(), sut.getReason());
-				Assert.assertFalse(launch.getName(), result);
+				if (mustValidate) {
+					Assert.assertTrue(launch.getName() + " MUST validate", result);
+					Assert.assertNull("Reason for " + launch.getName(), sut.getReason());
+				} else {
+					Assert.assertFalse(launch.getName() + " MUST not validate", result);
+					Assert.assertNotNull("Reason for " + launch.getName(), sut.getReason());
+				}
 				count++;
 			}
 			Assert.assertEquals(count, testLaunches.size());
 		}
+	}
+
+	@Test
+	public void validateValidTokensMustReturnTrue() throws URISyntaxException {
+		assertLaunches(VALID_LAUNCHES_DIR, true);
+	}
+
+	@Test
+	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
+		assertLaunches(VALID_LAUNCHES_DIR, false);
 	}
 
 	@Test
