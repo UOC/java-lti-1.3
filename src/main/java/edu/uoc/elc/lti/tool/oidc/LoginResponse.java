@@ -2,12 +2,14 @@ package edu.uoc.elc.lti.tool.oidc;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @Getter
 @Builder
+@ToString
 public class LoginResponse {
 	private final String scope = "openid";
 	private final String response_type = "id_token";

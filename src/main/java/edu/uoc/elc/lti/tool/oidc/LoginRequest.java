@@ -1,12 +1,15 @@
 package edu.uoc.elc.lti.tool.oidc;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @Builder
 @Getter
+@ToString
 public class LoginRequest {
 	/** REQUIRED. The issuer identifier identifying the learning platform. */
 	private final String iss;
