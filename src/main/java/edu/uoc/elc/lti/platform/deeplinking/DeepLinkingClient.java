@@ -47,7 +47,7 @@ public class DeepLinkingClient {
 	}
 
 	public boolean canAddFileItemOfMediaType(String type) {
-		final List<String> acceptMediaTypes = settings.getAcceptMediaTypesAsList();
+		final List<String> acceptMediaTypes = settings.getAccept_media_types();
 		return (acceptMediaTypes != null && acceptMediaTypes.size() > 0 ? acceptMediaTypes.contains(type) : true);
 	}
 

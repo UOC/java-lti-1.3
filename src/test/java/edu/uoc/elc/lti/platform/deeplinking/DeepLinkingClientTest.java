@@ -77,7 +77,7 @@ public class DeepLinkingClientTest {
 
 	@Test
 	public void canAddFileItemOfMediaType() {
-		Mockito.when(settings.getAcceptMediaTypesAsList()).thenReturn(Arrays.asList("application/pdf","text/html"));
+		Mockito.when(settings.getAccept_media_types()).thenReturn(Arrays.asList("application/pdf","text/html"));
 
 		Assert.assertTrue(this.sut.canAddFileItemOfMediaType("application/pdf"));
 		Assert.assertTrue(this.sut.canAddFileItemOfMediaType("text/html"));
@@ -144,7 +144,7 @@ public class DeepLinkingClientTest {
 	@Test(expected = InvalidLTICallException.class)
 	public void addItemShouldThrowWhenMediaTypeNotAllowed() {
 		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("file"));
-		Mockito.when(settings.getAcceptMediaTypesAsList()).thenReturn(Arrays.asList("application/pdf"));
+		Mockito.when(settings.getAccept_media_types()).thenReturn(Arrays.asList("application/pdf"));
 		Mockito.when(settings.isAccept_multiple()).thenReturn(true);
 
 		final Item fileItem = FileItem.builder().mediaType("application/pdf").build();
@@ -162,7 +162,7 @@ public class DeepLinkingClientTest {
 	@Test
 	public void perform() throws IOException {
 		this.settings = new Settings();
-		this.settings.setAccept_media_types("image/*,text/html");
+		this.settings.setAccept_media_types(Arrays.asList("image/*", "text/html"));
 		this.settings.setAccept_multiple(true);
 		this.settings.setAuto_create(true);
 		this.settings.setAccept_presentation_document_targets(Arrays.asList("iframe", "window", "embed"));
