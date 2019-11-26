@@ -9,6 +9,7 @@ import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
+import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
@@ -80,24 +81,10 @@ public class Tool {
 	}
 
 	public boolean validate(String token, String state) {
-
-		this.valid = false;
-		try {
-			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
-			// Section 5.2 using the Public Key from the Platform;
-			this.claimAccessor.decode(token);
-
-		} catch (Throwable ex) {
-			//Invalid token
-			this.valid = false;
-			return this.valid;
-		}
-
-		// verify launch
-		AuthenticationResponseValidator authenticationResponseValidator = new AuthenticationResponseValidator(toolDefinition, claimAccessor, oidcLaunchSession);
-		this.valid = authenticationResponseValidator.validate(state);
+		LaunchValidator launchValidator = new LaunchValidator(toolDefinition, claimAccessor, oidcLaunchSession);
+		this.valid = launchValidator.validate(token, state);
 		if (!this.valid) {
-			throw new InvalidLTICallException(authenticationResponseValidator.getReason());
+			throw new InvalidLTICallException(launchValidator.getReason());
 		}
 
 		// get the standard JWT payload claims
@@ -182,9 +169,9 @@ public class Tool {
 		return this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
 	}
 
-	public Object getCustomParameter(String name) {
-		Class<Map<String, Object>> customClass = (Class) Map.class;
-		final Map<String, Object> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
+	public String getCustomParameter(String name) {
+		Class<Map<String, String>> customClass = (Class) Map.class;
+		final Map<String, String> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
 		if (claim != null) {
 			return claim.get(name);
 		}
