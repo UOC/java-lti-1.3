@@ -21,8 +21,8 @@ import java.util.List;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class ToolTest {
-	private final static String INVALID_LAUNCHES_DIR = "/invalid/";
-	private final static String VALID_LAUNCHES_DIR = "/valid/";
+	private final static String INVALID_LAUNCHES_DIR = "/lti/invalid/";
+	private final static String VALID_LAUNCHES_DIR = "/lti/valid/";
 
 	private Tool sut;
 	private TokenBuilder tokenBuilder;
