@@ -18,22 +18,23 @@ import java.util.stream.Collectors;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @RequiredArgsConstructor
-public class LTIResourceLinkLaunchValidatable implements LaunchValidatable {
-	private final static String VERSION = "1.3.0";
+public class LTIResourceLinkLaunchValidatable extends LtiCoreValidator {
 	private static final int ID_MAX_LENGTH = 255;
-
-	@Getter
-	private String reason;
 
 	@Override
 	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+		// Core validation
+		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
+			return false;
+		}
+
 		// LTI required claims
 		if (!validateRequiredClaims(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 
 		// LTI optional claims
-		if (!validateOptionalClaims(claimAccessor)) {
+		if (!validateOptionalClaims()) {
 			return false;
 		}
 
@@ -61,39 +62,14 @@ public class LTIResourceLinkLaunchValidatable implements LaunchValidatable {
 	private boolean validateRequiredClaims(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// 5.3.1 message type claim
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
-		if (messageTypeClaim == null) {
-			setReasonToMissingRequiredClaim(ClaimsEnum.MESSAGE_TYPE);
-			return false;
-		}
-
-		try {
-			MessageTypesEnum.valueOf(messageTypeClaim);
-		} catch (IllegalArgumentException e) {
+		final MessageTypesEnum messageType = MessageTypesEnum.valueOf(messageTypeClaim);
+		if (messageType != MessageTypesEnum.LtiResourceLinkRequest) {
 			setReasonToInvalidClaim(ClaimsEnum.MESSAGE_TYPE);
 			return false;
 		}
 
-		// 5.3.2 version
-		final String versionClaim = claimAccessor.get(ClaimsEnum.VERSION);
-		if (versionClaim == null || !VERSION.equals(versionClaim)) {
-			setReasonToInvalidClaim(ClaimsEnum.VERSION);
-			return false;
-		}
-
-		// 5.3.3 LTI Deployment ID claim
-		final String deploymentId = claimAccessor.get(ClaimsEnum.DEPLOYMENT_ID);
-		if (isEmpty(deploymentId)) {
-			setReasonToMissingRequiredClaim(ClaimsEnum.DEPLOYMENT_ID);
-			return false;
-		}
-		if (deploymentId.trim().length() > ID_MAX_LENGTH) {
-			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
-			return false;
-		}
-		if (!toolDefinition.getDeploymentId().equals(deploymentId)) {
-			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
-			return false;
-		}
+		// 5.3.2 version (already in core)
+		// 5.3.3 LTI Deployment ID claim (already in core)
 
 		// 5.3.4 Target Link URI
 		if (state != null) {
@@ -121,36 +97,8 @@ public class LTIResourceLinkLaunchValidatable implements LaunchValidatable {
 			return false;
 		}
 
-		// 5.3.6 User Identity claims
-		final String subject = claimAccessor.getSubject();
-		if (isEmpty(subject)) {
-			// check other user identity claims are empty as well
-			List<ClaimsEnum> identityClaims = Arrays.asList(ClaimsEnum.GIVEN_NAME, ClaimsEnum.FAMILY_NAME, ClaimsEnum.NAME, ClaimsEnum.EMAIL);
-			if (identityClaims.stream().anyMatch(claim -> !isEmpty(claimAccessor.get(claim)))) {
-				this.reason = "Subject is required";
-				return false;
-			}
-		} else {
-			if (!isIdStringValid(subject)) {
-				this.reason = "Subject is invalid";
-				return false;
-			}
-		}
-
-
-		// 5.3.7 Roles claim
-		Class<List<String>> rolesClass = (Class) List.class;
-		final List<String> roles = claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
-		if (roles == null) {
-			setReasonToMissingRequiredClaim(ClaimsEnum.ROLES);
-			return false;
-		}
-		// check it contains, at least one valid role
-		final List<String> filteredRoles = roles.stream().filter(s -> !s.isEmpty()).collect(Collectors.toList());
-		if (filteredRoles.size() > 0 && !filteredRoles.stream().anyMatch(role -> RolesEnum.from(role) != null)) {
-			setReasonToInvalidClaim(ClaimsEnum.ROLES);
-			return false;
-		}
+		// 5.3.6 User Identity claims (already in core)
+		// 5.3.7 Roles claim (already in core)
 
 		return true;
 	}
@@ -159,69 +107,16 @@ public class LTIResourceLinkLaunchValidatable implements LaunchValidatable {
 	 * Validates the optional claims of the LTI launch following https://www.imsglobal.org/spec/lti/v1p3/#optional-message-claims
 	 * @return true if the optional claims of the LTI launch are valid, false otherwise
 	 */
-	private boolean validateOptionalClaims(ClaimAccessor claimAccessor) {
-		// 5.4.1 Context claim
-		final Context contextClaim = claimAccessor.get(ClaimsEnum.CONTEXT, Context.class);
-		if (contextClaim != null) {
-			if (!isIdStringValid(contextClaim.getId())) {
-				setReasonToInvalidClaim(ClaimsEnum.CONTEXT);
-				return false;
-			}
-		}
-		// 5.4.2 Platform instance claim
-		final Platform platform = claimAccessor.get(ClaimsEnum.TOOL_PLATFORM, Platform.class);
-		if (platform != null) {
-			if (!isIdStringValid(platform.getGuid())) {
-				setReasonToInvalidClaim(ClaimsEnum.TOOL_PLATFORM);
-				return false;
-			}
-		}
-
-		// 5.4.3 Role-scope mentor claims
-		Class<List<String>> mentorRolesClass = (Class) List.class;
-		final List<String> mentorRoles = claimAccessor.get(ClaimsEnum.ROLE_SCOPE_MENTOR, mentorRolesClass);
-		if (mentorRoles != null && mentorRoles.size() > 0) {
-			Class<List<String>> rolesClass = (Class) List.class;
-			final List<String> roles = claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
-			if (!roles.contains(RolesEnum.MENTOR.getName())) {
-				setReasonToInvalidClaim(ClaimsEnum.ROLE_SCOPE_MENTOR);
-				return false;
-			}
-		}
-
-		// 5.4.4 Launch presentation claim
-		final Presentation presentation = claimAccessor.get(ClaimsEnum.PRESENTATION, Presentation.class);
-		if (presentation != null) {
-			if (!isEmpty(presentation.getDocumentTarget())) {
-				try {
-					DocumentTargetEnum.valueOf(presentation.getDocumentTarget());
-				} catch (IllegalArgumentException e) {
-					setReasonToInvalidClaim(ClaimsEnum.PRESENTATION);
-					return false;
-				}
-			}
-		}
+	private boolean validateOptionalClaims() {
+		// 5.4.1 Context claim (already in core)
+		// 5.4.2 Platform instance claim (already in core)
+		// 5.4.3 Role-scope mentor claims (already in core)
+		// 5.4.4 Launch presentation claim (already in core)
 
 		// 5.4.5 Learning Information Services LIS claim: Nothing to do here
 		// 5.4.6 Custom properties and variable substitution: Nothing to do here (values are gotten as string in Tool)
 		// 5.4.7 Vendor-specific extension claims: Nothing to do here
 		return true;
-	}
-
-	private boolean isEmpty(String value) {
-		return value == null || "".equals(value.trim());
-	}
-
-	private boolean isIdStringValid(String value) {
-		return !isEmpty(value) && value.trim().length() <= ID_MAX_LENGTH;
-	}
-
-	private void setReasonToMissingRequiredClaim(ClaimsEnum claim) {
-		reason = "Required claim " + claim.getName() + " not found";
-	}
-
-	private void setReasonToInvalidClaim(ClaimsEnum claim) {
-		reason = "Claim " + claim.getName() + " is invalid";
 	}
 
 }
