@@ -12,4 +12,5 @@ import lombok.Setter;
 public class InMemoryOIDCLaunchSession implements OIDCLaunchSession {
 	private String state;
 	private String nonce;
+	private String targetLinkUri;
 }
