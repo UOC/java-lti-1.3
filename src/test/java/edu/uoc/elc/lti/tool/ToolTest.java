@@ -71,7 +71,7 @@ public class ToolTest {
 				final String s = tokenBuilder.build(launch);
 				boolean result = sut.validate(s, null);
 				if (mustValidate) {
-					Assert.assertTrue(launch.getName() + " MUST validate", result);
+					Assert.assertTrue(launch.getName() + " MUST validate, instead gotten reason " + sut.getReason(), result);
 					Assert.assertNull("Reason for " + launch.getName(), sut.getReason());
 				} else {
 					Assert.assertFalse(launch.getName() + " MUST not validate", result);
