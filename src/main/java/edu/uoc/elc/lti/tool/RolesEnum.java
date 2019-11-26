@@ -40,7 +40,17 @@ public enum RolesEnum {
 	MENTOR("http://purl.imsglobal.org/vocab/lis/v2/membership#Mentor"),
 	MANAGER("http://purl.imsglobal.org/vocab/lis/v2/membership#Manager"),
 	MEMBER("http://purl.imsglobal.org/vocab/lis/v2/membership#Member"),
-	OFFICER("http://purl.imsglobal.org/vocab/lis/v2/membership#Officer")
+	OFFICER("http://purl.imsglobal.org/vocab/lis/v2/membership#Officer"),
+
+	// Soon to deprecate context roles
+	OLD_ADMINISTRATOR("Administrator"),
+	OLD_CONTENT_DEVELOPER("ContentDeveloper"),
+	OLD_INSTRUCTOR("Instructor"),
+	OLD_LEARNER("Learner"),
+	OLD_MENTOR("Mentor"),
+	OLD_MANAGER("Manager"),
+	OLD_MEMBER("Member"),
+	OLD_OFFICER("Officer")
 	;
 
 	private String name;
