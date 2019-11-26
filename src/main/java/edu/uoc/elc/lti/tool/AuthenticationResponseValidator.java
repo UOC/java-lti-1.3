@@ -28,15 +28,11 @@ public class AuthenticationResponseValidator {
 	 * @return true if token is valid, false otherwise
 	 */
 	public boolean validate(String token) {
-		// validate id_token, if present, using rules from
-
 		/**
 		 * 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
 		 * Section 5.2 using the Public Key from the Platform;
 		 */
 		try {
-			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
-			// Section 5.2 using the Public Key from the Platform;
 			this.claimAccessor.decode(token);
 
 		} catch (Throwable ex) {
