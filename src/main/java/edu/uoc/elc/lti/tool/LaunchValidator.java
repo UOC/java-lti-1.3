@@ -167,18 +167,11 @@ public class LaunchValidator {
 			return false;
 		}
 
-		// Platform claim (required in 5.4.2)
-		if (this.claimAccessor.get(ClaimsEnum.TOOL_PLATFORM, Platform.class) == null) {
-			setReasonToMissingRequiredClaim(ClaimsEnum.TOOL_PLATFORM);
-			return false;
-		}
-
 		return true;
 	}
 
 	/**
 	 * Validates the optional claims of the LTI launch following https://www.imsglobal.org/spec/lti/v1p3/#optional-message-claims
-	 * @param state saved state, if present
 	 * @return true if the optional claims of the LTI launch are valid, false otherwise
 	 */
 	private boolean validateOptionalClaims() {
@@ -192,9 +185,11 @@ public class LaunchValidator {
 		}
 		// 5.4.2 Platform instance claim
 		final Platform platform = this.claimAccessor.get(ClaimsEnum.TOOL_PLATFORM, Platform.class);
-		if (!isIdStringValid(platform.getGuid())) {
-			setReasonToInvalidClaim(ClaimsEnum.TOOL_PLATFORM);
-			return false;
+		if (platform != null) {
+			if (!isIdStringValid(platform.getGuid())) {
+				setReasonToInvalidClaim(ClaimsEnum.TOOL_PLATFORM);
+				return false;
+			}
 		}
 
 		// 5.4.3 Role-scope mentor claims
