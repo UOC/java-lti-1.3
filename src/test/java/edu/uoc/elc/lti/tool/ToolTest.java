@@ -1,6 +1,8 @@
 package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.tool.oidc.InMemoryOIDCLaunchSession;
+import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
+import edu.uoc.lti.accesstoken.JSONAccessTokenRequestBuilderImpl;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.jwt.claims.JWSClaimAccessor;
 import edu.uoc.lti.jwt.claims.TestLaunch;
@@ -32,6 +34,7 @@ public class ToolTest {
 		// since it's a test, we don't check expiration
 		ClaimAccessor claimAccessor = new JWSClaimAccessor(keysetUrl);
 		OIDCLaunchSession launchSession = new InMemoryOIDCLaunchSession();
+		AccessTokenRequestBuilder accessTokenRequestBuilder = new JSONAccessTokenRequestBuilderImpl();
 		this.sut = new Tool(
 						"Universitat Oberta de Catalunya",
 						"Universitat Oberta de Catalunya",
@@ -45,7 +48,8 @@ public class ToolTest {
 						claimAccessor,
 						launchSession,
 						null,
-						null);
+						null,
+						accessTokenRequestBuilder);
 		this.tokenBuilder = new TokenBuilder(
 						"pUaAdoefCd5Tg-TC807mjReHjS3ec8nsY9-nrpWDQS0",
 						"https://www.uoc.edu",

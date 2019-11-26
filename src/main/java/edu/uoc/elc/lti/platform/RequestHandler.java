@@ -3,6 +3,8 @@ package edu.uoc.elc.lti.platform;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.elc.lti.tool.ScopeEnum;
 import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.lti.accesstoken.AccessTokenRequest;
+import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -21,6 +24,7 @@ public class RequestHandler {
 	private String kid;
 	private ToolDefinition toolDefinition;
 	private ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
+	private AccessTokenRequestBuilder accessTokenRequestBuilder;
 
 	public AccessTokenResponse getAccessToken() throws IOException {
 		AccessTokenRequest request = AccessTokenRequest.builder()
@@ -43,24 +47,23 @@ public class RequestHandler {
 	}
 
 
-	private final static String CHARSET = "UTF-8";
+	private final static String CHARSET = StandardCharsets.UTF_8.toString();
 
-	private <T> T post(URL url, Object body, Class<T> type) throws IOException {
-
-		ObjectMapper objectMapper = new ObjectMapper();
-		String bodyAsString = objectMapper.writeValueAsString(body);
+	private <T> T post(URL url, AccessTokenRequest request, Class<T> type) throws IOException {
+		final String bodyAsString = accessTokenRequestBuilder.build(request);
 
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Accept-Charset", CHARSET);
-		connection.setRequestProperty("Content-Type", "application/json"); // FIXME: fixed JSON body
+		connection.setRequestProperty("Content-Type", accessTokenRequestBuilder.getContentType());
 
 		try (OutputStream output = connection.getOutputStream()) {
 			output.write(bodyAsString.getBytes(CHARSET));
 		}
 
 		String response = IOUtils.toString(connection.getInputStream(), CHARSET);
+		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(response, type);
 	}
 }

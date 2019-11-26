@@ -1,7 +1,6 @@
 package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.platform.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.RequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
@@ -10,6 +9,7 @@ import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
 import edu.uoc.lti.MessageTypesEnum;
+import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
@@ -63,9 +63,11 @@ public class Tool {
 	private final OIDCLaunchSession oidcLaunchSession;
 	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
 	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
+	private final AccessTokenRequestBuilder accessTokenRequestBuilder;
 
-	public Tool(String name, String clientId, String platform, String deploymentId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
+	public Tool(String name, String clientId, String platform, String deploymentId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder, AccessTokenRequestBuilder accessTokenRequestBuilder) {
 		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
+		this.accessTokenRequestBuilder = accessTokenRequestBuilder;
 		this.toolDefinition = ToolDefinition.builder()
 						.clientId(clientId)
 						.name(name)
@@ -111,7 +113,7 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder);
+			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
 			accessTokenResponse = requestHandler.getAccessToken();
 		}
 
