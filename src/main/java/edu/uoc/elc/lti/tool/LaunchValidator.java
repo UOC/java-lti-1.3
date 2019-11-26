@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -162,7 +163,8 @@ public class LaunchValidator {
 			return false;
 		}
 		// check it contains, at least one valid role
-		if (!roles.stream().anyMatch(role -> RolesEnum.from(role) != null)) {
+		final List<String> filteredRoles = roles.stream().filter(s -> !s.isEmpty()).collect(Collectors.toList());
+		if (filteredRoles.size() > 0 && !filteredRoles.stream().anyMatch(role -> RolesEnum.from(role) != null)) {
 			setReasonToInvalidClaim(ClaimsEnum.ROLES);
 			return false;
 		}
