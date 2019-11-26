@@ -16,13 +16,15 @@ import org.junit.Test;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class ToolTest {
-	private final static String INVALID_LAUNCHES_DIR = "/lti/invalid/";
-	private final static String VALID_LAUNCHES_DIR = "/lti/valid/";
+	private final static String LTI_INVALID_LAUNCHES_DIR = "/lti/invalid/";
+	private final static String LTI_VALID_LAUNCHES_DIR = "/lti/valid/";
+	private final static String DEEP_LINKING_VALID_LAUNCHES_DIR = "/deeplinking/valid/";
 
 	private Tool sut;
 	private TokenBuilder tokenBuilder;
@@ -61,7 +63,7 @@ public class ToolTest {
 
 	}
 
-	private void assertLaunches(String directory, boolean mustValidate) throws URISyntaxException {
+	private void assertLaunches(String directory, BiConsumer<Boolean, String> callback) throws URISyntaxException {
 		final URL launchesDirectory = getClass().getResource(directory);
 		TestLaunchLoader testLaunchLoader = new TestLaunchLoader();
 		final List<TestLaunch> testLaunches = testLaunchLoader.loadTestLaunches(launchesDirectory.toURI());
@@ -70,13 +72,7 @@ public class ToolTest {
 			for (TestLaunch launch : testLaunches) {
 				final String s = tokenBuilder.build(launch);
 				boolean result = sut.validate(s, null);
-				if (mustValidate) {
-					Assert.assertTrue(launch.getName() + " MUST validate, instead gotten reason " + sut.getReason(), result);
-					Assert.assertNull("Reason for " + launch.getName(), sut.getReason());
-				} else {
-					Assert.assertFalse(launch.getName() + " MUST not validate", result);
-					Assert.assertNotNull("Reason for " + launch.getName(), sut.getReason());
-				}
+				callback.accept(result, launch.getName());
 				count++;
 			}
 			Assert.assertEquals(count, testLaunches.size());
@@ -84,25 +80,28 @@ public class ToolTest {
 	}
 
 	@Test
-	public void validateValidTokensMustReturnTrue() throws URISyntaxException {
-		assertLaunches(VALID_LAUNCHES_DIR, true);
+	public void validateValidLtiLaunchesMustReturnTrue() throws URISyntaxException {
+		assertLaunches(LTI_VALID_LAUNCHES_DIR, (result, name) -> {
+			Assert.assertTrue(name + " MUST validate, instead gotten reason " + sut.getReason(), result);
+			Assert.assertNull("Reason for " + name, sut.getReason());
+			Assert.assertTrue("Launch MUST be a LTI Resource Link Launch", sut.isResourceLinkLaunch());
+		});
 	}
 
 	@Test
-	public void validateInvalidTokensMustReturnFalse() throws URISyntaxException {
-		assertLaunches(INVALID_LAUNCHES_DIR, false);
+	public void validateInvalidLtiLaunchesMustReturnFalse() throws URISyntaxException {
+		assertLaunches(LTI_INVALID_LAUNCHES_DIR, (result, name) -> {
+			Assert.assertFalse(name + " MUST not validate", result);
+			Assert.assertNotNull("Reason for " + name, sut.getReason());
+		});
 	}
 
-	/*
 	@Test
-	public void validateDeepLinkRequest() {
-		String token = "eyJhbGciOiJSUzI1NiIsImtpZCI6InBVYUFkb2VmQ2Q1VGctVEM4MDdtalJlSGpTM2VjOG5zWTktbnJwV0RRUzAifQ.eyJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9tZXNzYWdlX3R5cGUiOiJMdGlEZWVwTGlua2luZ1JlcXVlc3QiLCJnaXZlbl9uYW1lIjoiTGVzdGVyIiwiZmFtaWx5X25hbWUiOiJIeWF0dCIsIm1pZGRsZV9uYW1lIjoiRW5vY2giLCJwaWN0dXJlIjoiaHR0cDovL2V4YW1wbGUub3JnL0xlc3Rlci5qcGciLCJlbWFpbCI6Ikxlc3Rlci5IeWF0dEBleGFtcGxlLm9yZyIsIm5hbWUiOiJMZXN0ZXIgRW5vY2ggSHlhdHQiLCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9yb2xlcyI6WyJodHRwOi8vcHVybC5pbXNnbG9iYWwub3JnL3ZvY2FiL2xpcy92Mi9pbnN0aXR1dGlvbi9wZXJzb24jSW5zdHJ1Y3RvciJdLCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9yb2xlX3Njb3BlX21lbnRvciI6WyJhNjJjNTJjMDJiYTI2MjAwM2Y1ZSJdLCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9jb250ZXh0Ijp7ImlkIjoiODgiLCJsYWJlbCI6IlRlc3QgQ291cnNlIiwidGl0bGUiOiJUZXN0IENvdXJzZSIsInR5cGUiOlsiQ291cnNlT2ZmZXJpbmciXX0sImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpL2NsYWltL3Rvb2xfcGxhdGZvcm0iOnsibmFtZSI6IlVPQyBUZXN0IHBsYXRmb3JtIiwiY29udGFjdF9lbWFpbCI6IiIsImRlc2NyaXB0aW9uIjoiIiwidXJsIjoiIiwicHJvZHVjdF9mYW1pbHlfY29kZSI6IiIsInZlcnNpb24iOiIxLjAifSwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGktZGwvY2xhaW0vZGVlcF9saW5raW5nX3NldHRpbmdzIjp7ImFjY2VwdF90eXBlcyI6WyJsaW5rIiwiZmlsZSIsImh0bWwiLCJsdGlSZXNvdXJjZUxpbmsiLCJpbWFnZSJdLCJhY2NlcHRfbWVkaWFfdHlwZXMiOiJpbWFnZS8qLHRleHQvaHRtbCIsImFjY2VwdF9wcmVzZW50YXRpb25fZG9jdW1lbnRfdGFyZ2V0cyI6WyJpZnJhbWUiLCJ3aW5kb3ciLCJlbWJlZCJdLCJhY2NlcHRfbXVsdGlwbGUiOnRydWUsImF1dG9fY3JlYXRlIjp0cnVlLCJ0aXRsZSI6IlRoaXMgaXMgdGhlIGRlZmF1bHQgdGl0bGUiLCJ0ZXh0IjoiVGhpcyBpcyB0aGUgZGVmYXVsdCB0ZXh0IiwiZGF0YSI6IlNvbWUgcmFuZG9tIG9wYXF1ZSBkYXRhIHRoYXQgTVVTVCBiZSBzZW50IGJhY2siLCJkZWVwX2xpbmtfcmV0dXJuX3VybCI6Imh0dHBzOi8vbHRpLXJpLmltc2dsb2JhbC5vcmcvcGxhdGZvcm1zLzY4L2NvbnRleHRzLzg4L2RlZXBfbGlua3MifSwiaXNzIjoiaHR0cHM6Ly93d3cudW9jLmVkdSIsImF1ZCI6IlVuaXZlcnNpdGF0IE9iZXJ0YSBkZSBDYXRhbHVueWEiLCJpYXQiOjE1NTQxMzc0MjgsImV4cCI6MTU1NDEzNzcyOCwic3ViIjoiYzYzMTgwODdkNjg1NTEwNTU3ZjkiLCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9sdGkxMV9sZWdhY3lfdXNlcl9pZCI6ImM2MzE4MDg3ZDY4NTUxMDU1N2Y5Iiwibm9uY2UiOiI1NDU1MTFkMzc5NjdmOGY0MzlhMiIsImh0dHBzOi8vcHVybC5pbXNnbG9iYWwub3JnL3NwZWMvbHRpL2NsYWltL3ZlcnNpb24iOiIxLjMuMCIsImxvY2FsZSI6ImVuLVVTIiwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vbGF1bmNoX3ByZXNlbnRhdGlvbiI6eyJkb2N1bWVudF90YXJnZXQiOiJpZnJhbWUiLCJoZWlnaHQiOjMyMCwid2lkdGgiOjI0MH0sImh0dHBzOi8vd3d3LmV4YW1wbGUuY29tL2V4dGVuc2lvbiI6eyJjb2xvciI6InZpb2xldCJ9LCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9jdXN0b20iOnsibXlDdXN0b21WYWx1ZSI6IjEyMyJ9LCJodHRwczovL3B1cmwuaW1zZ2xvYmFsLm9yZy9zcGVjL2x0aS9jbGFpbS9kZXBsb3ltZW50X2lkIjoiIiwiaHR0cHM6Ly9wdXJsLmltc2dsb2JhbC5vcmcvc3BlYy9sdGkvY2xhaW0vdGFyZ2V0X2xpbmtfdXJpIjoiaHR0cHM6Ly9sdGktcmkuaW1zZ2xvYmFsLm9yZy9sdGkvdG9vbHMvNzAvZGVlcF9saW5rX2xhdW5jaGVzIn0.iouIK8dqEuqKjH_Clqa7GriNuyEkQwLgov6ysw-Sr_NlhmW6BO0FIoqpZ_9q1d155X0nvbCfF1kI_hy3sNTKv8w0VBeP_fxv9GCruVLeAFrOJyvu_vSpkqI1UZblugAT5wL-8pa041N8UeqAzz4ClpFrR9MtzAnprKjOG_yG6tsyatWDsawpRaKHQGtQud3bWcPV_xFSfUZoEewxNjTtz1kwx-UbxBSzZDCxbWsEHqyIatr_mwywqcDcxqgRa05tAp5L4gZzxcrz7RPN83ATDuZYAfjfJTy9gJxFbTKgQ0plrxUbyCd_vybpXOn3wLlNHTR49IRV30AcZYooVl-3sA";
-		boolean result = sut.validate(token, null);
-		Assert.assertTrue(result);
-		Assert.assertTrue(sut.isDeepLinkingRequest());
-		Assert.assertFalse(sut.isResourceLinkLaunch());
-
-		// assert deep linking settings exists
-		Assert.assertNotNull(sut.getDeepLinkingSettings());
-	}*/
+	public void validateValidDeepLinkingLaunchesMustReturnTrue() throws URISyntaxException {
+		assertLaunches(DEEP_LINKING_VALID_LAUNCHES_DIR, (result, name) -> {
+			Assert.assertTrue(name + " MUST validate, instead gotten reason " + sut.getReason(), result);
+			Assert.assertNull("Reason for " + name, sut.getReason());
+			Assert.assertTrue("Launch MUST be a DeepLinking launch", sut.isDeepLinkingRequest());
+		});
+	}
 }
