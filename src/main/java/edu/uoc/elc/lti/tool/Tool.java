@@ -1,8 +1,8 @@
 package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.elc.lti.platform.AccessTokenResponse;
-import edu.uoc.elc.lti.platform.RequestHandler;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
@@ -113,8 +113,8 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
-			accessTokenResponse = requestHandler.getAccessToken();
+			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
+			accessTokenResponse = accessTokenRequestHandler.getAccessToken();
 		}
 
 		return accessTokenResponse;

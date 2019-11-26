@@ -1,4 +1,4 @@
-package edu.uoc.elc.lti.platform;
+package edu.uoc.elc.lti.platform.accesstoken;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.elc.lti.tool.ScopeEnum;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @AllArgsConstructor
-public class RequestHandler {
+public class AccessTokenRequestHandler {
 	private String kid;
 	private ToolDefinition toolDefinition;
 	private ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
