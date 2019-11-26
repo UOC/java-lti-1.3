@@ -30,8 +30,6 @@ import java.util.Map;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 public class Tool {
-
-
 	@Getter
 	String issuer;
 	@Getter
@@ -49,12 +47,6 @@ public class Tool {
 	@Getter
 	private User user;
 
-	private final ToolDefinition toolDefinition;
-	private final ClaimAccessor claimAccessor;
-	private final OIDCLaunchSession oidcLaunchSession;
-	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
-	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
-
 	@Getter
 	private String locale;
 
@@ -65,6 +57,12 @@ public class Tool {
 	private String reason;
 
 	private AccessTokenResponse accessTokenResponse;
+
+	private final ToolDefinition toolDefinition;
+	private final ClaimAccessor claimAccessor;
+	private final OIDCLaunchSession oidcLaunchSession;
+	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
+	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
 
 	public Tool(String name, String clientId, String platform, String deploymentId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
 		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
