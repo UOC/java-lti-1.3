@@ -154,7 +154,7 @@ public class DeepLinkingClientTest {
 
 		this.sut.addItem(item());
 
-		this.sut.perform();
+		this.sut.sendResponseBackToPlatform();
 	}
 
 

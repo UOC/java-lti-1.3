@@ -8,7 +8,6 @@ import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
 import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -55,13 +54,10 @@ public class DeepLinkingClient {
 		itemList.add(item);
 	}
 
-	/**
-	 * Performs the DeepLinking response back to the platform
-	 */
-	public void perform() throws IOException {
+	public String sendResponseBackToPlatform() throws IOException {
 		this.jwt = generateJWT();
 		URL url = new URL(settings.getDeep_link_return_url());
-		postToService(url);
+		return postToService(url);
 	}
 
 	private String generateJWT() {
