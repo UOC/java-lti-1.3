@@ -66,39 +66,6 @@ public class DeepLinkingClientTest {
 	}
 
 	@Test
-	public void canAddItemOfType() {
-		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("link", "file"));
-
-		Assert.assertTrue(this.sut.canAddItemOfType("link"));
-		Assert.assertTrue(this.sut.canAddItemOfType("file"));
-		Assert.assertFalse(this.sut.canAddItemOfType("ltiResourceLink"));
-		Assert.assertFalse(this.sut.canAddItemOfType("otherType"));
-	}
-
-	@Test
-	public void canAddFileItemOfMediaType() {
-		Mockito.when(settings.getAccept_media_types()).thenReturn(Arrays.asList("application/pdf","text/html"));
-
-		Assert.assertTrue(this.sut.canAddFileItemOfMediaType("application/pdf"));
-		Assert.assertTrue(this.sut.canAddFileItemOfMediaType("text/html"));
-		Assert.assertFalse(this.sut.canAddFileItemOfMediaType("application/binary-stream"));
-		Assert.assertFalse(this.sut.canAddFileItemOfMediaType("text/plain"));
-	}
-
-	@Test
-	public void getDefaultTitle() {
-		Mockito.when(settings.getTitle()).thenReturn("some text");
-		Assert.assertEquals("some text", this.sut.getDefaultTitle());
-	}
-
-	@Test
-	public void getDefaultText() {
-		Mockito.when(settings.getText()).thenReturn("some text");
-		Assert.assertEquals("some text", this.sut.getDefaultText());
-	}
-
-
-	@Test
 	public void addItem() {
 		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("link"));
 		Mockito.when(settings.isAccept_multiple()).thenReturn(true);

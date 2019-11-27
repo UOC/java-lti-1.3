@@ -5,7 +5,6 @@ import edu.uoc.elc.lti.platform.PlatformClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.DeepLinkingResponse;
 import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
-import edu.uoc.lti.deeplink.content.FileItem;
 import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,34 +39,16 @@ public class DeepLinkingClient {
 		return settings.isAccept_multiple() || itemList.size() == 0;
 	}
 
-	public boolean canAddItemOfType(String type) {
-		return settings.getAccept_types().contains(type);
-	}
-
-	public boolean canAddFileItemOfMediaType(String type) {
-		final List<String> acceptMediaTypes = settings.getAccept_media_types();
-		return (acceptMediaTypes != null && acceptMediaTypes.size() > 0 ? acceptMediaTypes.contains(type) : true);
-	}
-
 	public void addItem(Item item) {
 		// check for multiple content item
 		if (!canAddItem()) {
 			throw new InvalidLTICallException("Platform doesn't allow multiple content items");
 		}
 
-		// check for accepted types
-		if (!canAddItemOfType(item.getType())) {
-			throw new InvalidLTICallException("Platform doesn't allow content items of type " + item.getType());
+		ItemValidator itemValidator = ItemValidatorFactory.itemValidatorFor(item, settings);
+		if (!itemValidator.isValid(item)) {
+			throw new InvalidLTICallException(itemValidator.getMessage());
 		}
-
-		if (item instanceof FileItem) {
-			FileItem fileItem = (FileItem) item;
-			if (!canAddFileItemOfMediaType(fileItem.getMediaType())) {
-				throw new InvalidLTICallException("Platform doesn't allow file content items of media type " + fileItem.getMediaType());
-			}
-		}
-
-		// TODO: add more validations like presentation
 
 		itemList.add(item);
 	}
