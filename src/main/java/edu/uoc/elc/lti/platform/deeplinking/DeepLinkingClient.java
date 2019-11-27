@@ -19,8 +19,6 @@ import java.util.List;
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
 @RequiredArgsConstructor
-@Getter
-@Setter
 public class DeepLinkingClient {
 
 	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
@@ -33,6 +31,7 @@ public class DeepLinkingClient {
 	private final String deploymentId;
 	private final Settings settings;
 
+	@Getter
 	private List<Item> itemList = new ArrayList<>();
 
 	public boolean canAddItem() {

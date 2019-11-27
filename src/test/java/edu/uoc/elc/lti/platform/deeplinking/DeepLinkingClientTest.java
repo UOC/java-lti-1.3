@@ -45,11 +45,11 @@ public class DeepLinkingClientTest {
 		Mockito.when(settings.isAccept_multiple()).thenReturn(true);
 
 		// one element
-		this.sut.setItemList(Arrays.asList(item()));
+		this.sut.addItem(item());
 		Assert.assertTrue(this.sut.canAddItem());
 
 		// more than one element
-		this.sut.setItemList(Arrays.asList(item(), item(), item()));
+		this.sut.addItem(item());
 		Assert.assertTrue(this.sut.canAddItem());
 	}
 
@@ -61,7 +61,7 @@ public class DeepLinkingClientTest {
 		Assert.assertTrue(this.sut.canAddItem());
 
 		// one element
-		this.sut.setItemList(Arrays.asList(item()));
+		this.sut.addItem(item());
 		Assert.assertFalse(this.sut.canAddItem());
 	}
 
