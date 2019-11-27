@@ -28,6 +28,7 @@ public class DeepLinkingClientTest {
 	public void setUp() {
 		this.settings = Mockito.mock(Settings.class);
 		this.sut = new DeepLinkingClient(null, null, null, null, null, null, settings);
+		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("link"));
 	}
 
 	private Item item() {
