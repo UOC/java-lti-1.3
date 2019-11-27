@@ -1,6 +1,7 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
+import edu.uoc.elc.lti.platform.PlatformClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.DeepLinkingResponse;
 import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
@@ -9,11 +10,8 @@ import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,24 +102,11 @@ public class DeepLinkingClient {
 
 		URL url = new URL(settings.getDeep_link_return_url());
 		// post the JWT back to the platform
-		post(url, "JWT=" + token, null);
+		postToService(url, "JWT=" + token);
 	}
 
-	private final static String CHARSET = "UTF-8";
-
-	private <T> String post(URL url, String body, Class<T> type) throws IOException {
-
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(true);
-		connection.setRequestProperty("Accept-Charset", CHARSET);
-
-		try (OutputStream output = connection.getOutputStream()) {
-			output.write(body.getBytes(CHARSET));
-		}
-
-		String response = IOUtils.toString(connection.getInputStream(), CHARSET);
-		return response;
-		//return objectMapper.readValue(response, type);
+	private String postToService(URL url, String body) throws IOException {
+		PlatformClient platformClient = new PlatformClient();
+		return platformClient.post(url, body, null, String.class);
 	}
 }

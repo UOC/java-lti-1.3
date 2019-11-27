@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.platform.accesstoken;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.uoc.elc.lti.platform.PlatformClient;
 import edu.uoc.elc.lti.tool.ScopeEnum;
 import edu.uoc.elc.lti.tool.ToolDefinition;
 import edu.uoc.lti.accesstoken.AccessTokenRequest;
@@ -8,13 +8,9 @@ import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
 import lombok.AllArgsConstructor;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -35,7 +31,7 @@ public class AccessTokenRequestHandler {
 						.build();
 
 		// do a post to the service
-		return post(new URL(toolDefinition.getAccessTokenUrl()), request, AccessTokenResponse.class);
+		return postToService(new URL(toolDefinition.getAccessTokenUrl()), request);
 	}
 
 	private String getClientAssertion() {
@@ -46,24 +42,11 @@ public class AccessTokenRequestHandler {
 		return clientCredentialsTokenBuilder.build(clientCredentialsRequest);
 	}
 
-
-	private final static String CHARSET = StandardCharsets.UTF_8.toString();
-
-	private <T> T post(URL url, AccessTokenRequest request, Class<T> type) throws IOException {
+	private AccessTokenResponse postToService(URL url, AccessTokenRequest request) throws IOException {
 		final String bodyAsString = accessTokenRequestBuilder.build(request);
+		final String contentType = accessTokenRequestBuilder.getContentType();
 
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(true);
-		connection.setRequestProperty("Accept-Charset", CHARSET);
-		connection.setRequestProperty("Content-Type", accessTokenRequestBuilder.getContentType());
-
-		try (OutputStream output = connection.getOutputStream()) {
-			output.write(bodyAsString.getBytes(CHARSET));
-		}
-
-		String response = IOUtils.toString(connection.getInputStream(), CHARSET);
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readValue(response, type);
+		PlatformClient platformClient = new PlatformClient();
+		return platformClient.post(url, bodyAsString, contentType, AccessTokenResponse.class);
 	}
 }
