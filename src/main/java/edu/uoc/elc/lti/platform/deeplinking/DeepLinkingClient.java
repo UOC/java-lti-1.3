@@ -73,23 +73,6 @@ public class DeepLinkingClient {
 	}
 
 	/**
-	 * Gets the default text to be used as the title or alt text for the content item returned by the tool
-	 * @return the default title provided by the platform.
-	 */
-	public String getDefaultTitle() {
-		return settings.getTitle();
-	}
-
-	/**
-	 * Gets the default text to be used as the visible text for the content item returned by the tool.
-	 * If no text is returned by the tool, the platform may use the value of the title parameter instead (if any).
-	 * @return the default text provided by the platform.
-	 */
-	public String getDefaultText() {
-		return settings.getText();
-	}
-
-	/**
 	 * Performs the DeepLinking response back to the platform
 	 */
 	public void perform() throws IOException {
