@@ -34,6 +34,9 @@ public class DeepLinkingClient {
 	@Getter
 	private List<Item> itemList = new ArrayList<>();
 
+	@Getter
+	private String jwt;
+
 	public boolean canAddItem() {
 		return settings.isAccept_multiple() || itemList.size() == 0;
 	}
@@ -56,20 +59,20 @@ public class DeepLinkingClient {
 	 * Performs the DeepLinking response back to the platform
 	 */
 	public void perform() throws IOException {
-
-		// generate the JWT
-		DeepLinkingResponse deepLinkingResponse = new DeepLinkingResponse(platformName,
-						toolName, azp, kid, deploymentId, settings.getData(), itemList);
-		String token = deepLinkingTokenBuilder.build(deepLinkingResponse);
-
-
+		this.jwt = generateJWT();
 		URL url = new URL(settings.getDeep_link_return_url());
-		// post the JWT back to the platform
-		postToService(url, "JWT=" + token);
+		postToService(url);
 	}
 
-	private String postToService(URL url, String body) throws IOException {
+	private String generateJWT() {
+		DeepLinkingResponse deepLinkingResponse = new DeepLinkingResponse(platformName,
+						toolName, azp, kid, deploymentId, settings.getData(), itemList);
+		return deepLinkingTokenBuilder.build(deepLinkingResponse);
+	}
+
+	private String postToService(URL url) throws IOException {
 		PlatformClient platformClient = new PlatformClient();
+		final String body = "JWT=" + this.jwt;
 		return platformClient.post(url, body, null, String.class);
 	}
 }
