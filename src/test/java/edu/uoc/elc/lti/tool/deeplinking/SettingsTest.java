@@ -15,7 +15,7 @@ public class SettingsTest {
 	@Test
 	public void getAcceptMediaTypesAsList() {
 		this.sut = new Settings();
-		this.sut.setAccept_media_types(Arrays.asList("application/pdf,text/html"));
+		this.sut.setAccept_media_types(Arrays.asList("application/pdf","text/html"));
 
 		final List<String> list = this.sut.getAccept_media_types();
 		Assert.assertNotNull(list);
