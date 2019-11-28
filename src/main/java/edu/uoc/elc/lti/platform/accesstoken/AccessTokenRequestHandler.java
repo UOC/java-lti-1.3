@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
@@ -26,7 +29,7 @@ public class AccessTokenRequestHandler {
 		AccessTokenRequest request = AccessTokenRequest.builder()
 						.grant_type("client_credentials")
 						.client_assertion_type("urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-						.scope(ScopeEnum.AGS_SCOPE_LINE_ITEM.getScope() + " " + ScopeEnum.AGS_SCOPE_RESULT.getScope() + " " + ScopeEnum.NAMES_AND_ROLES_SCOPE.getScope())
+						.scope(scopes())
 						.client_assertion(getClientAssertion())
 						.build();
 
@@ -40,6 +43,11 @@ public class AccessTokenRequestHandler {
 						toolDefinition.getClientId(),
 						toolDefinition.getAccessTokenUrl());
 		return clientCredentialsTokenBuilder.build(clientCredentialsRequest);
+	}
+
+	private String scopes() {
+		List<ScopeEnum> scopeEnums = Arrays.asList(ScopeEnum.AGS_SCOPE_LINE_ITEM, ScopeEnum.AGS_SCOPE_RESULT, ScopeEnum.NAMES_AND_ROLES_SCOPE);
+		return scopeEnums.stream().map(ScopeEnum::getScope).collect(Collectors.joining(" "));
 	}
 
 	private AccessTokenResponse postToService(URL url, AccessTokenRequest request) throws IOException {
