@@ -1,8 +1,8 @@
 package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
@@ -207,10 +207,10 @@ public class Tool {
 		return new DeepLinkingClient(
 						deepLinkingTokenBuilder,
 						getIssuer(),
-						getAudience(),
+						toolDefinition.getClientId(),
 						this.claimAccessor.getAzp(),
-						this.kid,
 						getDeploymentId(),
+						this.claimAccessor.get(ClaimsEnum.NONCE),
 						getDeepLinkingSettings());
 	}
 
