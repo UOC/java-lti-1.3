@@ -7,7 +7,7 @@ import edu.uoc.lti.accesstoken.AccessTokenRequest;
 import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,12 +15,12 @@ import java.net.URL;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AccessTokenRequestHandler {
-	private String kid;
-	private ToolDefinition toolDefinition;
-	private ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
-	private AccessTokenRequestBuilder accessTokenRequestBuilder;
+	private final String kid;
+	private final ToolDefinition toolDefinition;
+	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
+	private final AccessTokenRequestBuilder accessTokenRequestBuilder;
 
 	public AccessTokenResponse getAccessToken() throws IOException {
 		AccessTokenRequest request = AccessTokenRequest.builder()
