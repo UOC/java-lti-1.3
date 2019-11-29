@@ -15,7 +15,7 @@ public class AssignmentGradeService {
 	private String lineitems;
 	private String lineitem;
 
-	public boolean canReadGrades() {
+	public boolean canReadResults() {
 		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_RESULT.getScope());
 	}
 
