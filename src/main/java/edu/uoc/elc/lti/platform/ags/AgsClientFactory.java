@@ -23,21 +23,21 @@ public class AgsClientFactory {
 	private final ResourceLink resourceLink;
 
 	public GenericResultServiceClient getResultServiceClient(ResultServiceClient resultServiceClient) {
-		if (!hasAgsClaim()) {
+		if (!hasAgsService()) {
 			return new EmptyResultServiceClient();
 		}
 		return new GenericResultServiceClient(assignmentGradeService.canReadResults(), resultServiceClient);
 	}
 
 	public GenericScoreServiceClient getScoreServiceClient(ScoreServiceClient scoreServiceClient) {
-		if (!hasAgsClaim()) {
+		if (!hasAgsService()) {
 			return new EmptyScoreServiceClient();
 		}
 		return new GenericScoreServiceClient(assignmentGradeService.canScore(), scoreServiceClient);
 	}
 
 	public ToolLineItemServiceClient getLineItemServiceClient(LineItemServiceClient lineItemServiceClient) {
-		if (!hasAgsClaim()) {
+		if (!hasAgsService()) {
 			return new EmptyToolLineItemServiceClient();
 		}
 		return new ToolLineItemServiceClient(getServerUri(),
@@ -47,7 +47,7 @@ public class AgsClientFactory {
 						lineItemServiceClient);
 	}
 
-	private boolean hasAgsClaim() {
+	public boolean hasAgsService() {
 		return assignmentGradeService != null;
 	}
 
