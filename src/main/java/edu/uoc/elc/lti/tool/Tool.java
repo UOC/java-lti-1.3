@@ -3,19 +3,18 @@ package edu.uoc.elc.lti.tool;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
 import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
+import edu.uoc.elc.lti.platform.ags.AgsClientFactory;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
 import edu.uoc.lti.MessageTypesEnum;
-import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
-import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
-import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -29,6 +28,7 @@ import java.util.Map;
 /**
  * @author Xavi Aracil <xaracil@uoc.edu>
  */
+@RequiredArgsConstructor
 public class Tool {
 	@Getter
 	String issuer;
@@ -61,28 +61,7 @@ public class Tool {
 	private final ToolDefinition toolDefinition;
 	private final ClaimAccessor claimAccessor;
 	private final OIDCLaunchSession oidcLaunchSession;
-	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
-	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
-	private final AccessTokenRequestBuilder accessTokenRequestBuilder;
-
-	public Tool(String name, String clientId, String platform, String deploymentId, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder, AccessTokenRequestBuilder accessTokenRequestBuilder) {
-		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
-		this.accessTokenRequestBuilder = accessTokenRequestBuilder;
-		this.toolDefinition = ToolDefinition.builder()
-						.clientId(clientId)
-						.name(name)
-						.platform(platform)
-						.deploymentId(deploymentId)
-						.keySetUrl(keySetUrl)
-						.accessTokenUrl(accessTokenUrl)
-						.oidcAuthUrl(oidcAuthUrl)
-						.privateKey(privateKey)
-						.publicKey(publicKey)
-						.build();
-		this.claimAccessor = claimAccessor;
-		this.oidcLaunchSession = oidcLaunchSession;
-		this.deepLinkingTokenBuilder = deepLinkingTokenBuilder;
-	}
+	private final ToolBuilders toolBuilders;
 
 	public boolean validate(String token, String state) {
 		LaunchValidator launchValidator = new LaunchValidator(toolDefinition, claimAccessor, oidcLaunchSession);
@@ -113,7 +92,10 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
+			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid,
+							toolDefinition,
+							toolBuilders.getClientCredentialsTokenBuilder(),
+							toolBuilders.getAccessTokenRequestBuilder());
 			accessTokenResponse = accessTokenRequestHandler.getAccessToken();
 		}
 
@@ -205,13 +187,21 @@ public class Tool {
 		}
 
 		return new DeepLinkingClient(
-						deepLinkingTokenBuilder,
+						toolBuilders.getDeepLinkingTokenBuilder(),
 						getIssuer(),
 						toolDefinition.getClientId(),
 						this.claimAccessor.getAzp(),
 						getDeploymentId(),
 						this.claimAccessor.get(ClaimsEnum.NONCE),
 						getDeepLinkingSettings());
+	}
+
+	public AgsClientFactory getAssignmentGradeServiceClientFactory() {
+		return new AgsClientFactory(getAssignmentGradeService(),
+						getResourceLink(),
+						toolBuilders.getResultServiceClient(),
+						toolBuilders.getScoreServiceClient(),
+						toolBuilders.getLineItemServiceClient());
 	}
 
 	// roles commodity methods
