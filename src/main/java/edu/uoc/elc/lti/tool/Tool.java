@@ -198,10 +198,7 @@ public class Tool {
 
 	public AgsClientFactory getAssignmentGradeServiceClientFactory() {
 		return new AgsClientFactory(getAssignmentGradeService(),
-						getResourceLink(),
-						toolBuilders.getResultServiceClient(),
-						toolBuilders.getScoreServiceClient(),
-						toolBuilders.getLineItemServiceClient());
+						getResourceLink());
 	}
 
 	// roles commodity methods

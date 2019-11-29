@@ -46,9 +46,6 @@ public class ToolTest {
 						.build();
 		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(publicKey, privateKey),
 						new JSONAccessTokenRequestBuilderImpl(),
-						null,
-						null,
-						null,
 						null);
 		this.sut = new Tool(
 						toolDefinition,

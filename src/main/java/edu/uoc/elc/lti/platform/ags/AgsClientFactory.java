@@ -21,25 +21,22 @@ import java.net.URISyntaxException;
 public class AgsClientFactory {
 	private final AssignmentGradeService assignmentGradeService;
 	private final ResourceLink resourceLink;
-	private final ResultServiceClient resultServiceClient;
-	private final ScoreServiceClient scoreServiceClient;
-	private final LineItemServiceClient lineItemServiceClient;
 
-	public GenericResultServiceClient getResultServiceClient() {
+	public GenericResultServiceClient getResultServiceClient(ResultServiceClient resultServiceClient) {
 		if (!hasAgsClaim()) {
 			return new EmptyResultServiceClient();
 		}
 		return new GenericResultServiceClient(assignmentGradeService.canReadResults(), resultServiceClient);
 	}
 
-	public GenericScoreServiceClient getScoreServiceClient() {
+	public GenericScoreServiceClient getScoreServiceClient(ScoreServiceClient scoreServiceClient) {
 		if (!hasAgsClaim()) {
 			return new EmptyScoreServiceClient();
 		}
 		return new GenericScoreServiceClient(assignmentGradeService.canScore(), scoreServiceClient);
 	}
 
-	public ToolLineItemServiceClient getLineItemServiceClient() {
+	public ToolLineItemServiceClient getLineItemServiceClient(LineItemServiceClient lineItemServiceClient) {
 		if (!hasAgsClaim()) {
 			return new EmptyToolLineItemServiceClient();
 		}
