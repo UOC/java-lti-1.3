@@ -13,6 +13,7 @@ import java.util.List;
 public class AssignmentGradeService {
 	private List<String> scope;
 	private String lineitems;
+	private String lineitem;
 
 	public boolean canReadGrades() {
 		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_RESULT.getScope());
