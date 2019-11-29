@@ -29,14 +29,14 @@ public class AgsClientFactory {
 		if (!hasAgsClaim()) {
 			return new EmptyResultServiceClient();
 		}
-		return new GenericResultServiceClient(getServerUri(), assignmentGradeService.canReadResults(), resultServiceClient);
+		return new GenericResultServiceClient(assignmentGradeService.canReadResults(), resultServiceClient);
 	}
 
 	public GenericScoreServiceClient getScoreServiceClient() {
 		if (!hasAgsClaim()) {
 			return new EmptyScoreServiceClient();
 		}
-		return new GenericScoreServiceClient(getServerUri(), assignmentGradeService.canScore(), scoreServiceClient);
+		return new GenericScoreServiceClient(assignmentGradeService.canScore(), scoreServiceClient);
 	}
 
 	public ToolLineItemServiceClient getLineItemServiceClient() {

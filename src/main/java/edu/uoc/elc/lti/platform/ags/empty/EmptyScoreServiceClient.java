@@ -8,6 +8,6 @@ import edu.uoc.elc.lti.platform.ags.GenericScoreServiceClient;
 public class EmptyScoreServiceClient extends GenericScoreServiceClient {
 
 	public EmptyScoreServiceClient() {
-		super(null, false, null);
+		super(false, null);
 	}
 }

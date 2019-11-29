@@ -7,6 +7,6 @@ import edu.uoc.elc.lti.platform.ags.GenericResultServiceClient;
  */
 public class EmptyResultServiceClient extends GenericResultServiceClient {
 	public EmptyResultServiceClient() {
-		super(null, false, null);
+		super(false, null);
 	}
 }
