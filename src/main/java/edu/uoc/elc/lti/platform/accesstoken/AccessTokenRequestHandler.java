@@ -46,7 +46,7 @@ public class AccessTokenRequestHandler {
 	}
 
 	private String scopes() {
-		List<ScopeEnum> scopeEnums = Arrays.asList(ScopeEnum.AGS_SCOPE_LINE_ITEM, ScopeEnum.AGS_SCOPE_RESULT, ScopeEnum.NAMES_AND_ROLES_SCOPE);
+		List<ScopeEnum> scopeEnums = Arrays.asList(ScopeEnum.AGS_SCOPE_LINE_ITEM, ScopeEnum.AGS_SCOPE_RESULT, ScopeEnum.NAMES_AND_ROLES_SCOPE, ScopeEnum.AGS_SCOPE_SCORE);
 		return scopeEnums.stream().map(ScopeEnum::getScope).collect(Collectors.joining(" "));
 	}
 
