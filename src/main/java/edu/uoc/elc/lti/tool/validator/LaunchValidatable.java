@@ -5,7 +5,7 @@ import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public interface LaunchValidatable {
 	boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession);

@@ -8,7 +8,7 @@ import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @RequiredArgsConstructor
 public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {

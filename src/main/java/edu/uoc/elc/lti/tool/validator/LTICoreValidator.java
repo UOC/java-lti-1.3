@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Core validator, validades only core requirements (common to all launches)
  * Intented to expand by subclasses
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class LTICoreValidator implements LaunchValidatable {
 	static final int ID_MAX_LENGTH = 255;

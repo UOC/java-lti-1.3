@@ -5,7 +5,7 @@ import edu.uoc.lti.deeplink.content.Item;
 import edu.uoc.lti.deeplink.content.LinkItem;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class LinkItemValidator extends ItemValidator {
 	public LinkItemValidator(Settings settings) {

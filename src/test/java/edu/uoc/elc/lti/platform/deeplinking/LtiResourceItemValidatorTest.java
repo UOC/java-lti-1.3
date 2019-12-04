@@ -12,7 +12,7 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class LtiResourceItemValidatorTest {
 	private LtiResourceItemValidator sut;

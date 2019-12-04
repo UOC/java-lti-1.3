@@ -6,7 +6,7 @@ import edu.uoc.lti.ags.ScoreServiceClient;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @RequiredArgsConstructor
 public class GenericScoreServiceClient {

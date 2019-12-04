@@ -7,7 +7,7 @@ import edu.uoc.lti.deeplink.content.Item;
 import java.util.List;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class FileItemValidator extends ItemValidator {
 	public FileItemValidator(Settings settings) {

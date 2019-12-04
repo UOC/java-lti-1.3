@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.time.Instant;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class ScoreTest {
 

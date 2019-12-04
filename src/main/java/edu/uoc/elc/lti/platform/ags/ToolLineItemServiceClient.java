@@ -9,7 +9,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @RequiredArgsConstructor
 public class ToolLineItemServiceClient {

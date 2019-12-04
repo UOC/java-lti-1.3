@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class DeepLinkingClientTest {
 

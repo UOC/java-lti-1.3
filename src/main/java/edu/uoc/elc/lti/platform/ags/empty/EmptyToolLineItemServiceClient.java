@@ -3,7 +3,7 @@ package edu.uoc.elc.lti.platform.ags.empty;
 import edu.uoc.elc.lti.platform.ags.ToolLineItemServiceClient;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class EmptyToolLineItemServiceClient extends ToolLineItemServiceClient {
 	public EmptyToolLineItemServiceClient() {

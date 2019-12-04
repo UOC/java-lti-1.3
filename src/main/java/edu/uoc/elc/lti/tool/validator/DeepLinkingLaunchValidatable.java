@@ -10,7 +10,7 @@ import edu.uoc.lti.oidc.OIDCLaunchSession;
 import java.util.List;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class DeepLinkingLaunchValidatable extends LTICoreValidator {
 	/**

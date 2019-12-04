@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class ToolTest {
 	private final static String LTI_INVALID_LAUNCHES_DIR = "/lti/invalid/";

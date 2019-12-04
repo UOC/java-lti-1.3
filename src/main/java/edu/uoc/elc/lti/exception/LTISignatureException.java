@@ -1,7 +1,7 @@
 package edu.uoc.elc.lti.exception;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class LTISignatureException extends RuntimeException {
 	public LTISignatureException(String message) {

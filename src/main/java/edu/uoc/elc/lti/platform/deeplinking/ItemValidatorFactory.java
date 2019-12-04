@@ -7,7 +7,7 @@ import edu.uoc.lti.deeplink.content.LinkItem;
 import edu.uoc.lti.deeplink.content.LtiResourceItem;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 public class ItemValidatorFactory {
 	public static ItemValidator itemValidatorFor(Item item, Settings settings) {
