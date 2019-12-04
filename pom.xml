@@ -17,6 +17,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@devel.elearnlab.org:elearn/lti.git</connection>
+        <developerConnection>scm:git:git@devel.elearnlab.org:elearn/lti.git</developerConnection>
+        <url>https://devel.elearnlab.org/elearn/lti</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <repositories>
         <repository>
             <id>devel.elearnlab.org</id>
