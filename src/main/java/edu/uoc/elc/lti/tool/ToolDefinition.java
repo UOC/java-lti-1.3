@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @Getter
 @Builder
@@ -17,4 +17,5 @@ public class ToolDefinition {
 	private String oidcAuthUrl;
 	private String privateKey;
 	private String publicKey;
+	private String deploymentId;
 }

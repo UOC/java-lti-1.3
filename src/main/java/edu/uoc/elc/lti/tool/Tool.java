@@ -1,20 +1,20 @@
 package edu.uoc.elc.lti.tool;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.elc.lti.exception.InvalidLTICallException;
-import edu.uoc.elc.lti.platform.AccessTokenResponse;
-import edu.uoc.elc.lti.platform.RequestHandler;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
+import edu.uoc.elc.lti.platform.ags.AgsClientFactory;
 import edu.uoc.elc.lti.platform.deeplinking.DeepLinkingClient;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.elc.lti.tool.oidc.AuthRequestUrlBuilder;
 import edu.uoc.elc.lti.tool.oidc.LoginRequest;
 import edu.uoc.elc.lti.tool.oidc.LoginResponse;
+import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
-import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
-import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -26,11 +26,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
+@RequiredArgsConstructor
 public class Tool {
-
-
 	@Getter
 	String issuer;
 	@Getter
@@ -48,56 +47,28 @@ public class Tool {
 	@Getter
 	private User user;
 
-	private final ToolDefinition toolDefinition;
-	private final ClaimAccessor claimAccessor;
-	private final OIDCLaunchSession oidcLaunchSession;
-	private final DeepLinkingTokenBuilder deepLinkingTokenBuilder;
-	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
-
 	@Getter
 	private String locale;
 
 	@Getter
 	private boolean valid;
 
+	@Getter
+	private String reason;
+
 	private AccessTokenResponse accessTokenResponse;
 
-	public Tool(String name, String clientId, String platform, String keySetUrl, String accessTokenUrl, String oidcAuthUrl, String privateKey, String publicKey, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession, DeepLinkingTokenBuilder deepLinkingTokenBuilder, ClientCredentialsTokenBuilder clientCredentialsTokenBuilder) {
-		this.clientCredentialsTokenBuilder = clientCredentialsTokenBuilder;
-		this.toolDefinition = ToolDefinition.builder()
-						.clientId(clientId)
-						.name(name)
-						.platform(platform)
-						.keySetUrl(keySetUrl)
-						.accessTokenUrl(accessTokenUrl)
-						.oidcAuthUrl(oidcAuthUrl)
-						.privateKey(privateKey)
-						.publicKey(publicKey)
-						.build();
-		this.claimAccessor = claimAccessor;
-		this.oidcLaunchSession = oidcLaunchSession;
-		this.deepLinkingTokenBuilder = deepLinkingTokenBuilder;
-	}
+	private final ToolDefinition toolDefinition;
+	private final ClaimAccessor claimAccessor;
+	private final OIDCLaunchSession oidcLaunchSession;
+	private final ToolBuilders toolBuilders;
 
 	public boolean validate(String token, String state) {
-
-		this.valid = false;
-		try {
-			// 1. The Tool MUST Validate the signature of the ID Token according to JSON Web Signature [RFC7515],
-			// Section 5.2 using the Public Key from the Platform;
-			this.claimAccessor.decode(token);
-
-		} catch (Throwable ex) {
-			//Invalid token
-			this.valid = false;
-			return this.valid;
-		}
-
-		// verify launch
-		LaunchVerifier launchVerifier = new LaunchVerifier(toolDefinition, claimAccessor, oidcLaunchSession);
-		this.valid = launchVerifier.validate(state);
+		LaunchValidator launchValidator = new LaunchValidator(toolDefinition, claimAccessor, oidcLaunchSession);
+		this.valid = launchValidator.validate(token, state);
 		if (!this.valid) {
-			throw new InvalidLTICallException(launchVerifier.getReason());
+			this.reason = launchValidator.getReason();
+			return false;
 		}
 
 		// get the standard JWT payload claims
@@ -121,8 +92,11 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			RequestHandler requestHandler = new RequestHandler(kid, toolDefinition, clientCredentialsTokenBuilder);
-			accessTokenResponse = requestHandler.getAccessToken();
+			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid,
+							toolDefinition,
+							toolBuilders.getClientCredentialsTokenBuilder(),
+							toolBuilders.getAccessTokenRequestBuilder());
+			accessTokenResponse = accessTokenRequestHandler.getAccessToken();
 		}
 
 		return accessTokenResponse;
@@ -182,9 +156,9 @@ public class Tool {
 		return this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
 	}
 
-	public Object getCustomParameter(String name) {
-		Class<Map<String, Object>> customClass = (Class) Map.class;
-		final Map<String, Object> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
+	public String getCustomParameter(String name) {
+		Class<Map<String, String>> customClass = (Class) Map.class;
+		final Map<String, String> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
 		if (claim != null) {
 			return claim.get(name);
 		}
@@ -213,13 +187,18 @@ public class Tool {
 		}
 
 		return new DeepLinkingClient(
-						deepLinkingTokenBuilder,
+						toolBuilders.getDeepLinkingTokenBuilder(),
 						getIssuer(),
-						getAudience(),
+						toolDefinition.getClientId(),
 						this.claimAccessor.getAzp(),
-						this.kid,
 						getDeploymentId(),
+						this.claimAccessor.get(ClaimsEnum.NONCE),
 						getDeepLinkingSettings());
+	}
+
+	public AgsClientFactory getAssignmentGradeServiceClientFactory() {
+		return new AgsClientFactory(getAssignmentGradeService(),
+						getResourceLink());
 	}
 
 	// roles commodity methods
@@ -247,6 +226,7 @@ public class Tool {
 		// save in session
 		this.oidcLaunchSession.setState(loginResponse.getState());
 		this.oidcLaunchSession.setNonce(loginResponse.getNonce());
+		this.oidcLaunchSession.setTargetLinkUri(loginResponse.getRedirect_uri());
 
 		// return url
 		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);

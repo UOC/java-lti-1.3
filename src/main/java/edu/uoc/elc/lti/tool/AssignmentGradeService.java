@@ -6,15 +6,16 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @Getter
 @Setter
 public class AssignmentGradeService {
 	private List<String> scope;
 	private String lineitems;
+	private String lineitem;
 
-	public boolean canReadGrades() {
+	public boolean canReadResults() {
 		return scope != null && scope.contains(ScopeEnum.AGS_SCOPE_RESULT.getScope());
 	}
 

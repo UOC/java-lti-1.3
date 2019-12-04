@@ -1,7 +1,11 @@
-package edu.uoc.elc.lti.platform;
+package edu.uoc.elc.lti.platform.accesstoken;
 
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
+import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
 import edu.uoc.elc.lti.tool.ToolDefinition;
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
+import edu.uoc.lti.accesstoken.JSONAccessTokenRequestBuilderImpl;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
 import edu.uoc.lti.jwt.client.JWSClientCredentialsTokenBuilder;
 import org.junit.Assert;
@@ -11,10 +15,10 @@ import org.junit.Test;
 import java.io.IOException;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
-public class RequestHandlerTest {
-	private RequestHandler sut;
+public class AccessTokenRequestHandlerTest {
+	private AccessTokenRequestHandler sut;
 
 	private ToolDefinition toolDefinition;
 
@@ -30,7 +34,8 @@ public class RequestHandlerTest {
 						.build();
 
 		ClientCredentialsTokenBuilder clientCredentialsTokenBuilder = new JWSClientCredentialsTokenBuilder(toolDefinition.getPublicKey(), toolDefinition.getPrivateKey());
-		this.sut = new RequestHandler(null, toolDefinition, clientCredentialsTokenBuilder);
+		AccessTokenRequestBuilder accessTokenRequestBuilder = new JSONAccessTokenRequestBuilderImpl();
+		this.sut = new AccessTokenRequestHandler(null, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
 	}
 
 	@Test

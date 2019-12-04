@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author Xavi Aracil <xaracil@uoc.edu>
+ * @author xaracil@uoc.edu
  */
 @Getter
 @Setter
 public class Platform {
+	private String guid;
 	private String name;
 	private String contact_email;
 	private String description;
