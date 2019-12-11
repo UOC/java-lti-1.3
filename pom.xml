@@ -16,31 +16,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>devel.elearnlab.org</id>
-            <url>https://devel.elearnlab.org/api/v4/groups/elearn/-/packages/maven</url>
-        </repository>
-    </repositories>
-
-    <scm>
-        <connection>scm:git:git@devel.elearnlab.org:elearn/lti.git</connection>
-        <developerConnection>scm:git:git@devel.elearnlab.org:elearn/lti.git</developerConnection>
-        <url>https://devel.elearnlab.org/elearn/lti</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>devel.elearnlab.org</id>
-            <url>https://devel.elearnlab.org/api/v4/projects/166/packages/maven</url>
-        </repository>
-        <snapshotRepository>
-            <id>devel.elearnlab.org</id>
-            <url>https://devel.elearnlab.org/api/v4/projects/166/packages/maven</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>edu.uoc.elc.lti</groupId>
