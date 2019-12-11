@@ -45,7 +45,7 @@
         <dependency>
             <groupId>edu.uoc.elc.lti</groupId>
             <artifactId>lti-1.3-core</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>edu.uoc.elc.lti</groupId>
             <artifactId>lti-1.3-jwt</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
