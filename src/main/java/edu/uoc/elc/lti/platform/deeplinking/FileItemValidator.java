@@ -1,10 +1,10 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
+import java.util.List;
+
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.content.FileItem;
 import edu.uoc.lti.deeplink.content.Item;
-
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

@@ -1,5 +1,11 @@
 package edu.uoc.elc.lti.platform.accesstoken;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import edu.uoc.elc.lti.platform.PlatformClient;
 import edu.uoc.elc.lti.tool.ScopeEnum;
 import edu.uoc.elc.lti.tool.ToolDefinition;
@@ -8,12 +14,6 @@ import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author xaracil@uoc.edu

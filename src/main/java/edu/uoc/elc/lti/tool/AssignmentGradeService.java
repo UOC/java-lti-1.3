@@ -1,9 +1,9 @@
 package edu.uoc.elc.lti.tool;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

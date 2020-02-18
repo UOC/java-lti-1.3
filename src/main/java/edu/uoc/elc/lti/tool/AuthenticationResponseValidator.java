@@ -1,14 +1,13 @@
 package edu.uoc.elc.lti.tool;
 
-import edu.uoc.lti.claims.ClaimAccessor;
-import edu.uoc.lti.claims.ClaimsEnum;
-import edu.uoc.lti.oidc.OIDCLaunchSession;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import edu.uoc.lti.claims.ClaimAccessor;
+import edu.uoc.lti.claims.ClaimsEnum;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author xaracil@uoc.edu

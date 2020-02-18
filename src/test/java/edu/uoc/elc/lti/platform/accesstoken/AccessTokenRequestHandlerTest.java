@@ -1,18 +1,17 @@
 package edu.uoc.elc.lti.platform.accesstoken;
 
-import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
-import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
-import edu.uoc.elc.lti.tool.ToolDefinition;
-import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
-import edu.uoc.lti.accesstoken.JSONAccessTokenRequestBuilderImpl;
-import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
-import edu.uoc.lti.jwt.client.JWSClientCredentialsTokenBuilder;
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
+import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
+import edu.uoc.lti.accesstoken.JSONAccessTokenRequestBuilderImpl;
+import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
+import edu.uoc.lti.jwt.client.JWSClientCredentialsTokenBuilder;
 
 /**
  * @author xaracil@uoc.edu

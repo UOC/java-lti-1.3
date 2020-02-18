@@ -1,10 +1,9 @@
 package edu.uoc.elc.lti.tool.deeplinking;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

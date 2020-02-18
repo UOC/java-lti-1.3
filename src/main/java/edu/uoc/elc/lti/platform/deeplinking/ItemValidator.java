@@ -1,11 +1,11 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
+import java.util.List;
+
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

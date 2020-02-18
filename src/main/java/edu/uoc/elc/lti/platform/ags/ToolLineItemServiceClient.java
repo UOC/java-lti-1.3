@@ -1,12 +1,12 @@
 package edu.uoc.elc.lti.platform.ags;
 
+import java.net.URI;
+import java.util.List;
+
 import edu.uoc.elc.lti.exception.UnauthorizedAgsCallException;
 import edu.uoc.lti.ags.LineItem;
 import edu.uoc.lti.ags.LineItemServiceClient;
 import lombok.RequiredArgsConstructor;
-
-import java.net.URI;
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

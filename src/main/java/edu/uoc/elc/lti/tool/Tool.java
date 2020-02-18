@@ -1,5 +1,14 @@
 package edu.uoc.elc.lti.tool;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SecureRandom;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
 import edu.uoc.elc.lti.platform.accesstoken.AccessTokenRequestHandler;
 import edu.uoc.elc.lti.platform.accesstoken.AccessTokenResponse;
@@ -15,15 +24,6 @@ import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.security.SecureRandom;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author xaracil@uoc.edu

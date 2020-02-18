@@ -1,13 +1,13 @@
 package edu.uoc.elc.lti.tool.validator;
 
+import java.util.List;
+
 import edu.uoc.elc.lti.tool.ToolDefinition;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
-
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

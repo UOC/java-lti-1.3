@@ -1,5 +1,14 @@
 package edu.uoc.elc.lti.tool;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
+import java.util.function.BiConsumer;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import edu.uoc.elc.lti.tool.oidc.InMemoryOIDCLaunchSession;
 import edu.uoc.lti.accesstoken.JSONAccessTokenRequestBuilderImpl;
 import edu.uoc.lti.jwt.claims.JWSClaimAccessor;
@@ -7,14 +16,6 @@ import edu.uoc.lti.jwt.claims.TestLaunch;
 import edu.uoc.lti.jwt.claims.TestLaunchLoader;
 import edu.uoc.lti.jwt.claims.TokenBuilder;
 import edu.uoc.lti.jwt.client.JWSClientCredentialsTokenBuilder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
-import java.util.function.BiConsumer;
 
 /**
  * @author xaracil@uoc.edu
