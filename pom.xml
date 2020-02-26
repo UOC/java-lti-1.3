@@ -72,7 +72,7 @@
 				<version>3.8.1</version>
 				<configuration>
 					<source>${java.version}</source>
-					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
