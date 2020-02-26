@@ -2,14 +2,12 @@ package edu.uoc.elc.lti.tool.deeplinking;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author xaracil@uoc.edu
  */
-@Getter
-@Setter
+@Data
 public class Settings {
 	private List<String> accept_types;
 	private List<String> accept_media_types;

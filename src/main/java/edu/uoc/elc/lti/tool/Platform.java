@@ -2,14 +2,12 @@ package edu.uoc.elc.lti.tool;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author xaracil@uoc.edu
  */
-@Getter
-@Setter
+@Data
 /*
  * To fix an issue with Moodle 3.8 not compliant with LTI. While LTI 1.3
  * specifies the key to be "product_family_code", Moodle 3.8 uses

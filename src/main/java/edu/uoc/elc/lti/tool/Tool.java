@@ -31,18 +31,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Tool {
 	@Getter
-	String issuer;
-	@Getter
-	String audience;
+	private String issuer;
 
 	@Getter
-	String kid;
+	private String audience;
 
 	@Getter
-	Date issuedAt;
+	private String kid;
 
 	@Getter
-	Date expiresAt;
+	private Date issuedAt;
+
+	@Getter
+	private Date expiresAt;
 
 	@Getter
 	private User user;
@@ -92,10 +93,8 @@ public class Tool {
 		}
 
 		if (accessTokenResponse == null) {
-			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid,
-							toolDefinition,
-							toolBuilders.getClientCredentialsTokenBuilder(),
-							toolBuilders.getAccessTokenRequestBuilder());
+			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid, toolDefinition,
+					toolBuilders.getClientCredentialsTokenBuilder(), toolBuilders.getAccessTokenRequestBuilder());
 			accessTokenResponse = accessTokenRequestHandler.getAccessToken();
 		}
 
@@ -103,17 +102,12 @@ public class Tool {
 	}
 
 	private void createUser(String subject) {
-		this.user = User.builder()
-						.id(subject)
-						.givenName(this.claimAccessor.get(ClaimsEnum.GIVEN_NAME))
-						.familyName(this.claimAccessor.get(ClaimsEnum.FAMILY_NAME))
-						.middleName(this.claimAccessor.get(ClaimsEnum.MIDDLE_NAME))
-						.picture(this.claimAccessor.get(ClaimsEnum.PICTURE))
-						.email(this.claimAccessor.get(ClaimsEnum.EMAIL))
-						.name(this.claimAccessor.get(ClaimsEnum.NAME))
-						.build();
+		this.user = User.builder().id(subject).givenName(this.claimAccessor.get(ClaimsEnum.GIVEN_NAME))
+				.familyName(this.claimAccessor.get(ClaimsEnum.FAMILY_NAME))
+				.middleName(this.claimAccessor.get(ClaimsEnum.MIDDLE_NAME))
+				.picture(this.claimAccessor.get(ClaimsEnum.PICTURE)).email(this.claimAccessor.get(ClaimsEnum.EMAIL))
+				.name(this.claimAccessor.get(ClaimsEnum.NAME)).build();
 	}
-
 
 	// general claims getters
 	public Platform getPlatform() {
@@ -150,7 +144,6 @@ public class Tool {
 		return this.claimAccessor.get(ClaimsEnum.DEEP_LINKING_SETTINGS, Settings.class);
 	}
 
-
 	public List<String> getRoles() {
 		Class<List<String>> rolesClass = (Class) List.class;
 		return this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
@@ -186,19 +179,13 @@ public class Tool {
 			return null;
 		}
 
-		return new DeepLinkingClient(
-						toolBuilders.getDeepLinkingTokenBuilder(),
-						getIssuer(),
-						toolDefinition.getClientId(),
-						this.claimAccessor.getAzp(),
-						getDeploymentId(),
-						this.claimAccessor.get(ClaimsEnum.NONCE),
-						getDeepLinkingSettings());
+		return new DeepLinkingClient(toolBuilders.getDeepLinkingTokenBuilder(), getIssuer(),
+				toolDefinition.getClientId(), this.claimAccessor.getAzp(), getDeploymentId(),
+				this.claimAccessor.get(ClaimsEnum.NONCE), getDeepLinkingSettings());
 	}
 
 	public AgsClientFactory getAssignmentGradeServiceClientFactory() {
-		return new AgsClientFactory(getAssignmentGradeService(),
-						getResourceLink());
+		return new AgsClientFactory(getAssignmentGradeService(), getResourceLink());
 	}
 
 	// roles commodity methods
@@ -213,13 +200,12 @@ public class Tool {
 	// openid methods
 	public String getOidcAuthUrl(LoginRequest loginRequest) throws URISyntaxException {
 		final LoginResponse loginResponse = LoginResponse.builder()
-						.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id() : toolDefinition.getClientId())
-						.redirect_uri(loginRequest.getTarget_link_uri())
-						.login_hint(loginRequest.getLogin_hint())
-						.state(new BigInteger(50, new SecureRandom()).toString(16))
-						.nonce(new BigInteger(50, new SecureRandom()).toString(16))
-						.lti_message_hint(loginRequest.getLti_message_hint())
-						.build();
+				.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id()
+						: toolDefinition.getClientId())
+				.redirect_uri(loginRequest.getTarget_link_uri()).login_hint(loginRequest.getLogin_hint())
+				.state(new BigInteger(50, new SecureRandom()).toString(16))
+				.nonce(new BigInteger(50, new SecureRandom()).toString(16))
+				.lti_message_hint(loginRequest.getLti_message_hint()).build();
 
 		final URI uri = new URI(loginRequest.getTarget_link_uri());
 

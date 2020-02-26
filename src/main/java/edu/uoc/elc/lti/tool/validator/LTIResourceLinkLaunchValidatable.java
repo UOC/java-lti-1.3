@@ -13,10 +13,10 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
-	private static final int ID_MAX_LENGTH = 255;
 
 	@Override
-	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor,
+			OIDCLaunchSession oidcLaunchSession) {
 		// Core validation
 		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;
@@ -49,11 +49,15 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	}
 
 	/**
-	 * Validates the required claims of the LTI launch following https://www.imsglobal.org/spec/lti/v1p3/#required-message-claims
+	 * Validates the required claims of the LTI launch following
+	 * https://www.imsglobal.org/spec/lti/v1p3/#required-message-claims
+	 * 
 	 * @param state saved state, if present
-	 * @return true if the required claims of the LTI launch are valid, false otherwise
+	 * @return true if the required claims of the LTI launch are valid, false
+	 *         otherwise
 	 */
-	private boolean validateRequiredClaims(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	private boolean validateRequiredClaims(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor,
+			OIDCLaunchSession oidcLaunchSession) {
 		// 5.3.1 message type claim
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		final MessageTypesEnum messageType = MessageTypesEnum.valueOf(messageTypeClaim);
@@ -98,8 +102,11 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	}
 
 	/**
-	 * Validates the optional claims of the LTI launch following https://www.imsglobal.org/spec/lti/v1p3/#optional-message-claims
-	 * @return true if the optional claims of the LTI launch are valid, false otherwise
+	 * Validates the optional claims of the LTI launch following
+	 * https://www.imsglobal.org/spec/lti/v1p3/#optional-message-claims
+	 * 
+	 * @return true if the optional claims of the LTI launch are valid, false
+	 *         otherwise
 	 */
 	private boolean validateOptionalClaims() {
 		// 5.4.1 Context claim (already in core)
@@ -108,7 +115,8 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 		// 5.4.4 Launch presentation claim (already in core)
 
 		// 5.4.5 Learning Information Services LIS claim: Nothing to do here
-		// 5.4.6 Custom properties and variable substitution: Nothing to do here (values are gotten as string in Tool)
+		// 5.4.6 Custom properties and variable substitution: Nothing to do here (values
+		// are gotten as string in Tool)
 		// 5.4.7 Vendor-specific extension claims: Nothing to do here
 		return true;
 	}

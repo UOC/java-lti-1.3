@@ -1,14 +1,12 @@
 package edu.uoc.elc.lti.tool;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author xaracil@uoc.edu
  */
-@Getter
-@Setter
+@Data
 @Builder
 public class User {
 	private String id;
