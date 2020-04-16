@@ -1,7 +1,5 @@
 package edu.uoc.lti.jwt.claims;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -9,9 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.java.Log;
+
 /**
  * @author xaracil@uoc.edu
  */
+@Log
 public class TestLaunchLoader {
 	private final static String HEADER = "header.json";
 	private final static String PAYLOAD = "payload.json";
@@ -28,8 +31,8 @@ public class TestLaunchLoader {
 			for (File file : files) {
 				try {
 					payloads.add(loadTestLaunch(file));
-				} catch (IOException exception) {
-					exception.printStackTrace();
+				} catch (IOException e) {
+					log.warning("Cannot load test launch: " + e.getMessage());
 				}
 			}
 		}
@@ -40,15 +43,14 @@ public class TestLaunchLoader {
 		File headerFile = new File(testDirectory, HEADER);
 		File payloadFile = new File(testDirectory, PAYLOAD);
 		File keepFile = new File(testDirectory, KEEP);
-		return new TestLaunch(testDirectory.getName(),
-						loadJsonFileAsMap(headerFile),
-						loadJsonFileAsMap(payloadFile),
-						loadJsonFileAsList(keepFile));
+		return new TestLaunch(testDirectory.getName(), loadJsonFileAsMap(headerFile), loadJsonFileAsMap(payloadFile),
+				loadJsonFileAsList(keepFile));
 	}
 
 	private Map loadJsonFileAsMap(File file) throws IOException {
 		return file.exists() ? mapper.readValue(file, Map.class) : null;
 	}
+
 	private List loadJsonFileAsList(File file) throws IOException {
 		return file.exists() ? mapper.readValue(file, List.class) : null;
 	}

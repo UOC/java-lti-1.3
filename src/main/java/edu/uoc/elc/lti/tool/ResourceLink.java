@@ -1,13 +1,11 @@
 package edu.uoc.elc.lti.tool;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author xaracil@uoc.edu
  */
-@Getter
-@Setter
+@Data
 public class ResourceLink {
 	private String id;
 	private String title;

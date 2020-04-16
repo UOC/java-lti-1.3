@@ -1,5 +1,8 @@
 package edu.uoc.elc.lti.platform.ags;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import edu.uoc.elc.lti.exception.UnauthorizedAgsCallException;
 import edu.uoc.elc.lti.platform.ags.empty.EmptyResultServiceClient;
 import edu.uoc.elc.lti.platform.ags.empty.EmptyScoreServiceClient;
@@ -10,9 +13,6 @@ import edu.uoc.lti.ags.LineItemServiceClient;
 import edu.uoc.lti.ags.ResultServiceClient;
 import edu.uoc.lti.ags.ScoreServiceClient;
 import lombok.RequiredArgsConstructor;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * @author xaracil@uoc.edu

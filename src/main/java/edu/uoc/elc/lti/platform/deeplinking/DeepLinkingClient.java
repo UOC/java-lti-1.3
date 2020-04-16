@@ -1,5 +1,10 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.DeepLinkingResponse;
@@ -7,11 +12,6 @@ import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
 import edu.uoc.lti.deeplink.content.Item;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author xaracil@uoc.edu

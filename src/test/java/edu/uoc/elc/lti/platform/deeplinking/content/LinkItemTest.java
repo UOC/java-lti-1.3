@@ -1,10 +1,11 @@
 package edu.uoc.elc.lti.platform.deeplinking.content;
 
-import edu.uoc.lti.deeplink.content.LinkItem;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
+
+import edu.uoc.lti.deeplink.content.LinkItem;
 
 /**
  * @author xaracil@uoc.edu

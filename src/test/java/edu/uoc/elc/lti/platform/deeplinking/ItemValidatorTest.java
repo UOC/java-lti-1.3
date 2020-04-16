@@ -1,16 +1,17 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
-import edu.uoc.elc.lti.tool.deeplinking.Settings;
-import edu.uoc.lti.deeplink.content.FileItem;
-import edu.uoc.lti.deeplink.content.Item;
-import edu.uoc.lti.deeplink.content.LinkItem;
-import edu.uoc.lti.deeplink.content.LtiResourceItem;
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
+import edu.uoc.elc.lti.tool.deeplinking.Settings;
+import edu.uoc.lti.deeplink.content.FileItem;
+import edu.uoc.lti.deeplink.content.Item;
+import edu.uoc.lti.deeplink.content.LinkItem;
+import edu.uoc.lti.deeplink.content.LtiResourceItem;
 
 /**
  * @author xaracil@uoc.edu

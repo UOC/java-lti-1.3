@@ -1,15 +1,13 @@
 package edu.uoc.elc.lti.tool;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * @author xaracil@uoc.edu
  */
-@Getter
-@Setter
+@Data
 public class Context {
 	private String id;
 	private String label;

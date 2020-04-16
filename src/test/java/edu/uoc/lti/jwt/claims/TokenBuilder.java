@@ -1,15 +1,15 @@
 package edu.uoc.lti.jwt.claims;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import edu.uoc.lti.claims.ClaimsEnum;
 import edu.uoc.lti.jwt.AlgorithmFactory;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author xaracil@uoc.edu

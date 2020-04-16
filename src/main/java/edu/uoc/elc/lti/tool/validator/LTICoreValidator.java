@@ -1,5 +1,9 @@
 package edu.uoc.elc.lti.tool.validator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import edu.uoc.elc.lti.tool.Context;
 import edu.uoc.elc.lti.tool.Platform;
 import edu.uoc.elc.lti.tool.RolesEnum;
@@ -11,10 +15,6 @@ import edu.uoc.lti.deeplink.content.DocumentTargetEnum;
 import edu.uoc.lti.deeplink.content.Presentation;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Core validator, validades only core requirements (common to all launches)

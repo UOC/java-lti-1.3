@@ -1,5 +1,14 @@
 package edu.uoc.elc.lti.platform.deeplinking;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
 import edu.uoc.elc.lti.exception.InvalidLTICallException;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.deeplink.DeepLinkingTokenBuilder;
@@ -8,14 +17,6 @@ import edu.uoc.lti.deeplink.content.Item;
 import edu.uoc.lti.deeplink.content.LinkItem;
 import edu.uoc.lti.deeplink.content.LtiResourceItem;
 import edu.uoc.lti.jwt.deeplink.JWSTokenBuilder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
 
 /**
  * @author xaracil@uoc.edu

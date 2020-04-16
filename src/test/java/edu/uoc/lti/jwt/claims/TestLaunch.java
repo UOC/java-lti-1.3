@@ -1,10 +1,10 @@
 package edu.uoc.lti.jwt.claims;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author xaracil@uoc.edu
