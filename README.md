@@ -49,6 +49,16 @@ in the `edu.uoc.elc.lti.tool.ToolBuilders` class
 
 1. Set your maven installation to work with Github packages, following https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages#authenticating-to-github-packages
 
+Repository info:
+  
+  ```xml
+        <repository>
+          <id>github-uoc</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc</url>
+        </repository>				
+  ```
+
 2. Add the dependency to your `pom.xml` file:
 
 ```xml
