@@ -70,7 +70,7 @@
     <dependency>
       <groupId>edu.uoc.elc.lti</groupId>
       <artifactId>lti-13-jwt</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
