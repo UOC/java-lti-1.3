@@ -53,9 +53,19 @@ Repository info:
   
   ```xml
         <repository>
-          <id>github-uoc</id>
+          <id>github-uoc-lti-core</id>
           <name>GitHub UOC Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/uoc</url>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-core</url>
+        </repository>				
+        <repository>
+          <id>github-uoc-lti-jwt</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-jwt</url>
+        </repository>				
+        <repository>
+          <id>github-uoc-lti</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3</url>
         </repository>				
   ```
 
