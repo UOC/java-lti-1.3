@@ -161,6 +161,11 @@ public class LTICoreValidator implements LaunchValidatable {
 	boolean isEmpty(String value) {
 		return value == null || "".equals(value.trim());
 	}
+
+	boolean isEmpty(List<?> value) {
+		return value == null || value.size() == 0;
+	}
+
 	boolean isIdStringValid(String value) {
 		return !isEmpty(value) && value.trim().length() <= ID_MAX_LENGTH;
 	}

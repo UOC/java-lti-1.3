@@ -15,7 +15,8 @@ public enum ScopeEnum {
 	AGS_SCOPE_RESULT ("https://purl.imsglobal.org/spec/lti-ags/scope/result.readonly"),
 	AGS_SCOPE_SCORE ("https://purl.imsglobal.org/spec/lti-ags/scope/score"),
 	NAMES_AND_ROLES_SCOPE ("https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly"),
-	CALIPER_SCOPE ("https://purl.imsglobal.org/spec/lti-ces/v1p0/scope/send")
+	CALIPER_SCOPE ("https://purl.imsglobal.org/spec/lti-ces/v1p0/scope/send"),
+	GROUP_SERVICE_SCOPE("https://purl.imsglobal.org/spec/lti-gs/scope/contextgroup.readonly")
 	;
 
 	private String scope;

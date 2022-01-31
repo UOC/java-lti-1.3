@@ -27,7 +27,7 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 		}
 
 		// LTI optional claims
-		if (!validateOptionalClaims()) {
+		if (!validateOptionalClaims(claimAccessor)) {
 			return false;
 		}
 
@@ -99,8 +99,9 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	/**
 	 * Validates the optional claims of the LTI launch following https://www.imsglobal.org/spec/lti/v1p3/#optional-message-claims
 	 * @return true if the optional claims of the LTI launch are valid, false otherwise
+	 * @param claimAccessor
 	 */
-	private boolean validateOptionalClaims() {
+	private boolean validateOptionalClaims(ClaimAccessor claimAccessor) {
 		// 5.4.1 Context claim (already in core)
 		// 5.4.2 Platform instance claim (already in core)
 		// 5.4.3 Role-scope mentor claims (already in core)
@@ -109,7 +110,39 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 		// 5.4.5 Learning Information Services LIS claim: Nothing to do here
 		// 5.4.6 Custom properties and variable substitution: Nothing to do here (values are gotten as string in Tool)
 		// 5.4.7 Vendor-specific extension claims: Nothing to do here
+
+		// Context Groups
+		if (!validateGroupService(claimAccessor.get(ClaimsEnum.GROUPS_SERVICE, GroupService.class))) {
+			return false;
+		}
+
 		return true;
 	}
 
+	private boolean validateGroupService(GroupService groupService) {
+		if (groupService != null) {
+			// check required parameters defined at https://www.imsglobal.org/spec/lti-gs/v1p0#claim-for-inclusion-in-lti-messages
+			if (isEmpty(groupService.getContext_groups_url())) {
+				setReasonToMissingRequiredClaim(ClaimsEnum.GROUPS_SERVICE);
+				return false;
+			}
+
+			if (isEmpty(groupService.getScope())) {
+				setReasonToMissingRequiredClaim(ClaimsEnum.GROUPS_SERVICE);
+				return false;
+			}
+
+			if (isEmpty(groupService.getService_versions())) {
+				setReasonToMissingRequiredClaim(ClaimsEnum.GROUPS_SERVICE);
+				return false;
+			}
+
+			// check fixed scope
+			if (!groupService.getScope().contains(ScopeEnum.GROUP_SERVICE_SCOPE)) {
+				reason = "Missing scope " + ScopeEnum.GROUP_SERVICE_SCOPE.getScope();
+				return false;
+			}
+		}
+		return true;
+	}
 }
