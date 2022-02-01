@@ -29,22 +29,85 @@ public class ToolTest {
 
 	@Before
 	public void setUp() {
-		String keysetUrl = "https://lti-ri.imsglobal.org/platforms/68/platform_keys/60.json";
-		String publicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0MkrXiaPUxRzGOwrmSQKlDXUFn9veJlUybecFN07QIlqU758DxsSAvv8ZGPnzQVBKy9ykoXoaxecpKEIe/kK5qPbAVvnK6lGFbUl1QkK/NnHwf2zDy4S1f/OLh0oyKcI7izkUUl4lLzim5jsNChxpY00xqi5lh8Sk2qRppbbUR8rojTnl64mZq3P6Rl3GlXKj4GpRCFTdWb4Gyrx6KU6IZ2rufnGSSfRK4jnuASvTBW4PBbipxXN3mjPukx0tsWIYHh3hhv0DZUnOPBShPf0aTeT4c8+rjZ7EhDZJJr/OlLW9d+wonFKIz+fCdjzBxdGUEdoMsU7pW5xsmp8obAHUQIDAQAB";
-		String privateKey = "MIIEpQIBAAKCAQEA0MkrXiaPUxRzGOwrmSQKlDXUFn9veJlUybecFN07QIlqU758DxsSAvv8ZGPnzQVBKy9ykoXoaxecpKEIe/kK5qPbAVvnK6lGFbUl1QkK/NnHwf2zDy4S1f/OLh0oyKcI7izkUUl4lLzim5jsNChxpY00xqi5lh8Sk2qRppbbUR8rojTnl64mZq3P6Rl3GlXKj4GpRCFTdWb4Gyrx6KU6IZ2rufnGSSfRK4jnuASvTBW4PBbipxXN3mjPukx0tsWIYHh3hhv0DZUnOPBShPf0aTeT4c8+rjZ7EhDZJJr/OlLW9d+wonFKIz+fCdjzBxdGUEdoMsU7pW5xsmp8obAHUQIDAQABAoIBAQC9MX4t++0mkMJXlDNRu1omwbxlgqcFdpRhkhNKyMqXia4jItqSaaphr+wfIHT90MQkGQPOiK9609OrTw08IgnhxBuB2MDbTLHom9UjfeVKCSK9xGKM3+hLqVkxalT5tnseMOnYSyaMSbli3Ck2fmu1ZAat+ljqE1Am64v+lHc6wsq4tUXvZ6/dIthvcnbuPP0RwdZH05GWqiI8sUz0W2zi7rqFJadaEZbxb/WFhO51MbyrZh34/MpxfqJEIkFnrzt+FgJ4F7mbQrv+XXo1mQ2I0MCknzWspYLwCsVyGV9jSuK+zmD9R/JGByf2rCeO3BAlNBnnE/Fu103DkZIFD5vBAoGBAPtEruX93ggJfK/dY/Bq3WRC7S5dGnRQZ7Z5lErK2ZX448HOhwdOH5e9FXPH5X+QpYkDFMe49BD6eDNCPrdF+0ttMrQfV2HtKiTbRae7rYrsRBkY+MKENixz4ENVNQdueyv0CvBe7Ba7bXHdrPdiSUwEBmkn9wG+btDy+ItHYX65AoGBANS3r63tVIraNT5mhfBHChmmy35A2YaJc2IJGWTOZjNb+CHu/99DwiHWvYhWp4RZ0BKK/7GkBetDhVg21sscL2981oTOIiul8wc5P252QJvjsyumuB5+NcdmzYF7PbvotuKI4o8hu7dHYY4Qp/MGz2eQhYGBSB9GqbRMJShtjkFZAoGBAIaxI7xAIRRX2ZIAcIFBF9qWEcRnvjWZoG7tr3OEV60QFS8gAbwFweO6RVSiVEDUjhfrIemKGLM9QM/hc/MUvYeKSsLJhjMFSjElpaorbfTpf/ugKkFDVDLyDsapV1rbe4VtNavyhkYNRLbkKMMX2ci446Lc/Ijfx1GU3Wzz36xpAoGAQ4mutcJMvWlazl0u2YM0qcBTi9p7NkQd5lqNPXxq5pOkzOFdTD3vPV84/jjFJzh83+ZSGMzDNFdT1xZSTFq+lN9GHRR1tPYTm4+JnEDfcp9xG8LrYoMgABeb2CiRCUByEKr1hAxp1V9MkhanvHnFEFTKjrvFcmi1KRGkGpnuOMECgYEA88kCnSMb1yHfexJQZ+WUgb8m+WeyOgW2a2DzU1yXLFoCEZlbNQYFFWbDeTHfmaur3rox0ZvcoDv1ohXCsULZz9uu72cgRaObgGsjFAo9J0btEJT7s1ljUr55NwLsaPUkWzTIce2BnIE388y74i9DcPRrFkbOlxXPzvP0E1r6SK4=";
+		// platform related settings
+		String keysetUrl = "https://lti-ri.imsglobal.org/platforms/2647/platform_keys/2449.json";
+		String platformPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZaeXeNsstQ0sxiTB9ny" +
+						"Em00dPHso5uURVaDXLn8XBYu38t9DKAIuCKeE12Zuqte3v5JY20qgWxXbBkGjRqn" +
+						"2nn+HvltVSxy6nYjwvc+D8kRHWlrKpdxnbWCM6lpWVnzFpMXghkcMTH3wLWd22yq" +
+						"/AnzDfYgTR+6gHS9YHoBmBv59CrUFMPF2ZADeG88Wu1LsMcVXEHgtS5py09kt5Rq" +
+						"6Iq4S3EatZKGExaw4OdSwRq8T3wdB3NlQ23CPkeX3/iGHuD7F7qZdK3yWf4p5tpV" +
+						"8v/ftr04uQXDBJ+GXPWEHmObBv6+jNuUq4U1qthB+P2RyilARUa5S99EYxZ4CN5S" +
+						"7QIDAQAB";
+		String platformPrivateKey = "MIIEogIBAAKCAQEArZaeXeNsstQ0sxiTB9nyEm00dPHso5uURVaDXLn8XBYu38t9" +
+						"DKAIuCKeE12Zuqte3v5JY20qgWxXbBkGjRqn2nn+HvltVSxy6nYjwvc+D8kRHWlr" +
+						"KpdxnbWCM6lpWVnzFpMXghkcMTH3wLWd22yq/AnzDfYgTR+6gHS9YHoBmBv59CrU" +
+						"FMPF2ZADeG88Wu1LsMcVXEHgtS5py09kt5Rq6Iq4S3EatZKGExaw4OdSwRq8T3wd" +
+						"B3NlQ23CPkeX3/iGHuD7F7qZdK3yWf4p5tpV8v/ftr04uQXDBJ+GXPWEHmObBv6+" +
+						"jNuUq4U1qthB+P2RyilARUa5S99EYxZ4CN5S7QIDAQABAoIBABfJD6Ily3slgKMZ" +
+						"tuvYfUbxF8L+c0JnywVFOXK3OVEU6Q9ZPqVAOHGirK5SoQHnAXTkuwGYr75ULhZt" +
+						"x2wGPwG8vYlY/BYzpPtjfLr2Tdaz4lh5XWnUnojRmimiCQFpRdnOBeaZsjc7dYs+" +
+						"V4b9eOBYLKm5E+v9cPyxAlH55cYFtXYXZT6eAqYZv4HnnOWa/Qi52rwUYqFA31TS" +
+						"G0IynuhAseToXAy7v/5wyhG+nAiRZq1sKykuEoj679aJVHxgHr+lS+swNjVq6TaC" +
+						"2yh/BxSeKoSCh/gG34ATX9IhONuK2cHQ+ajAkxIEBSEONV8y2o4xbVBQ06HtFC/b" +
+						"fZ29/4ECgYEA3+TftsWFZ+HKuQjcrJ3zmnlcfuuUBfuIlUQQoFKrvP+8ndrOkdRO" +
+						"xFab2q/Y52YWjZ6JrSlKzSnrUZ9GDUBFS0ECBZFxo/i1/jER0R6D8lxgiAJrgTVd" +
+						"wzrHDw3OJx8KwaJPgkoPTgWP0ZLbdh3gokX+Ic20u53TVfNI3XGiT1UCgYEAxnsH" +
+						"SO0Vgf+gpBMBF4O8J3mWDIV1N7pYnUn4Lfp22D9Ah4WqmoYLofkfQU8G9OaMswA7" +
+						"SUltP8CjJL+V7IcqiBKNUz6OQAOiPciQnj77SkiW7c6haTdJ0ql+KAO/2hFfT9pJ" +
+						"a6YOMOiUJZLullXN3KvaDpEqkO3/cRb7ZwN2BTkCgYBVwYZmrTUx2uwY/2n2u/Eo" +
+						"g7+H5Zemyvc/pPhxT/jzxUhrdfmVJaqdzUaY9q2vxAxzZfv51U0PVDUL6GOeg7WG" +
+						"43lwxIqwcXzTxdu7K2MCm5tlvPeMX/Jv6r1/6JvDpEIsdIzbrJ48FilF7mgcz8jQ" +
+						"ntp9/BpzmjnuO+b22qV+mQKBgDo92cplf50xBNOAnB5pUqoGvKgZ9WaP8PbewMvF" +
+						"JmCYVvgtmf1T/k/eSXShmvn8OSdBlyQPPtapUXY0HetVUn6xavUVcyqHpnEYzI8T" +
+						"DiwjFt7bdnPofGorwFA/oWl9FYnaFRdYl+t0JBzOe+JzdUAe0ZLauDHlFML7qnP1" +
+						"CQnJAoGAaDvrpqP5SHga9cZ1Wg1G8GVUpBz4Nf4wl/ugnCDEA4a8KYxeRgt0RIpq" +
+						"nEUZtk7RilHR/2xfPFrkD2oZjVcQYnxoNJcPnC/kI3Hgyi5jz2KWFQo55rzB+gSU" +
+						"Inc5r31qImVZfbiNId6kOiJxffaGixhtfEf0RvnNbnD4KO/quAE=";
 
 		ToolDefinition toolDefinition = ToolDefinition.builder()
 						.clientId("Universitat Oberta de Catalunya")
 						.name("Universitat Oberta de Catalunya")
 						.platform("https://www.uoc.edu")
-						.deploymentId("testDeployment")
+						.deploymentId("testdeploy")
 						.keySetUrl(keysetUrl)
-						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/68/access_tokens")
-						.oidcAuthUrl("https://lti-ri.imsglobal.org/platforms/68/authorizations/new")
-						.privateKey("MIIEpQIBAAKCAQEAwDN0DFZnsxETm+lzQh7dsbBX6srNGqQ+Ougc485pqys81TzjoWDsubj70NdTge8DO3ycJbPpDsTH5P1Ea+vCHq/h1SzFLLF0yLw5Y2sWrLlDF9PrvR9yApu0bZ3zNTl55B4EblYns3j3JydwfnnLuNeNVpwv7wosLZKhMvg9CQv39prJj8xI+l5FoRkhKS86tl5PrU4Xld+jBo84GWAx0SYxbGF/vR9ve9lnErNWLv8ozYC2J9FusberZrsZ8M0mpNR1vJMayqDIwMPX5rsKtWZJh33XwAKRsEIxWT0WUGM54SUc0jrszapXfOoznblwmcAd/MVLXOlgOoaeiQbxFwIDAQABAoIBAQCV6UwRt29I1v/xcuPoZcTLLF1Wj/nsVsEHFzY5ZS08Sgw30jdGDyB1N9iJqvnCddeSlX4BVlNopom3jOfKOWf+oXbG3BWq53rMeytT5RoZfKLdOfk8WQOHD0Vq3nDtSbhN+i/Ak8iBjs9Ppc5zh7IjqVTfghFNJCUTIrRC2iZZH7b+deK4vWd6GnIubftHs3H/worivZFPXm+qG0+mSLo9DdxuySQmG0KwwJOz/RwW7oKME0Y05+eUA0E2EUODEzf/iTBsnZxDJ1PVuJvWiSl4uDh167G4mnscPiLYcDc4xJ4rmr+mDoekWMn70iNzW4xLZQaLMLy/RtKoclFVDQZxAoGBAOxQJOm96wBVT+zfaO/gork6DwOFxdf765C8sNsRSwygzrh03UYbO0bFwi2r2/bBXvyt69DGxKapUhDH0z5inVjsZwHAdrHAGpf+jA9smumsJI25/AXmp9piHSx1SI5AjygViCETSD6ItWhTbEBJn0rwhAs+f8hFGymwF11T4HH/AoGBANA2h5O7vlYGHmgEVyol/oRiXrggx2z0iVkn3RUhzWqXqedaQjp8zyA+FG/7fPsYah9R1sgKZ2aey+npo7RKQgmsgJWTQsXq+Fcvivw1z0xIJ8AmK4lhTHlw/B9TT3cxzy1IqAUfP4luJXnsiZ45G78XD6Q5Ftd8Fxn+PhDq4NDpAoGBAIClyNKvH6ZYy2Aq59ffNPcdklrakrBYZw+uiaFZMsA3MxLcHDI0VPrcYi+25dLZxrpMfJp1+0y31QNppajKytpEKHedrYBrEo84dktXVqZrnqLBY2BbB3ot+6/eUZePsd+iiS9obeYNSqT29XGyItQLR/dPGQWQCY+SW8XlCcVFAoGBAMOP5AmDVkPQHXEPWptQ8lx/VH3W89jHWdXulj2J8TlD2CZfZUMwBQ9An8uKR5pEFTDzmitrcjE1x0sd0k+9S4dwiZlzpkzk5HpnQkCffeQlBYj5kPzI8Z5C29vEUSggFXpv+rhM4E2BshtxatS8yO3TiDJ0GJsuhzg3zy3unlg5AoGAZv9YjAoQdxrRl1AiWntZm8BXxXwXEVEG2Wbr9a6+OPiaQXgpk11nf2QnEPmFZ2vFSC6YWEba34qs3kNBg5hp0ttHNyzwNxL7B+4sRoN08lVtOYUOGeqg3yGkdQCxW4RMiAL37+01rrbSGUxieWjP3V4y5gP2//mnlan/s4lbkOc=")
-						.publicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwDN0DFZnsxETm+lzQh7dsbBX6srNGqQ+Ougc485pqys81TzjoWDsubj70NdTge8DO3ycJbPpDsTH5P1Ea+vCHq/h1SzFLLF0yLw5Y2sWrLlDF9PrvR9yApu0bZ3zNTl55B4EblYns3j3JydwfnnLuNeNVpwv7wosLZKhMvg9CQv39prJj8xI+l5FoRkhKS86tl5PrU4Xld+jBo84GWAx0SYxbGF/vR9ve9lnErNWLv8ozYC2J9FusberZrsZ8M0mpNR1vJMayqDIwMPX5rsKtWZJh33XwAKRsEIxWT0WUGM54SUc0jrszapXfOoznblwmcAd/MVLXOlgOoaeiQbxFwIDAQAB")
+						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
+						.oidcAuthUrl("https://lti-ri.imsglobal.org/platforms/2647/authorizations/new")
+						// tool's private key
+						.privateKey("MIIEpQIBAAKCAQEA9meqL/mLQa/PdI+dU4D2ovMs3jGSF2BmFBOFP4zay7Ni5ABi" +
+										"xyaghWyM5sNznITm847l6C+yzUo0CvmmmFNVEE/XEyRYkNry04Jm8IICSMnHhHch" +
+										"t3rtGEAALTIiTsjbnj31NlsA+aXaWWY4kRt5jTO+r72LHvReb/RxektWtFE8MmZI" +
+										"P1W7+2l5BYqT9l0lmi7iVcmOVx1aUtaqUhVPc7rmYhnd2cLbA3T69MRSGXt0fK25" +
+										"P8oFUi2SaJ74A6ZJw1kVx+fQA3Wkkf2x7+LflrST1E1+n9h/F1o6ZSF8H/GsClYL" +
+										"YDJ9PhCj48NtJH6Hho873x2tO6Z5kXoDFfwNdQIDAQABAoIBAQDkAxecX1o6xZq+" +
+										"bOsTy4HvVgGN9ucOVLkBGPMz1H7fAree7rB5Q0hFTyavn+vKyb0BYpljG0hk6aZx" +
+										"BYXg7TQI7SjD4N1H5iPQD5p8MoI0ouvKq4b6x3jA+PBw4jSXHQ0FSKYxz1J+sbf1" +
+										"BD+SH4+CV4C8FTS4xz7gcJ3VogOwxK6A6XCYc/NaAYVdXUymO+GPbEWBiL59m3Fo" +
+										"2gCvnStwQUzEWF1vOoR0Vq40JCUKJdboaCD7N5+UfTvaSmItI7e6AYkk+4Sw6uxd" +
+										"vuE6CkmoQn6A6CVB6YyC8BKd1uiTwp15V0ZcIriLYkOqw7t+VJswWLO25wss8w0C" +
+										"ZNQU83B9AoGBAP9d0/VTBqgb6oXaUupck/57xVjAbbuUqvtOyOddqw5dRAYkYh8k" +
+										"2LsKxgK2OxApxiOe7PpInaVU9N1gz8vdjiDYMTbHAldae2gzlnuPnLZoRmxkyN+6" +
+										"s254/LaL2lxVQLVBTRwVcxBeuPEJvtszh8e3HNaGas9LO4mm2c4gCLVjAoGBAPcE" +
+										"JU6YwkTaUjYK/liGQGnbJ7pU6UY5E/DdQznh+Q0/oJLf9DYrvWKCChV7Tv6dMOgR" +
+										"Rx3JbuHYC6BnMDJgkW8MSZtkpqsbWcZoAWyzPcZB5N24x6zWd9rxYPC8uzQgie3D" +
+										"u+kAItrXO/orkCEFhFMop+IxVyaUPrTp55dQPvVHAoGBAJ7Hi1wVVKVAPlEdz8JS" +
+										"794ivTES7OfeZ3W8peRd9FcJHJupEa2FrpCWAUp8XjsNjlplnbl9XzAGo/3mDS4Y" +
+										"QyAe7HK/yK/h3auLr/yB7hHowijxfYjGwHxnE9K5IHuaspJA2R4mJBZAn0OYKKiI" +
+										"4NsH+xFUIKNlhs5vBSxJ9MA7AoGAIqNcL+dP5qPOv3FPNU6uHanzqjdZ9tTuLOp6" +
+										"ENXVPLxdYfsxnZ8IkZW2oEiITT/xqbkyhcTHXbgT+Uw+//F2s2G/uKCmlnvhXOcc" +
+										"vAdudCytUUImDeCNMhCDDX8JqUeez86QvR2dxZ5E9NHDBj5lzdt3n0pX9Dr5iBj8" +
+										"tsUz7uUCgYEAm45cbgVtMk7pPVBdBXMqx82bosj8PsT0Cn4foL3acQVFHWUPaC5W" +
+										"i9rbGp2iuqPVVGK1ZDTP13KyYY9Jw4ZRBNJrdyErSlpGhiRuDRgdX/PWvr9krze8" +
+										"nH4XC37FRa7UDQNK81IdsY2tyZTluheSuZ8EUnFGtBdXL1bzydxBjZI=")
+						// tool's public key
+						.publicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA9meqL/mLQa/PdI+dU4D2" +
+										"ovMs3jGSF2BmFBOFP4zay7Ni5ABixyaghWyM5sNznITm847l6C+yzUo0CvmmmFNV" +
+										"EE/XEyRYkNry04Jm8IICSMnHhHcht3rtGEAALTIiTsjbnj31NlsA+aXaWWY4kRt5" +
+										"jTO+r72LHvReb/RxektWtFE8MmZIP1W7+2l5BYqT9l0lmi7iVcmOVx1aUtaqUhVP" +
+										"c7rmYhnd2cLbA3T69MRSGXt0fK25P8oFUi2SaJ74A6ZJw1kVx+fQA3Wkkf2x7+Lf" +
+										"lrST1E1+n9h/F1o6ZSF8H/GsClYLYDJ9PhCj48NtJH6Hho873x2tO6Z5kXoDFfwN" +
+										"dQIDAQAB")
 						.build();
-		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(publicKey, privateKey),
+		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(platformPublicKey, platformPrivateKey),
 						new JSONAccessTokenRequestBuilderImpl(),
 						null);
 		this.sut = new Tool(
@@ -53,12 +116,12 @@ public class ToolTest {
 						new InMemoryOIDCLaunchSession(),
 						toolBuilders);
 		this.tokenBuilder = new TokenBuilder(
-						"pUaAdoefCd5Tg-TC807mjReHjS3ec8nsY9-nrpWDQS0",
+						"qPYR0iOgCEMTrSLS-Yw2LQ4kFcpGuDyg8HcScnm8VSE",
 						"https://www.uoc.edu",
 						"Universitat Oberta de Catalunya",
-						"testDeployment",
-						publicKey,
-						privateKey
+						"testdeploy",
+						platformPublicKey,
+						platformPrivateKey
 		);
 
 	}
