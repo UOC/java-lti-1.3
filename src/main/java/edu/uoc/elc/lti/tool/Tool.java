@@ -227,6 +227,8 @@ public class Tool {
 		this.oidcLaunchSession.setState(loginResponse.getState());
 		this.oidcLaunchSession.setNonce(loginResponse.getNonce());
 		this.oidcLaunchSession.setTargetLinkUri(loginResponse.getRedirect_uri());
+		this.oidcLaunchSession.setClientId(loginResponse.getClient_id());
+		this.oidcLaunchSession.setDeploymentId(loginRequest.getLti_deployment_id());
 
 		// return url
 		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);
