@@ -33,9 +33,10 @@ public class TokenBuilder {
 	private final String deploymentId;
 	private final String publicKey;
 	private final String privateKey;
+	private final String algorithm;
 
 	public String build(TestLaunch testLaunch) {
-		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey);
+		AlgorithmFactory algorithmFactory = new AlgorithmFactory(publicKey, privateKey, algorithm);
 
 		final JwtBuilder builder = Jwts.builder()
 						.signWith(algorithmFactory.getPrivateKey());

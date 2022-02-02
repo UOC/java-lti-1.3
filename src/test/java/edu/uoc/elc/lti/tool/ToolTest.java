@@ -32,6 +32,7 @@ public class ToolTest {
 	public void setUp() {
 		// platform related settings
 		String keysetUrl = "https://lti-ri.imsglobal.org/platforms/2647/platform_keys/2449.json";
+		String platformAlgorithm = "RSA";
 		String platformPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZaeXeNsstQ0sxiTB9ny" +
 						"Em00dPHso5uURVaDXLn8XBYu38t9DKAIuCKeE12Zuqte3v5JY20qgWxXbBkGjRqn" +
 						"2nn+HvltVSxy6nYjwvc+D8kRHWlrKpdxnbWCM6lpWVnzFpMXghkcMTH3wLWd22yq" +
@@ -108,7 +109,7 @@ public class ToolTest {
 										"lrST1E1+n9h/F1o6ZSF8H/GsClYLYDJ9PhCj48NtJH6Hho873x2tO6Z5kXoDFfwN" +
 										"dQIDAQAB")
 						.build();
-		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(platformPublicKey, platformPrivateKey),
+		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(platformPublicKey, platformPrivateKey, platformAlgorithm),
 						new JSONAccessTokenRequestBuilderImpl(),
 						null);
 		this.sut = new Tool(
@@ -122,7 +123,8 @@ public class ToolTest {
 						"Universitat Oberta de Catalunya",
 						"testdeploy",
 						platformPublicKey,
-						platformPrivateKey
+						platformPrivateKey,
+						"RSA"
 		);
 
 	}
