@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -68,7 +69,7 @@ public class ToolTest {
 						.clientId("Universitat Oberta de Catalunya")
 						.name("Universitat Oberta de Catalunya")
 						.platform("https://www.uoc.edu")
-						.deploymentId("testdeploy")
+						.deploymentIds(Arrays.asList("testdeploy", "anotherdeploy"))
 						.keySetUrl(keysetUrl)
 						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
 						.oidcAuthUrl("https://lti-ri.imsglobal.org/platforms/2647/authorizations/new")
