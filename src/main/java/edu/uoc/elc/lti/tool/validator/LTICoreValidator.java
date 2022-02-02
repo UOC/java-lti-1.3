@@ -14,6 +14,7 @@ import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +74,7 @@ public class LTICoreValidator implements LaunchValidatable {
 			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
 			return false;
 		}
-		if (!toolDefinition.getDeploymentIds().contains(deploymentId)) {
+		if (Objects.isNull(registration.getDeployment(deploymentId))) {
 			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
 			return false;
 		}

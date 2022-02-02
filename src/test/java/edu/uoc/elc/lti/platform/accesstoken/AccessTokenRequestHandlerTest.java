@@ -1,6 +1,8 @@
 package edu.uoc.elc.lti.platform.accesstoken;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
+import edu.uoc.elc.lti.tool.Key;
+import edu.uoc.elc.lti.tool.KeySet;
 import edu.uoc.elc.lti.tool.Registration;
 import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.accesstoken.UrlEncodedFormAccessTokenRequestBuilderImpl;
@@ -11,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * @author xaracil@uoc.edu
@@ -18,15 +21,12 @@ import java.io.IOException;
 public class AccessTokenRequestHandlerTest {
 	private AccessTokenRequestHandler sut;
 
-	private Registration toolDefinition;
+	private Registration registration;
 
 	@Before
 	public void setUp() {
-		this.toolDefinition = Registration.builder()
-						.clientId("Universitat Oberta de Catalunya")
-						.name("Universitat Oberta de Catalunya")
-						.keySetUrl("https://lti-ri.imsglobal.org/platforms/2647/platform_keys/2449.json")
-						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
+		final Key key = Key.builder()
+						.algorithm("RSA")
 						.privateKey("MIIEpQIBAAKCAQEA9meqL/mLQa/PdI+dU4D2ovMs3jGSF2BmFBOFP4zay7Ni5ABi" +
 										"xyaghWyM5sNznITm847l6C+yzUo0CvmmmFNVEE/XEyRYkNry04Jm8IICSMnHhHch" +
 										"t3rtGEAALTIiTsjbnj31NlsA+aXaWWY4kRt5jTO+r72LHvReb/RxektWtFE8MmZI" +
@@ -60,10 +60,24 @@ public class AccessTokenRequestHandlerTest {
 										"lrST1E1+n9h/F1o6ZSF8H/GsClYLYDJ9PhCj48NtJH6Hho873x2tO6Z5kXoDFfwN" +
 										"dQIDAQAB")
 						.build();
+		final KeySet keySet = KeySet.builder()
+						.id("key_set_1")
+						.keys(Collections.singletonList(key))
+						.build();
+		this.registration = Registration.builder()
+						.clientId("Universitat Oberta de Catalunya")
+						.name("Universitat Oberta de Catalunya")
+						.keySetUrl("https://lti-ri.imsglobal.org/platforms/2647/platform_keys/2449.json")
+						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
+						.keySet(keySet)
+						.build();
 
-		ClientCredentialsTokenBuilder clientCredentialsTokenBuilder = new JWSClientCredentialsTokenBuilder(toolDefinition.getPublicKey(), toolDefinition.getPrivateKey());
+		ClientCredentialsTokenBuilder clientCredentialsTokenBuilder = new JWSClientCredentialsTokenBuilder(
+						key.getPublicKey(),
+						key.getPrivateKey(),
+						key.getAlgorithm());
 		AccessTokenRequestBuilder accessTokenRequestBuilder = new UrlEncodedFormAccessTokenRequestBuilderImpl();
-		this.sut = new AccessTokenRequestHandler(null, toolDefinition, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
+		this.sut = new AccessTokenRequestHandler(null, registration, clientCredentialsTokenBuilder, accessTokenRequestBuilder);
 	}
 
 	@Test
