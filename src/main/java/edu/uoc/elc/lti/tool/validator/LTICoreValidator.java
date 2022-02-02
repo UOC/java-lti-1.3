@@ -29,8 +29,8 @@ public class LTICoreValidator implements LaunchValidatable {
 	String reason;
 
 	@Override
-	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
-		if (!this.validateRequiredFields(toolDefinition, claimAccessor, oidcLaunchSession)) {
+	public boolean validate(String state, Registration registration, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+		if (!this.validateRequiredFields(registration, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 
@@ -41,7 +41,7 @@ public class LTICoreValidator implements LaunchValidatable {
 		return true;
 	}
 
-	private boolean validateRequiredFields(Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	private boolean validateRequiredFields(Registration registration, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Message type
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		if (messageTypeClaim == null) {

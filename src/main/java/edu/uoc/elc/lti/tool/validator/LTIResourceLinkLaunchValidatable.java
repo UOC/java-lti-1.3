@@ -15,14 +15,14 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	private static final int ID_MAX_LENGTH = 255;
 
 	@Override
-	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, Registration registration, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Core validation
-		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
+		if (!super.validate(state, registration, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 
 		// LTI required claims
-		if (!validateRequiredClaims(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
+		if (!validateRequiredClaims(state, registration, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 

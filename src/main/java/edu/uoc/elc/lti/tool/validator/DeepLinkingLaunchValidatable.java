@@ -16,15 +16,15 @@ public class DeepLinkingLaunchValidatable extends LTICoreValidator {
 	/**
 	 * Validates request following https://www.imsglobal.org/spec/lti-dl/v2p0#deep-linking-request-message
 	 * @param state saved state, if present
-	 * @param toolDefinition {@link Registration} with the tool's data
+	 * @param registration {@link Registration} with the tool's data
 	 * @param claimAccessor {@link ClaimAccessor} for accessing the claims
 	 * @param oidcLaunchSession {@link OIDCLaunchSession} with the OIDC session
 	 * @return true if the launch is valid, false otherwise
 	 */
 	@Override
-	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, Registration registration, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Core validation
-		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
+		if (!super.validate(state, registration, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 
