@@ -73,7 +73,7 @@ public class LTICoreValidator implements LaunchValidatable {
 			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
 			return false;
 		}
-		if (!toolDefinition.getDeploymentId().equals(deploymentId)) {
+		if (!toolDefinition.getDeploymentIds().contains(deploymentId)) {
 			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
 			return false;
 		}

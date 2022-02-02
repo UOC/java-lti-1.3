@@ -3,6 +3,8 @@ package edu.uoc.elc.lti.tool;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * @author xaracil@uoc.edu
  */
@@ -17,5 +19,5 @@ public class ToolDefinition {
 	private String oidcAuthUrl;
 	private String privateKey;
 	private String publicKey;
-	private String deploymentId;
+	private List<String> deploymentIds;
 }
