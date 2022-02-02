@@ -30,7 +30,7 @@ public class LTICoreValidator implements LaunchValidatable {
 
 	@Override
 	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
-		if (!this.validateRequiredFields(toolDefinition, claimAccessor)) {
+		if (!this.validateRequiredFields(toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
 
@@ -41,7 +41,7 @@ public class LTICoreValidator implements LaunchValidatable {
 		return true;
 	}
 
-	private boolean validateRequiredFields(ToolDefinition toolDefinition, ClaimAccessor claimAccessor) {
+	private boolean validateRequiredFields(ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Message type
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		if (messageTypeClaim == null) {
@@ -77,7 +77,17 @@ public class LTICoreValidator implements LaunchValidatable {
 			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
 			return false;
 		}
+		// deploymentId must be equal to the optional parameter lti_deployment_id passed in OIDC launch, if present
+		if (!isEmpty(oidcLaunchSession.getDeploymentId()) && !deploymentId.equals(oidcLaunchSession.getDeploymentId())) {
+			setReasonToInvalidClaim(ClaimsEnum.DEPLOYMENT_ID);
+			return false;
+		}
 
+		// clientId should be equal to the optional parameter client_id passed in OIDC launch, if present
+		if (!isEmpty(oidcLaunchSession.getClientId()) && !claimAccessor.getAudience().equals(oidcLaunchSession.getClientId())) {
+			this.reason = "ClientId should be equal to client_id passed in OIDC launch";
+			return false;
+		}
 		// User
 		final String subject = claimAccessor.getSubject();
 		if (isEmpty(subject)) {
