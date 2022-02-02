@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -66,15 +67,8 @@ public class ToolTest {
 						"nEUZtk7RilHR/2xfPFrkD2oZjVcQYnxoNJcPnC/kI3Hgyi5jz2KWFQo55rzB+gSU" +
 						"Inc5r31qImVZfbiNId6kOiJxffaGixhtfEf0RvnNbnD4KO/quAE=";
 
-		Registration toolDefinition = Registration.builder()
-						.clientId("Universitat Oberta de Catalunya")
-						.name("Universitat Oberta de Catalunya")
-						.platform("https://www.uoc.edu")
-						.deploymentIds(Arrays.asList("testdeploy", "anotherdeploy"))
-						.keySetUrl(keysetUrl)
-						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
-						.oidcAuthUrl("https://lti-ri.imsglobal.org/platforms/2647/authorizations/new")
-						// tool's private key
+		final Key key = Key.builder()
+						.algorithm("RSA")
 						.privateKey("MIIEpQIBAAKCAQEA9meqL/mLQa/PdI+dU4D2ovMs3jGSF2BmFBOFP4zay7Ni5ABi" +
 										"xyaghWyM5sNznITm847l6C+yzUo0CvmmmFNVEE/XEyRYkNry04Jm8IICSMnHhHch" +
 										"t3rtGEAALTIiTsjbnj31NlsA+aXaWWY4kRt5jTO+r72LHvReb/RxektWtFE8MmZI" +
@@ -100,7 +94,6 @@ public class ToolTest {
 										"tsUz7uUCgYEAm45cbgVtMk7pPVBdBXMqx82bosj8PsT0Cn4foL3acQVFHWUPaC5W" +
 										"i9rbGp2iuqPVVGK1ZDTP13KyYY9Jw4ZRBNJrdyErSlpGhiRuDRgdX/PWvr9krze8" +
 										"nH4XC37FRa7UDQNK81IdsY2tyZTluheSuZ8EUnFGtBdXL1bzydxBjZI=")
-						// tool's public key
 						.publicKey("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA9meqL/mLQa/PdI+dU4D2" +
 										"ovMs3jGSF2BmFBOFP4zay7Ni5ABixyaghWyM5sNznITm847l6C+yzUo0CvmmmFNV" +
 										"EE/XEyRYkNry04Jm8IICSMnHhHcht3rtGEAALTIiTsjbnj31NlsA+aXaWWY4kRt5" +
@@ -108,6 +101,23 @@ public class ToolTest {
 										"c7rmYhnd2cLbA3T69MRSGXt0fK25P8oFUi2SaJ74A6ZJw1kVx+fQA3Wkkf2x7+Lf" +
 										"lrST1E1+n9h/F1o6ZSF8H/GsClYLYDJ9PhCj48NtJH6Hho873x2tO6Z5kXoDFfwN" +
 										"dQIDAQAB")
+						.build();
+		final KeySet keySet = KeySet.builder()
+						.id("key_set_1")
+						.keys(Collections.singletonList(key))
+						.build();
+
+		Registration toolDefinition = Registration.builder()
+						.clientId("Universitat Oberta de Catalunya")
+						.name("Universitat Oberta de Catalunya")
+						.platform("https://www.uoc.edu")
+						.keySet(keySet)
+						.deployments(Arrays.asList(
+										Deployment.builder().deploymentId("testdeploy").build(),
+										Deployment.builder().deploymentId("anotherdeploy").build()))
+						.keySetUrl(keysetUrl)
+						.accessTokenUrl("https://lti-ri.imsglobal.org/platforms/2647/access_tokens")
+						.oidcAuthUrl("https://lti-ri.imsglobal.org/platforms/2647/authorizations/new")
 						.build();
 		ToolBuilders toolBuilders = new ToolBuilders(new JWSClientCredentialsTokenBuilder(platformPublicKey, platformPrivateKey, platformAlgorithm),
 						new JSONAccessTokenRequestBuilderImpl(),

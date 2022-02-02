@@ -28,18 +28,31 @@ It also has utility methods for getting claims in an agnostic way
 
 ## Configuration
 
-Configuration of the Tool is made through the class `edu.uoc.elc.lti.tool.Registration`. 
+Configuration of the Tool is made through the classes `edu.uoc.elc.lti.tool.Registration`, `edu.uoc.elc.lti.tool.KeySet`, `edu.uoc.elc.lti.tool.Key` and `edu.uoc.elc.lti.tool.Deployment`. 
 There you can set the following parameters of the tool:
 
+### Key
+* `id`: id of the key
+* `privateKey`: private key of the key
+* `publicKey`: public key of the key
+* `algorithm`: algorithm of the key, usually `RSA`S
+
+## KeySet
+* `id`: id of the keyset
+* `keys`: list of keys of the keyset
+
+## Deployment
+* `deploymentId`: Id of the deployment
+
+## Registration
 * `clientId`
 * `name`: Name of the tool
 * `platform`: Name of the platform
-* `keySetUrl`:
-* `accessTokenUrl` 
-* `oidcAuthUrl`
-* `privateKey`
-* `publicKey`
-* `deploymentId`
+* `keySetUrl`: URL of the platform's keyset
+* `accessTokenUrl`: URL of the platform's access token
+* `oidcAuthUrl`: URL of the platform's OIDC auth
+* `deployments`: List of deployments
+* `keySet`: KeySet
 
 Tool uses [LTI 1.3 core](https://github.com/UOC/java-lti-1.3-core#about) interfaces for dealing 
 with requests and JWT generation. The definition of the implementations of these interfaces are
@@ -51,23 +64,25 @@ in the `edu.uoc.elc.lti.tool.ToolBuilders` class
 
 Repository info:
   
-  ```xml
-        <repository>
-          <id>github-uoc-lti-core</id>
-          <name>GitHub UOC Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-core</url>
-        </repository>				
-        <repository>
-          <id>github-uoc-lti-jwt</id>
-          <name>GitHub UOC Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-jwt</url>
-        </repository>				
-        <repository>
-          <id>github-uoc-lti</id>
-          <name>GitHub UOC Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/uoc/java-lti-1.3</url>
-        </repository>				
-  ```
+```xml
+<repositories>
+    <repository>
+      <id>github-uoc-lti-core</id>
+      <name>GitHub UOC Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/uoc/java-lti-1.3-core</url>
+    </repository>				
+    <repository>
+      <id>github-uoc-lti-jwt</id>
+      <name>GitHub UOC Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/uoc/java-lti-1.3-jwt</url>
+    </repository>				
+    <repository>
+      <id>github-uoc-lti</id>
+      <name>GitHub UOC Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/uoc/java-lti-1.3</url>
+    </repository>
+</repositories>
+```
 
 2. Add the dependency to your `pom.xml` file:
 
