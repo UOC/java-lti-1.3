@@ -15,7 +15,7 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	private static final int ID_MAX_LENGTH = 255;
 
 	@Override
-	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Core validation
 		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;
@@ -52,7 +52,7 @@ public class LTIResourceLinkLaunchValidatable extends LTICoreValidator {
 	 * @param state saved state, if present
 	 * @return true if the required claims of the LTI launch are valid, false otherwise
 	 */
-	private boolean validateRequiredClaims(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	private boolean validateRequiredClaims(String state, Registration registration, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// 5.3.1 message type claim
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		final MessageTypesEnum messageType = MessageTypesEnum.valueOf(messageTypeClaim);

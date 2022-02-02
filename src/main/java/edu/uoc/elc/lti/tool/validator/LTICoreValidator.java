@@ -3,7 +3,7 @@ package edu.uoc.elc.lti.tool.validator;
 import edu.uoc.elc.lti.tool.Context;
 import edu.uoc.elc.lti.tool.Platform;
 import edu.uoc.elc.lti.tool.RolesEnum;
-import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.elc.lti.tool.Registration;
 import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
@@ -29,7 +29,7 @@ public class LTICoreValidator implements LaunchValidatable {
 	String reason;
 
 	@Override
-	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		if (!this.validateRequiredFields(toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;
 		}
@@ -41,7 +41,7 @@ public class LTICoreValidator implements LaunchValidatable {
 		return true;
 	}
 
-	private boolean validateRequiredFields(ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	private boolean validateRequiredFields(Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Message type
 		final String messageTypeClaim = claimAccessor.get(ClaimsEnum.MESSAGE_TYPE);
 		if (messageTypeClaim == null) {

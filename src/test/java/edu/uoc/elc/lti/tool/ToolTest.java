@@ -65,7 +65,7 @@ public class ToolTest {
 						"nEUZtk7RilHR/2xfPFrkD2oZjVcQYnxoNJcPnC/kI3Hgyi5jz2KWFQo55rzB+gSU" +
 						"Inc5r31qImVZfbiNId6kOiJxffaGixhtfEf0RvnNbnD4KO/quAE=";
 
-		ToolDefinition toolDefinition = ToolDefinition.builder()
+		Registration toolDefinition = Registration.builder()
 						.clientId("Universitat Oberta de Catalunya")
 						.name("Universitat Oberta de Catalunya")
 						.platform("https://www.uoc.edu")

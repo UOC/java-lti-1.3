@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Getter
 @Builder
-public class ToolDefinition {
+public class Registration {
 	private String clientId;
 	private String name;
 	private String platform;

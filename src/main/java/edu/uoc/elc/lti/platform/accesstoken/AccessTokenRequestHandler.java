@@ -2,7 +2,7 @@ package edu.uoc.elc.lti.platform.accesstoken;
 
 import edu.uoc.elc.lti.platform.PlatformClient;
 import edu.uoc.elc.lti.tool.ScopeEnum;
-import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.elc.lti.tool.Registration;
 import edu.uoc.lti.accesstoken.AccessTokenRequest;
 import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.clientcredentials.ClientCredentialsRequest;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccessTokenRequestHandler {
 	private final String kid;
-	private final ToolDefinition toolDefinition;
+	private final Registration toolDefinition;
 	private final ClientCredentialsTokenBuilder clientCredentialsTokenBuilder;
 	private final AccessTokenRequestBuilder accessTokenRequestBuilder;
 

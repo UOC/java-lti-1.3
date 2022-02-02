@@ -1,6 +1,6 @@
 package edu.uoc.elc.lti.tool.validator;
 
-import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.elc.lti.tool.Registration;
 import edu.uoc.elc.lti.tool.deeplinking.Settings;
 import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
@@ -16,13 +16,13 @@ public class DeepLinkingLaunchValidatable extends LTICoreValidator {
 	/**
 	 * Validates request following https://www.imsglobal.org/spec/lti-dl/v2p0#deep-linking-request-message
 	 * @param state saved state, if present
-	 * @param toolDefinition {@link ToolDefinition} with the tool's data
+	 * @param toolDefinition {@link Registration} with the tool's data
 	 * @param claimAccessor {@link ClaimAccessor} for accessing the claims
 	 * @param oidcLaunchSession {@link OIDCLaunchSession} with the OIDC session
 	 * @return true if the launch is valid, false otherwise
 	 */
 	@Override
-	public boolean validate(String state, ToolDefinition toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
+	public boolean validate(String state, Registration toolDefinition, ClaimAccessor claimAccessor, OIDCLaunchSession oidcLaunchSession) {
 		// Core validation
 		if (!super.validate(state, toolDefinition, claimAccessor, oidcLaunchSession)) {
 			return false;

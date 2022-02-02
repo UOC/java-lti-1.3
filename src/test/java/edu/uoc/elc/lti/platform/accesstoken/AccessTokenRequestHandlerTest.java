@@ -1,7 +1,7 @@
 package edu.uoc.elc.lti.platform.accesstoken;
 
 import edu.uoc.elc.lti.exception.BadToolProviderConfigurationException;
-import edu.uoc.elc.lti.tool.ToolDefinition;
+import edu.uoc.elc.lti.tool.Registration;
 import edu.uoc.lti.accesstoken.AccessTokenRequestBuilder;
 import edu.uoc.lti.accesstoken.UrlEncodedFormAccessTokenRequestBuilderImpl;
 import edu.uoc.lti.clientcredentials.ClientCredentialsTokenBuilder;
@@ -18,11 +18,11 @@ import java.io.IOException;
 public class AccessTokenRequestHandlerTest {
 	private AccessTokenRequestHandler sut;
 
-	private ToolDefinition toolDefinition;
+	private Registration toolDefinition;
 
 	@Before
 	public void setUp() {
-		this.toolDefinition = ToolDefinition.builder()
+		this.toolDefinition = Registration.builder()
 						.clientId("Universitat Oberta de Catalunya")
 						.name("Universitat Oberta de Catalunya")
 						.keySetUrl("https://lti-ri.imsglobal.org/platforms/2647/platform_keys/2449.json")

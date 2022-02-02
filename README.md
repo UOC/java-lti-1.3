@@ -28,7 +28,7 @@ It also has utility methods for getting claims in an agnostic way
 
 ## Configuration
 
-Configuration of the Tool is made through the class `edu.uoc.elc.lti.tool.ToolDefinition`. 
+Configuration of the Tool is made through the class `edu.uoc.elc.lti.tool.Registration`. 
 There you can set the following parameters of the tool:
 
 * `clientId`

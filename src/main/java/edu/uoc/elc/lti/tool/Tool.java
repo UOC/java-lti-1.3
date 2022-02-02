@@ -58,13 +58,13 @@ public class Tool {
 
 	private AccessTokenResponse accessTokenResponse;
 
-	private final ToolDefinition toolDefinition;
+	private final Registration registration;
 	private final ClaimAccessor claimAccessor;
 	private final OIDCLaunchSession oidcLaunchSession;
 	private final ToolBuilders toolBuilders;
 
 	public boolean validate(String token, String state) {
-		LaunchValidator launchValidator = new LaunchValidator(toolDefinition, claimAccessor, oidcLaunchSession);
+		LaunchValidator launchValidator = new LaunchValidator(registration, claimAccessor, oidcLaunchSession);
 		this.valid = launchValidator.validate(token, state);
 		if (!this.valid) {
 			this.reason = launchValidator.getReason();
@@ -93,7 +93,7 @@ public class Tool {
 
 		if (accessTokenResponse == null) {
 			AccessTokenRequestHandler accessTokenRequestHandler = new AccessTokenRequestHandler(kid,
-							toolDefinition,
+							registration,
 							toolBuilders.getClientCredentialsTokenBuilder(),
 							toolBuilders.getAccessTokenRequestBuilder());
 			accessTokenResponse = accessTokenRequestHandler.getAccessToken();
@@ -189,7 +189,7 @@ public class Tool {
 		return new DeepLinkingClient(
 						toolBuilders.getDeepLinkingTokenBuilder(),
 						getIssuer(),
-						toolDefinition.getClientId(),
+						registration.getClientId(),
 						this.claimAccessor.getAzp(),
 						getDeploymentId(),
 						this.claimAccessor.get(ClaimsEnum.NONCE),
@@ -213,7 +213,7 @@ public class Tool {
 	// openid methods
 	public String getOidcAuthUrl(LoginRequest loginRequest) throws URISyntaxException {
 		final LoginResponse loginResponse = LoginResponse.builder()
-						.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id() : toolDefinition.getClientId())
+						.client_id(loginRequest.getClient_id() != null ? loginRequest.getClient_id() : registration.getClientId())
 						.redirect_uri(loginRequest.getTarget_link_uri())
 						.login_hint(loginRequest.getLogin_hint())
 						.state(new BigInteger(50, new SecureRandom()).toString(16))
@@ -231,6 +231,6 @@ public class Tool {
 		this.oidcLaunchSession.setDeploymentId(loginRequest.getLti_deployment_id());
 
 		// return url
-		return AuthRequestUrlBuilder.build(toolDefinition.getOidcAuthUrl(), loginResponse);
+		return AuthRequestUrlBuilder.build(registration.getOidcAuthUrl(), loginResponse);
 	}
 }

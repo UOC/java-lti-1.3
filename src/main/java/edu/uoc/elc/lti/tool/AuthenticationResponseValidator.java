@@ -2,7 +2,6 @@ package edu.uoc.elc.lti.tool;
 
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
-import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +14,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class AuthenticationResponseValidator {
-	private final ToolDefinition toolDefinition;
+	private final Registration registration;
 	private final ClaimAccessor claimAccessor;
 
 	@Getter
@@ -44,7 +43,7 @@ public class AuthenticationResponseValidator {
 		 * 2. The Issuer Identifier for the Platform MUST exactly match the value of the iss (Issuer) Claim
 		 * (therefore the Tool MUST previously have been made aware of this identifier);
 		 */
-		if (!this.toolDefinition.getPlatform().equals(this.claimAccessor.getIssuer())) {
+		if (!this.registration.getPlatform().equals(this.claimAccessor.getIssuer())) {
 			reason = "Issuer invalid";
 			return false;
 		}
@@ -57,7 +56,7 @@ public class AuthenticationResponseValidator {
 		 */
 		final String audienceClaim = this.claimAccessor.getAudience();
 		final List<String> audiences = Arrays.asList(audienceClaim.split(","));
-		if (!audiences.contains(this.toolDefinition.getClientId())) {
+		if (!audiences.contains(this.registration.getClientId())) {
 			reason = "Audience invalid";
 			return false;
 		}
@@ -76,7 +75,7 @@ public class AuthenticationResponseValidator {
 		 * 5. If an azp (authorized party) Claim is present, the Tool SHOULD verify that its client_id is the Claim's value
 		 */
 		if (this.claimAccessor.getAzp() != null) {
-			if (!this.toolDefinition.getClientId().equals(this.claimAccessor.getAzp())) {
+			if (!this.registration.getClientId().equals(this.claimAccessor.getAzp())) {
 				reason = "Azp invalid";
 				return false;
 			}
