@@ -54,8 +54,7 @@ public class AuthenticationResponseValidator {
 		 * audience, or if it contains additional audiences not trusted by the Tool. The request message will be
 		 * rejected with a HTTP code of 401;
 		 */
-		final String audienceClaim = this.claimAccessor.getAudience();
-		final List<String> audiences = Arrays.asList(audienceClaim.split(","));
+		final List<String> audiences = this.claimAccessor.getAudiences();
 		if (!audiences.contains(this.registration.getClientId())) {
 			reason = "Audience invalid";
 			return false;

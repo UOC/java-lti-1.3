@@ -33,7 +33,7 @@ public class Tool {
 	@Getter
 	String issuer;
 	@Getter
-	String audience;
+	List<String> audiences;
 
 	@Getter
 	String kid;
@@ -73,7 +73,7 @@ public class Tool {
 
 		// get the standard JWT payload claims
 		this.issuer = this.claimAccessor.getIssuer();
-		this.audience = this.claimAccessor.getAudience();
+		this.audiences = this.claimAccessor.getAudiences();
 		this.issuedAt = this.claimAccessor.getIssuedAt();
 		this.expiresAt = this.claimAccessor.getExpiration();
 

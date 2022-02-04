@@ -85,7 +85,7 @@ public class LTICoreValidator implements LaunchValidatable {
 		}
 
 		// clientId should be equal to the optional parameter client_id passed in OIDC launch, if present
-		if (!isEmpty(oidcLaunchSession.getClientId()) && !claimAccessor.getAudience().equals(oidcLaunchSession.getClientId())) {
+		if (!isEmpty(oidcLaunchSession.getClientId()) && !claimAccessor.getAudiences().contains(oidcLaunchSession.getClientId())) {
 			this.reason = "ClientId should be equal to client_id passed in OIDC launch";
 			return false;
 		}
