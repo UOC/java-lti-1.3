@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 public class Settings {
 	private List<String> accept_types;
-	private List<String> accept_media_types;
+	private String accept_media_types;
 	private List<String> accept_presentation_document_targets;
 	private boolean accept_multiple;
 	private boolean auto_create;

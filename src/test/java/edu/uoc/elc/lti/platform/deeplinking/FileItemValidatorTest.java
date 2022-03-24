@@ -32,7 +32,7 @@ public class FileItemValidatorTest {
 
 	@Test
 	public void isValid() {
-		Mockito.when(settings.getAccept_media_types()).thenReturn(Arrays.asList("application/pdf","text/html"));
+		Mockito.when(settings.getAccept_media_types()).thenReturn("application/pdf,text/html");
 
 		Assert.assertTrue(this.sut.isValid(FileItem.builder().mediaType("application/pdf").build()));
 		Assert.assertTrue(this.sut.isValid(FileItem.builder().mediaType("text/html").build()));

@@ -23,11 +23,7 @@
       "html",
       "ltiResourceLink"
     ],
-    "accept_media_types": [
-      "image/*",
-      "text/html",
-      "application/json"
-    ],
+    "accept_media_types": "image/*,text/html,application/json",
     "accept_presentation_document_targets": [
       "iframe",
       "window"

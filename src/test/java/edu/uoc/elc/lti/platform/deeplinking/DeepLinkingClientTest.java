@@ -114,7 +114,7 @@ public class DeepLinkingClientTest {
 	@Test(expected = InvalidLTICallException.class)
 	public void addItemShouldThrowWhenMediaTypeNotAllowed() {
 		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("file"));
-		Mockito.when(settings.getAccept_media_types()).thenReturn(Arrays.asList("application/pdf"));
+		Mockito.when(settings.getAccept_media_types()).thenReturn("application/pdf");
 		Mockito.when(settings.isAccept_multiple()).thenReturn(true);
 
 		final Item fileItem = FileItem.builder().mediaType("application/pdf").build();
