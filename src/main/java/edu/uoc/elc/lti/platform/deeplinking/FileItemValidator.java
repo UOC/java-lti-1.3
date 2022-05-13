@@ -33,7 +33,7 @@ public class FileItemValidator extends ItemValidator {
 	}
 
 	private boolean mediaTypeIsValid(String type) {
-		final List<String> acceptMediaTypes = Arrays.asList(settings.getAccept_media_types().split(","));
+		final List<String> acceptMediaTypes = settings.getAccept_media_types() != null ? Arrays.asList(settings.getAccept_media_types().split(",")) : null;
 		return (acceptMediaTypes != null && acceptMediaTypes.size() > 0 ? acceptMediaTypes.contains(type) : true);
 	}
 
