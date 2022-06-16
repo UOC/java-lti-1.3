@@ -156,9 +156,9 @@ public class Tool {
 		return this.claimAccessor.get(ClaimsEnum.ROLES, rolesClass);
 	}
 
-	public String getCustomParameter(String name) {
-		Class<Map<String, String>> customClass = (Class) Map.class;
-		final Map<String, String> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
+	public Object getCustomParameter(String name) {
+		Class<Map<String, Object>> customClass = (Class) Map.class;
+		final Map<String, Object> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
 		if (claim != null) {
 			return claim.get(name);
 		}
