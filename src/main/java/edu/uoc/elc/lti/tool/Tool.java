@@ -157,12 +157,17 @@ public class Tool {
 	}
 
 	public Object getCustomParameter(String name) {
-		Class<Map<String, Object>> customClass = (Class) Map.class;
-		final Map<String, Object> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
+		final Map<String, Object> claim = this.getCustomParameters();
 		if (claim != null) {
 			return claim.get(name);
 		}
 		return null;
+	}
+
+	public Map<String, Object> getCustomParameters() {
+		Class<Map<String, Object>> customClass = (Class) Map.class;
+		final Map<String, Object> claim = this.claimAccessor.get(ClaimsEnum.CUSTOM, customClass);
+		return claim;
 	}
 
 	public MessageTypesEnum getMessageType() {
