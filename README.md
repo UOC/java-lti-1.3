@@ -60,39 +60,59 @@ in the `edu.uoc.elc.lti.tool.ToolBuilders` class
  
 ## Usage
 
-1. Set your maven installation to work with Github packages, following https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages#authenticating-to-github-packages
+1. Set your maven installation to work with Github packages, following the [Github Docs](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages#authenticating-to-github-packages). Add the following configuration to your maven `settings.xml` file:
 
-Repository info:
-  
-```xml
-<repositories>
-    <repository>
-      <id>github-uoc-lti-core</id>
-      <name>GitHub UOC Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/uoc/java-lti-1.3-core</url>
-    </repository>				
-    <repository>
-      <id>github-uoc-lti-jwt</id>
-      <name>GitHub UOC Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/uoc/java-lti-1.3-jwt</url>
-    </repository>				
-    <repository>
-      <id>github-uoc-lti</id>
-      <name>GitHub UOC Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/uoc/java-lti-1.3</url>
-    </repository>
-</repositories>
-```
+    ```xml
+    <servers>
+      <server>
+        <id>github-uoc-lti</id>
+        <username>USERNAME</username>
+        <password>GITHUB_TOKEN</password>
+      </server>
+      <server>
+        <id>github-uoc-lti-core</id>
+        <username>USERNAME</username>
+        <password>GITHUB_TOKEN</password>
+      </server>
+      <server>
+        <id>github-uoc-lti-jwt</id>
+        <username>USERNAME</username>
+        <password>GITHUB_TOKEN</password>
+      </server>
+    </servers>
+    ```
 
 2. Add the dependency to your `pom.xml` file:
 
-```xml
-  <dependency>
-    <groupId>edu.uoc.elc.lti</groupId>
-    <artifactId>lti-13</artifactId>
-    <version>0.0.2</version>
-  </dependency>
-```  
+    ```xml
+    <dependency>
+      <groupId>edu.uoc.elc.lti</groupId>
+      <artifactId>lti-13</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    ```  
+
+3. Add the following repositories to your `pom.xml` file & verify that the repositories's IDs matches the server's IDs (set at step 1):
+
+    ```xml
+    <repositories>
+        <repository>
+          <id>github-uoc-lti-core</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-core</url>
+        </repository>				
+        <repository>
+          <id>github-uoc-lti-jwt</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3-jwt</url>
+        </repository>				
+        <repository>
+          <id>github-uoc-lti</id>
+          <name>GitHub UOC Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/uoc/java-lti-1.3</url>
+        </repository>
+    </repositories>
+    ```
 
 ## Contributing
 
