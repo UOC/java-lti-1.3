@@ -12,6 +12,7 @@ import edu.uoc.elc.lti.tool.oidc.LoginResponse;
 import edu.uoc.lti.MessageTypesEnum;
 import edu.uoc.lti.claims.ClaimAccessor;
 import edu.uoc.lti.claims.ClaimsEnum;
+import edu.uoc.lti.deeplink.content.Presentation;
 import edu.uoc.lti.oidc.OIDCLaunchSession;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -122,6 +123,10 @@ public class Tool {
 
 	public Context getContext() {
 		return this.claimAccessor.get(ClaimsEnum.CONTEXT, Context.class);
+	}
+
+	public Presentation getPresentation() {
+		return this.claimAccessor.get(ClaimsEnum.PRESENTATION, Presentation.class);
 	}
 
 	public ResourceLink getResourceLink() {
