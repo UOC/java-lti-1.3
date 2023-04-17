@@ -175,6 +175,11 @@ public class Tool {
 		return claim;
 	}
 
+	public Map<String, Object> getCustomClaim(ClaimsEnum claim) {
+		Class<Map<String, Object>> customClass = (Class) Map.class;
+		return this.claimAccessor.get(claim, customClass);
+	}
+
 	public MessageTypesEnum getMessageType() {
 		try {
 			return MessageTypesEnum.valueOf(this.claimAccessor.get(ClaimsEnum.MESSAGE_TYPE));
