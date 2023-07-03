@@ -107,6 +107,7 @@ public class ToolTest {
 						.keys(Collections.singletonList(key))
 						.build();
 
+		final String kid = "2123";
 		Registration toolDefinition = Registration.builder()
 						.clientId("Universitat Oberta de Catalunya")
 						.name("Universitat Oberta de Catalunya")
@@ -126,7 +127,8 @@ public class ToolTest {
 						toolDefinition,
 						new JWSClaimAccessor(keysetUrl),
 						new InMemoryOIDCLaunchSession(),
-						toolBuilders);
+						toolBuilders,
+						kid);
 		this.tokenBuilder = new TokenBuilder(
 						"qPYR0iOgCEMTrSLS-Yw2LQ4kFcpGuDyg8HcScnm8VSE",
 						"https://www.uoc.edu",

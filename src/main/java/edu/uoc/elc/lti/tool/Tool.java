@@ -37,9 +37,6 @@ public class Tool {
 	List<String> audiences;
 
 	@Getter
-	String kid;
-
-	@Getter
 	Date issuedAt;
 
 	@Getter
@@ -63,6 +60,8 @@ public class Tool {
 	private final ClaimAccessor claimAccessor;
 	private final OIDCLaunchSession oidcLaunchSession;
 	private final ToolBuilders toolBuilders;
+	private final String kid;
+
 
 	public boolean validate(String token, String state) {
 		LaunchValidator launchValidator = new LaunchValidator(registration, claimAccessor, oidcLaunchSession);
