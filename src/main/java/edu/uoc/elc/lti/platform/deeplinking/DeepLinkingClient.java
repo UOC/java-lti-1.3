@@ -23,6 +23,7 @@ public class DeepLinkingClient {
 
 	private final String platformName;
 	private final String clientId;
+	private final String kid;
 	private final String azp;
 
 	private final String deploymentId;
@@ -60,7 +61,7 @@ public class DeepLinkingClient {
 
 	public String buildJWT() {
 		DeepLinkingResponse deepLinkingResponse = new DeepLinkingResponse(platformName,
-						clientId, azp, deploymentId, nonce, settings.getData(), itemList);
+						clientId, kid, azp, deploymentId, nonce, settings.getData(), itemList);
 		return deepLinkingTokenBuilder.build(deepLinkingResponse);
 	}
 }

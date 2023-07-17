@@ -28,7 +28,7 @@ public class DeepLinkingClientTest {
 	@Before
 	public void setUp() {
 		this.settings = Mockito.mock(Settings.class);
-		this.sut = new DeepLinkingClient(null, null, null, null, null, null, settings);
+		this.sut = new DeepLinkingClient(null, null, null, null, null, null, null, settings);
 		Mockito.when(settings.getAccept_types()).thenReturn(Arrays.asList("link"));
 		Mockito.when(settings.getDeep_link_return_url()).thenReturn("https://lti-ri.imsglobal.org/platforms/68/contexts/88/deep_links");
 	}
@@ -152,6 +152,7 @@ public class DeepLinkingClientTest {
 		return new DeepLinkingClient(deepLinkingTokenBuilder(),
 						"https://www.uoc.edu",
 						"Universitat Oberta de Catalunya",
+						"1",
 						null,
 						"",
 						"nonce",

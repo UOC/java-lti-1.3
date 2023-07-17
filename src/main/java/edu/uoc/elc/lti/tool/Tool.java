@@ -204,6 +204,7 @@ public class Tool {
 						toolBuilders.getDeepLinkingTokenBuilder(),
 						getIssuer(),
 						registration.getClientId(),
+						kid,
 						this.claimAccessor.getAzp(),
 						getDeploymentId(),
 						this.claimAccessor.get(ClaimsEnum.NONCE),

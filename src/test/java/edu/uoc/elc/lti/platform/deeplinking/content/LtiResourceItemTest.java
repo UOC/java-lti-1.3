@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.uoc.lti.deeplink.content.LtiResourceItem;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -27,14 +30,16 @@ public class LtiResourceItemTest {
 		assertNotNull(this.sut);
 
 		// set some properties
-		this.sut.setCustom("key1", "value1");
-		this.sut.setCustom("key2", "value2");
-		this.sut.setCustom("key3", "value3");
+		Map<String, Object> custom = new HashMap<>();
+		custom.put("key1", "value1");
+		custom.put("key2", "value2");
+		custom.put("key3", "value3");
+		this.sut.setCustom(custom);
 		assertEquals(this.sut.getCustom().size(), 3);
 
-		assertEquals("value1", this.sut.getCustom("key1"));
-		assertEquals("value2", this.sut.getCustom("key2"));
-		assertEquals("value3", this.sut.getCustom("key3"));
+		assertEquals("value1", this.sut.getCustom().get("key1"));
+		assertEquals("value2", this.sut.getCustom().get("key2"));
+		assertEquals("value3", this.sut.getCustom().get("key3"));
 
 		ObjectMapper mapper = new ObjectMapper();
 		final String valueAsString = mapper.writeValueAsString(this.sut);
